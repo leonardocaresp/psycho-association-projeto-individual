@@ -15,12 +15,28 @@
     font-size: 20px;
 }
 
+::-webkit-scrollbar {
+    width: 10px; 
+    height: 10px; 
+}
+
+::-webkit-scrollbar-track {
+    background: var(--azul-escuro); 
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--azul-claro); 
+    border-radius: 5px; 
+}
+
+
 body {
     display: flex;
     flex-direction: column;
     justify-content: center;
     background-image: url("../assets/imgs/fundo-ruido.png");
     color: var(--azul-escuro);
+    overflow-x: hidden;
 }
 
 img {
