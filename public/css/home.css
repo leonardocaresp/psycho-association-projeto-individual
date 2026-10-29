@@ -17,7 +17,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: #F4FEFF;
+    background-image: url("../assets/imgs/fundo-ruido.png");
 }
 
 li {
@@ -184,13 +184,49 @@ p {
     position: relative;
 }
 
+.about-section {
+    margin-top: -45px;
+    z-index: -10000;
+}
+
 .about-content {
+    padding-top: 45px;;
     display: flex;
     justify-content: space-between;
     flex-direction: row;
     align-items: center;
+    position: relative;
+}
+
+.about-content .back-logo {
+    position: absolute;
+    z-index: -10;
+    right: 0px;
 }
 
 .about-text {
     width: 35%;
+}
+
+.about-text h3 {
+    color: var(--azul-claro);
+}
+
+.about-text h2 {
+    color: var(--rosa-choque);
+}
+
+.about-image img {
+    z-index: 1000;
+}
+
+.universe-section {
+    display: flex;
+    align-items: center;
+}
+
+.universe-background {
+    height: 70%;
+    background-color: var(--rosa-choque);
+    width: 100%;
 }
