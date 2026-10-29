@@ -6,7 +6,7 @@
     margin: 0;
     padding: 0;
     --azul-escuro: #0A0D24;
-    --azul-claro: #00DEAF;
+    --azul-claro: #36f0c8;
     --rosa-choque: #E22672;
     --roxo-claro: #D250FF;
     --verde-claro: #3FE275;
@@ -57,19 +57,27 @@ header ul {
 header ul li {
     font-weight: 500;
     position: relative;
+    cursor: pointer;
 }
 
-header ul .selected::before {
+header ul li::after {
     position: absolute;
     bottom: 0px;
     left: 0px;
     content: '';
     height: 3px;
-    width: 100%;
+    width: 0%;
     background-color: var(--azul-claro);
+    transition: 0.2s;
 }
 
-header ul li button {
+header ul li:hover::after {
+    width: 100%;
+}
+
+
+
+header ul button {
     padding: 2px 12px;
     color: white;
     box-shadow: 3px 3px white;
@@ -77,17 +85,18 @@ header ul li button {
     cursor: pointer;
 }
 
-header ul li button:hover {
-    transform: translate(3px, 3px);
+header ul button:hover {
+    transform: rotate(1deg);
+    filter: brightness(90%);
     box-shadow: none;
 }
 
-header ul li .cadastro {
+header ul .cadastro {
     border: 2px solid white;
     background-color: var(--azul-escuro);
 }
 
-header ul li .login {
+header ul .login {
     border: 2px solid white;
     background-color: var(--roxo-claro);
 }
@@ -305,6 +314,11 @@ p {
     flex-direction: column;
     height: 200px;
     border: solid 5px var(--azul-escuro);
+    transition: 0.3s;
+}
+
+.universe-cards .card:hover {
+    transform: rotate(1deg) scale(1.02);
 }
 
 .universe-cards .card .card-top {
@@ -322,7 +336,7 @@ p {
 
 .universe-cards .card .card-bottom {
     padding: 0px 24px;
-    background-color: #f8e5ff;
+    background-color: white;
     height: 70%;
     color: var(--azul-escuro);
     position: relative;
@@ -384,13 +398,14 @@ p {
     color: white;
     background-color: var(--roxo-claro);
     box-shadow: 8px 8px var(--azul-escuro);
-    transition: 0.2s;
     cursor: pointer;
-    border: var(--azul-escuro);
+    border: solid 5px var(--azul-escuro);
     width: 1000px;
+    transition: 0.2s ease-out;
 }
 
 .call-content button:hover {
-    transform: translate(8px, 8px);
+    transform: rotate(0.5deg);
+    filter: brightness(90%);
     box-shadow: none;
 }
