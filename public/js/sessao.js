@@ -19,18 +19,18 @@ function limparSessao() {
 
 // carregamento (loading)
 function aguardar() {
-    var divAguardar = document.getElementById("div_aguardar");
-    divAguardar.style.display = "flex";
+    console.log('aguardando')
 }
 
 function finalizarAguardar(texto) {
-    var divAguardar = document.getElementById("div_aguardar");
-    divAguardar.style.display = "none";
-
-    var divErrosLogin = document.getElementById("div_erros_login");
-    if (texto) {
-        divErrosLogin.style.display = "flex";
-        divErrosLogin.innerHTML = texto;
-    }
+    console.log('finalizar aguardar')
 }
 
+function limparFormulario(tipo) {
+    ipt_email.value = ''
+    ipt_password.value = ''
+    if (tipo == 'cadastro') {
+        ipt_name.value = ''
+        ipt_password_confirmed.value = ''
+    }
+}

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PsychoAssociation | Login</title>
     <link rel="stylesheet" href="css/login.css">
+    <script src="./js/sessao.js"></script>
 </head>
 
 <body>
@@ -19,19 +20,19 @@
                 <h2>BEM-VINDO DE VOLTA</h2>
                 <h3>VOLTE AO TRABALHO!</h3>
             </div>
-            <form>
+            <div class="form-container">
                
                 <div class="input-container">
-                    <label for="ipt_name">Email</label>
+                    <label for="ipt_email">Email</label>
                     <input type="text" id="ipt_email" placeholder="Insira seu endereço de email">
                 </div>
                 <div class="input-container">
-                    <label for="ipt_name">Senha</label>
-                    <input type="text" id="ipt_senha" placeholder="Insira sua senha">
+                    <label for="ipt_password">Senha</label>
+                    <input type="text" id="ipt_password" placeholder="Insira sua senha">
                 </div>
                 
-                <button onclick="cadastrar()">ENTRAR</button>
-            </form>
+                <button onclick="entrar()">ENTRAR</button>
+            </div>
             <p>Não tem uma conta? <a href="cadastro.html"><span>Faça um cadastro</span></a></p>
         </div>
     </div>
@@ -39,3 +40,65 @@
 </body>
 
 </html>
+
+<script>
+     function entrar() {
+        aguardar();
+
+        var emailVar = ipt_email.value;
+        var senhaVar = ipt_password.value;
+
+        if (emailVar == "" || senhaVar == "") {
+            finalizarAguardar();
+            return false;
+        }
+
+        console.log("FORM LOGIN: ", emailVar);
+        console.log("FORM SENHA: ", senhaVar);
+
+        fetch("/usuarios/autenticar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                emailServer: emailVar,
+                senhaServer: senhaVar
+            })
+        }).then(function (resposta) {
+            console.log("ESTOU NO THEN DO entrar()!")
+
+            if (resposta.ok) {
+                console.log(resposta);
+
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log(JSON.stringify(json));
+                    sessionStorage.EMAIL_USUARIO = json.email;
+                    sessionStorage.NOME_USUARIO = json.nome;
+                    sessionStorage.ID_USUARIO = json.id;
+                    sessionStorage.AQUARIOS = JSON.stringify(json.aquarios)
+
+                    setTimeout(function () {
+                        window.location = "./dashboard/cards.html";
+                    }, 1000); // apenas para exibir o loading
+
+                });
+
+            } else {
+
+                console.log("Houve um erro ao tentar realizar o login!");
+
+                resposta.text().then(texto => {
+                    console.error(texto);
+                    finalizarAguardar(texto);
+                });
+            }
+
+        }).catch(function (erro) {
+            console.log(erro);
+        })
+
+        return false;
+    }
+</script>
