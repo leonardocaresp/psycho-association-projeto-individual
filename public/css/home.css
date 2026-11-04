@@ -84,7 +84,7 @@ header ul li::after {
     height: 3px;
     width: 0%;
     background-color: var(--azul-claro);
-    transition: 0.2s;
+    transition: 0.8s cubic-bezier(0.08, 0.82, 0.17, 1);
 }
 
 header ul li:hover::after {
@@ -97,7 +97,7 @@ header ul button {
     padding: 2px 12px;
     color: white;
     box-shadow: 3px 3px white;
-    transition: 0.2s;
+    transition: 0.8s cubic-bezier(0.08, 0.82, 0.17, 1);
     cursor: pointer;
 }
 
@@ -330,7 +330,7 @@ p {
     flex-direction: column;
     height: 200px;
     border: solid 5px var(--azul-escuro);
-    transition: 0.3s;
+    transition: 0.8s cubic-bezier(0.08, 0.82, 0.17, 1);
 }
 
 .universe-cards .card:hover {
@@ -417,7 +417,7 @@ p {
     cursor: pointer;
     border: solid 5px var(--azul-escuro);
     width: 1000px;
-    transition: 0.2s ease-out;
+    transition: 0.8s cubic-bezier(0.08, 0.82, 0.17, 1);
 }
 
 .call-content button:hover {
