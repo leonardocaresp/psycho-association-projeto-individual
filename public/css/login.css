@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    --azul-escuro: #0A0D24;
+    --azul-claro: #36f0c8;
+    --rosa-choque: #E22672;
+    --roxo-claro: #D250FF;
+    --verde-claro: #3FE275;
+    --amarelo-forte: #FDB123;
+    font-family: 'Oswald', sans-serif;
+    font-size: 20px;
+}
+
+a {
+  text-decoration: none;
+  font-size: none;
+}
+
+h3 {
+    font-size: 28px;
+    font-weight: 500;
+}
+
+h2 {
+    font-size: 50px;
+    line-height: 60px;
+}
+
+body {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.left-container {
+  display: flex;
+  align-items: center;
+  align-self: flex-end;
+  justify-content: center;
+  height: 100vh;
+  background-color: var(--azul-escuro);
+  width: 58vw;
+  clip-path: polygon(0 0%, 100% 0%, 100% 100%, calc(0% + 120px) 100%);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  margin-right: -5%;
+}
+
+.left-container .texts h3 {
+  color: var(--azul-claro);
+}
+
+.left-container .texts h2 {
+  color: white;
+}
+
+.left-container .content {
+  row-gap: 36px;
+}
+
+form {
+  row-gap: 18px;
+}
+
+.left-container form .input-container label {
+  color: var(--rosa-choque);
+}
+
+.left-container form .input-container input {
+  background-color: rgba(255, 255, 255, 0.103);
+  color: white;
+  font-size: 24px;
+  border: solid 3px var(--rosa-choque);
+  padding: 0px 12px;
+  height: 56px;
+}
+
+.left-container form .input-container input:focus {
+  outline-color: var(--azul-claro);
+}
+
+form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+    padding: 12px 12px;
+    margin-top: 24px;
+    font-size: 32px;
+    font-weight: 600;
+    color: white;
+    background-color: var(--roxo-claro);
+    box-shadow: 8px 8px white;
+    cursor: pointer;
+    border: none;
+    transition: 0.8s cubic-bezier(0.08, 0.82, 0.17, 1);
+}
+
+
+button:hover {
+    transform: rotate(0.5deg);
+    filter: brightness(90%);
+    box-shadow: none;
+}
+
+.left-container p {
+  font-size: 24px;
+  color: var(--roxo-claro);
+  font-weight: 400;
+}
+
+.left-container p span {
+  font-size: 24px;
+  color: white;
+  font-weight: 500;
+}
+
+.input-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.right-container {
+  background-image: url("../assets/imgs/mob-e-reigen-login.png");
+  background-position: 0% 0%;
+  background-size: 90%;
+  height: 100vh;
+  width: 55vw;
+  position: absolute;
+  z-index: -1000;
+  left: 0;
+}
+
+.image {
+  height: 100vh;
+  width: 55vw;
+  background-image: url("../assets/imgs/mob-e-reigen-login-sem-bkg.png");
+  background-position:  10%;
+  background-size: cover;
+  left: -6px;
+  bottom: -134px;
+  position: fixed;
+  z-index: 10000000;
+}
+
+.right-container img {
+  cursor: pointer;
+  position: absolute;
+  z-index: 1000000000;
+  top: 30px;
+  left: 40px;
+}

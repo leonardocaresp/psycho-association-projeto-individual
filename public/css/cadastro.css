@@ -13,6 +13,12 @@
     font-size: 20px;
 }
 
+a {
+  text-decoration: none;
+  font-size: none;
+}
+
+
 h3 {
     font-size: 28px;
     font-weight: 500;
@@ -139,4 +145,13 @@ button:hover {
   background-size: cover;
   right: 0;
   position: absolute;
+}
+
+.right-container img {
+  cursor: pointer;
+  position: absolute;
+  z-index: 1000000000;
+  top: 30px;
+  right: 40px;
+  color: white;
 }
