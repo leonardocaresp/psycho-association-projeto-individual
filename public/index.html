@@ -27,7 +27,7 @@
     </div>
   </header>
 
-<body>
+<body id="body_content">
   <section class="main-section">
     <div class="limit main-content">
       <div class="main-image">
@@ -115,7 +115,7 @@
         <h2> VOCÊ NÃO PRECISA DE PODERES PARA ENTRAR</h2>
         <p>Basta curiosidade e vontade de investigar. Crie sua conta, descubra seu perfil paranormal e abra seu primeiro relatório de ocorrência.</p>
       </div>
-      <button onclick="window.location = 'cadastro.html'">SOLICITAR RECRUTAMENTO</button>
+      <button onclick="trocarTela('cadastro.html')">SOLICITAR RECRUTAMENTO</button>
       <div class="call-image">
         <img src="assets/imgs/shigeo-kageyama.png" class="img-1">
         <img src="assets/imgs/shigeo-kageyama-outline.png" class="img-2">
@@ -124,6 +124,7 @@
     <img class="raio-1" src="assets/imgs/raio.png" alt="">
     <img class="raio-2" src="assets/imgs/raio-2.png" alt="">
   </section>
+  <div id="carregamento"></div>
 </body>
 
 <footer>
@@ -131,3 +132,16 @@
 </footer>
 
 </html>
+
+<script>
+  carregamento.innerHTML = ''
+  function trocarTela(link) {
+
+    carregamento.innerHTML += '<div class="carregamento"><img src="assets/carregamento.gif"></div>'
+
+    setTimeout(() => {
+      window.location = link
+    }, 1700)
+    
+  }
+</script>

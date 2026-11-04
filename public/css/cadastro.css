@@ -73,6 +73,10 @@ form {
   height: 56px;
 }
 
+.left-container form .input-container input:focus {
+  outline-color: var(--azul-claro);
+}
+
 form {
   width: 100%;
   display: flex;
