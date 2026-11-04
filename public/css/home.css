@@ -185,7 +185,7 @@ p {
 .main-text {
     display: flex;
     flex-direction: column;
-    width: 40%;
+    width: 50%;
 }
 
 .main-text h3 {
@@ -197,6 +197,8 @@ p {
     position: relative;
     z-index: 1;
     text-shadow: -7px -6px rgba(0, 0, 0, 0.233);
+    font-size: 64px;
+    line-height: 80px;
 }
 
 .main-text h2:before {
@@ -222,11 +224,15 @@ p {
 .main-image .img-1 {
     position: absolute;
     top: -60px;
+    left: -100px;
+    width: 750px;
     z-index: 1010;
 }
 
 .main-image .img-2 {
     position: absolute;
+    left: -100px;
+    width: 750px;
     top: -10px;
     z-index: 0;
 }
@@ -280,6 +286,22 @@ p {
 .universe-section {
     display: flex;
     align-items: center;
+    position: relative;
+}
+
+.bridge-icon {
+    position: absolute;
+    width: 100%;
+    max-width: 2000px;
+    bottom: 85%;
+}
+
+.rocks-icon {
+    position: absolute;
+    width: 100%;
+    max-width: 2000px;
+    top: 75%;
+    z-index: -100;
 }
 
 .universe-background {
