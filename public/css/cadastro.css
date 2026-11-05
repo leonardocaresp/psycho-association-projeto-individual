@@ -149,9 +149,13 @@ button:hover {
 
 .right-container img {
   cursor: pointer;
-  position: absolute;
-  z-index: 1000000000;
+  position: fixed;
+  z-index: 1000000000000;
   top: 30px;
   right: 40px;
   color: white;
+}
+
+.right-container img:hover {
+  transform: scale(1.02);
 }
