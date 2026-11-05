@@ -18,17 +18,16 @@
 </head>
 
 <header>
-    <img src="assets/icon/psycho-association-logo.svg" alt="">
-    <div>
-      <ul>
-        <li class="selected">SOBRE</li>
-        <li>ATIVIDADE</li>
-        <li>CHAMADA</li>
-        <button class="cadastro" onclick="trocarTela('cadastro.html')">RECRUTAMENTO</button>
-        <button class="login" onclick="trocarTela('login.html')">LOGIN</button>
-      </ul>
-    </div>
-  </header>
+  <img src="assets/icon/psycho-association-logo.svg" alt="">
+  <div>
+    <ul>
+      <li><a href="#about">ORGANIZAÇÃO</a></li>
+      <li><a href="#universe">CLASSIFICAÇÕES</a></li>
+      <button class="cadastro" onclick="trocarTela('cadastro.html')">RECRUTAMENTO</button>
+      <button class="login" onclick="trocarTela('login.html')">LOGIN</button>
+    </ul>
+  </div>
+</header>
 
 <body id="body_content">
   <section class="main-section">
@@ -39,22 +38,25 @@
       </div>
       <div class="main-text">
         <h3>ORGANIZAÇÃO DE INVESTIGAÇÃO PARANORMAL</h3>
-        <h2>ALGUÉM PRECISA CUIDAR DO QUE NINGUÉM VÊ</h2>
-        <p>Espíritos, poderes psíquicos e eventos sem explicação. A Psycho Association registra cada caso e agora precisa de você.</p>
+        <h2>O SOBRENATURAL NÃO VAI SE INVESTIGAR SOZINHO.</h2>
+        <p>Espíritos, poderes psíquicos, aparições e acontecimentos inexplicáveis. Nós cuidamos de tudo isso. <b>Ou pelo
+            menos tentamos.</b></p>
       </div>
     </div>
   </section>
 
   <div class="divisoria-diagonal"></div>
 
-  <section class="about-section">
+  <section class="about-section" id="about">
     <div class="limit about-content">
       <img src="assets/icon/psycho-association-outline.svg" class="back-logo" alt="">
       <div class="about-text">
         <h3>SOBRE A ORGANIZAÇÃO</h3>
-        <h2>NEM TODO FENÔMENO TEM UMA EXPLICAÇÃO</h2>
-        <p>Alguns são vistos. Outros, sentidos. Há aqueles que permanecem sem resposta.</p>
-        <p>Somos uma rede de investigadores que registra, classifica e acompanha casos paranormais. Cada relato enviado por um membro vira um arquivo, e cada arquivo nos aproxima de uma resposta.</p>
+        <h2>AFINAL, QUEM CUIDA DO INEXPLICÁVEL?</h2>
+        <p>A Psycho Association é uma organização dedicada à investigação, catalogação e análise de fenômenos
+          paranormais.</p>
+        <p>De espíritos que aparecem sem serem convidados a indivíduos capazes de dobrar colheres com a mente, nosso
+          trabalho é registrar tudo aquilo que foge do comum. Apesar disso, não prometemos ter todas as respostas.</p>
       </div>
       <div class="about-image">
         <img src="assets/imgs/mob-reigen-covinhas.png" class="img-1">
@@ -62,50 +64,54 @@
     </div>
   </section>
 
-  <section class="universe-section">
+  <section class="universe-section" id="universe">
     <img src="assets/icon/ponte-vetor.svg" class="bridge-icon">
     <div class="universe-background">
       <div class="limit universe-content">
         <h2>O QUE INVESTIGAMOS</h2>
         <div class="universe-cards">
           <div class="card">
-            <div class="card-top purple-background">
+            <div class="card-top-purple">
               <h3>PODERES PSÍQUICOS</h3>
             </div>
             <div class="card-bottom">
-              <p>Telecinese, barreiras e explosões de energia. Quando alguém faz o impossível.</p>
-              <img src="assets/imgs/arataka-reigen.png" alt="">
+              <p>Telecinese, barreiras, manipulação de energia e outras habilidades que definitivamente não deveriam ser
+                possíveis.</p>
             </div>
+            <img src="assets/imgs/arataka-reigen.png" alt="">
           </div>
 
           <div class="card">
-            <div class="card-top cyan-background">
+            <div class="card-top-green">
+              <h3>ENTIDADES ESPIRITUAIS</h3>
+            </div>
+            <div class="card-bottom">
+              <p>Espíritos, possessões e aparições. Alguns só querem conversar. Outros precisam urgentemente de um
+                exorcismo.</p>
+            </div>
+            <img src="assets/imgs/covinhas.png" alt="">
+          </div>
+
+          <div class="card">
+            <div class="card-top-cyan">
               <h3>LOCAIS ASSOMBRADOS</h3>
             </div>
             <div class="card-bottom">
-              <p>Prédios, escolas e becos com presença estranha. O lugar guarda mais do que mostra.</p>
-              <img src="assets/imgs/covinhas.png" alt="">
+              <p>Casas abandonadas, escolas suspeitas e lugares onde até o silêncio parece estar escondendo alguma
+                coisa.</p>
             </div>
+            <img src="assets/imgs/ritsu-kageyama.png" alt="">
           </div>
 
           <div class="card">
-            <div class="card-top green-background">
-              <h3>ESPÍRITOS</h3>
-            </div>
-            <div class="card-bottom">
-              <p>Assombrações e possessões. Alguns espíritos pedem ajuda, outros pedem exorcismo.</p>
-              <img src="assets/imgs/ritsu-kageyama.png" alt="">
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-top yellow-background">
+            <div class="card-top-yellow">
               <h3>SEITAS PARANORMAIS</h3>
             </div>
             <div class="card-bottom">
-              <p>Grupos que usam o sobrenatural para fins duvidosos. Nem todo perigo vem do além.</p>
-              <img src="assets/imgs/teruki-hanazawa.png" alt="">
+              <p>Grupos e indivíduos que utilizam habilidades sobrenaturais para propósitos duvidosos. Nem todo mundo
+                está do nosso lado.</p>           
             </div>
+            <img src="assets/imgs/teruki-hanazawa.png" alt="">
           </div>
         </div>
       </div>
@@ -118,7 +124,9 @@
       <div class="call-text">
         <h3>CHAMADA PARA NOVOS MEMBROS</h3>
         <h2> VOCÊ NÃO PRECISA DE PODERES PARA ENTRAR</h2>
-        <p>Basta curiosidade e vontade de investigar. Crie sua conta, descubra seu perfil paranormal e abra seu primeiro relatório de ocorrência.</p>
+        <p>Não importa se você consegue mover objetos com a mente ou se ainda tem medo de dormir com a luz apagada. A
+          Psycho Association está em busca de novos membros para ajudar a investigar e documentar fenômenos paranormais.
+        </p>
       </div>
       <button onclick="trocarTela('cadastro.html')">SOLICITAR RECRUTAMENTO</button>
       <div class="call-image">
@@ -130,14 +138,19 @@
     <img class="raio-2" src="assets/imgs/raio-2.png" alt="">
   </section>
   
+  <footer>
+    <div class="limit">
+      <h3>PSYCHO ASSOCIATION</h3>
+      <p>Investigando o inexplicável desde sempre. Ou pelo menos desde que alguém decidiu abrir esta organização.</p>
+      <hr>
+      <p>© 2026 PSYCHO ASSOCIATION. Todos os direitos reservados.</p>
+    </div>
+  </footer>
 </body>
-
-<footer>
-
-</footer>
-
 </html>
 
 <script>
+
   apagarCarregamento()
+
 </script>

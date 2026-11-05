@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    --azul-escuro: #0A0D24;
+    --azul-claro: #36f0c8;
+    --rosa-choque: #E22672;
+    --roxo-claro: #D250FF;
+    --verde-claro: #3FE275;
+    --amarelo-forte: #FDB123;
+    font-family: 'Oswald', sans-serif;
+    font-size: 20px;
+    scroll-behavior: smooth;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+  font-size: none;
+}
+
+
+h3 {
+    font-size: 28px;
+    font-weight: 500;
+}
+
+h2 {
+    font-size: 50px;
+    line-height: 60px;
+}
+
+::-webkit-scrollbar {
+    width: 10px; 
+    height: 10px; 
+}
+
+::-webkit-scrollbar-track {
+    background: var(--azul-escuro); 
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--azul-claro); 
+    border-radius: 5px; 
+}
+
+li {
+    text-decoration: none;
+    list-style: none;
+}
+
+.limit {
+    width: 100%;
+    max-width: 1440px;
+    padding: 0px 24px;
+}

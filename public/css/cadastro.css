@@ -1,33 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-
-* {
-    margin: 0;
-    padding: 0;
-    --azul-escuro: #0A0D24;
-    --azul-claro: #36f0c8;
-    --rosa-choque: #E22672;
-    --roxo-claro: #D250FF;
-    --verde-claro: #3FE275;
-    --amarelo-forte: #FDB123;
-    font-family: 'Oswald', sans-serif;
-    font-size: 20px;
-}
-
-a {
-  text-decoration: none;
-  font-size: none;
-}
-
-
-h3 {
-    font-size: 28px;
-    font-weight: 500;
-}
-
-h2 {
-    font-size: 50px;
-    line-height: 60px;
-}
+@import url('geral.css');
 
 body {
   display: flex;
@@ -40,6 +11,7 @@ body {
   height: 100vh;
   background-color: var(--azul-escuro);
   width: 58vw;
+  z-index: 1;
   clip-path: polygon(0 0%, 100% 0%, calc(100% - 120px) 100%, 0% 100%);
 }
 
@@ -50,15 +22,15 @@ body {
   margin-left: -5%;
 }
 
-.left-container .texts h3 {
+.texts h3 {
   color: var(--azul-claro);
 }
 
-.left-container .texts h2 {
+.texts h2 {
   color: white;
 }
 
-.left-container .content {
+.content {
   row-gap: 36px;
 }
 
@@ -66,11 +38,11 @@ body {
   row-gap: 18px;
 }
 
-.left-container .form-container .input-container label {
+label {
   color: var(--rosa-choque);
 }
 
-.left-container .form-container .input-container input {
+input {
   background-color: rgba(255, 255, 255, 0.103);
   color: white;
   font-size: 24px;
@@ -79,7 +51,7 @@ body {
   height: 56px;
 }
 
-.left-container .form-container .input-container input:focus {
+input:focus {
   outline-color: var(--azul-claro);
 }
 
@@ -109,13 +81,13 @@ button:hover {
     box-shadow: none;
 }
 
-.left-container p {
+p {
   font-size: 24px;
   color: var(--roxo-claro);
   font-weight: 400;
 }
 
-.left-container p span {
+p span {
   font-size: 24px;
   color: white;
   font-weight: 500;
@@ -134,7 +106,6 @@ button:hover {
   height: 100vh;
   width: 55vw;
   position: absolute;
-  z-index: -1000;
   right: 0;
 }
 
@@ -144,18 +115,19 @@ button:hover {
   background-image: url("../assets/imgs/reigen-cadastro-sem-bkg.png");
   background-size: cover;
   right: 0;
+  z-index: 10;
   position: absolute;
 }
 
-.right-container img {
+.image img {
   cursor: pointer;
-  position: fixed;
-  z-index: 1000000000000;
+  position: fixed; 
   top: 30px;
   right: 40px;
   color: white;
+  transition: 0.1s;
 }
 
-.right-container img:hover {
+.image img:hover {
   transform: scale(1.02);
 }
