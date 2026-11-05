@@ -9,6 +9,7 @@
   <title>PsychoAssociation | Página Inicial</title>
 
   <script src="./js/sessao.js"></script>
+  <script src="./js/funcoes.js"></script>
 
   <link rel="stylesheet" href="./css/home.css">
   <link rel="icon" href="./assets/icon/favicon2.ico">
@@ -128,7 +129,7 @@
     <img class="raio-1" src="assets/imgs/raio.png" alt="">
     <img class="raio-2" src="assets/imgs/raio-2.png" alt="">
   </section>
-  <div id="carregamento"></div>
+  
 </body>
 
 <footer>
@@ -138,14 +139,5 @@
 </html>
 
 <script>
-  carregamento.innerHTML = ''
-  function trocarTela(link) {
-
-    carregamento.innerHTML += '<div class="carregamento"><img src="assets/carregamento.gif"></div>'
-
-    setTimeout(() => {
-      window.location = link
-    }, 1700)
-    
-  }
+  apagarCarregamento()
 </script>

@@ -145,3 +145,24 @@ button:hover {
     filter: brightness(90%);
     box-shadow: none;
 }
+
+main {
+  display: flex;
+  flex-direction: column;
+  margin-left: 360px;
+  width: auto;
+  min-height: 100vh;
+  padding: 20px 40px;
+}
+
+.carregamento {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    position: fixed;
+    top: 0;
+    z-index: 100000;
+}
