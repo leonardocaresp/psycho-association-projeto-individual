@@ -7,14 +7,64 @@
   column-gap: 12px;
 }
 
+.top-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.top-container h2 {
+  color: var(--rosa-choque);
+}
+
+.top-container span {
+  color: var(--azul-escuro);
+}
+
+.top-container button {
+  background-color: var(--azul-escuro);
+  padding: 4px 18px;
+  cursor: pointer;
+  border: none;
+}
+
+.left-button {
+  clip-path: polygon(0% 20%, 25% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+
+.right-button {
+  clip-path: polygon(0% 0%, 80% 0%, 100% 20%, 100% 100%, 0% 100%);
+}
+
+
 main .paranormal-card {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
   margin-top: 24px;
   height: auto;
   flex: 1;
   background-color: var(--rosa-choque);
   transition: 0.7s cubic-bezier(0.08, 0.82, 0.17, 1);
+  background-size: cover;
+  filter: brightness(0.6);
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  padding-bottom: 100px;
+  border: solid 5px var(--azul-escuro);
+}
+
+.paranormal-card h2 {
+  color: white;
+  transition: 0.7s cubic-bezier(0.08, 0.82, 0.17, 1);
+   writing-mode: vertical-rl;
+   filter: brightness(1);
 }
 
 .paranormal-card:hover {
   flex: 2;
+  filter: brightness(0.9);
+}
+
+.paranormal-card:hover h2 {
+  rotate: -90deg;
 }

@@ -86,7 +86,7 @@ nav .user-info .user-level {
   transition: 0.7s cubic-bezier(0.08, 0.82, 0.17, 1);
 }
 
-button {
+nav button {
     padding: 12px 12px;
     margin-top: 24px;
     font-size: 14px;
@@ -102,7 +102,7 @@ button {
 }
 
 
-button:hover {
+nav button:hover {
     transform: rotate(0.5deg);
     filter: brightness(90%);
     box-shadow: none;
