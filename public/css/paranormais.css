@@ -1,9 +1,9 @@
 @import url(sistema.css);
 
-.paranormais-content {
+main .paranormais-content {
   display: flex;
   width: auto;
-  height: 90vh;
+  height: 85vh;
   column-gap: 12px;
 }
 

@@ -55,4 +55,5 @@ main .dashboard-container {
   flex: 1;
   height: 100%;
   border: solid 2px var(--azul-escuro);
+  clip-path: polygon(0% 0%, 90% 0%, 100% 5%, 100% 100%, 0% 100%);
 }
