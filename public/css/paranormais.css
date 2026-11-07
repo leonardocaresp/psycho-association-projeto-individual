@@ -52,6 +52,11 @@ main .paranormal-card {
   border: solid 5px var(--azul-escuro);
 }
 
+.paranormal-card h3 {
+  font-size: 14px;
+  color: white;
+}
+
 .paranormal-card h2 {
   color: white;
 }

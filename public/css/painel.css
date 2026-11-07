@@ -62,3 +62,35 @@ main .dashboard-container {
 .chart .bottom {
   padding: 10% 12px 0px 12px;
 }
+
+.status-metrics {
+  margin-top: 48px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 24px;
+}
+
+.metric {
+  display: flex;
+  column-gap: 24px;
+  align-items: center;
+  width: 100%;
+  color: var(--azul-escuro);
+}
+
+.square {
+  width: 35px;
+  height: 35px;
+}
+
+.orange {
+  background-color: #FD7D23;
+}
+
+.green {
+  background-color: var(--verde-claro);
+}
+
+.red {
+  background-color: #E23235;
+}
