@@ -52,8 +52,13 @@ main .dashboard-container {
 }
 
 .chart {
+  
   flex: 1;
   height: 100%;
   border: solid 2px var(--azul-escuro);
   clip-path: polygon(0% 0%, 90% 0%, 100% 5%, 100% 100%, 0% 100%);
+}
+
+.chart .bottom {
+  padding: 10% 12px 0px 12px;
 }

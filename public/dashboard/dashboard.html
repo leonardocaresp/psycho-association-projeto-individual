@@ -7,6 +7,9 @@
   <title>PsychoAssociation | Relatórios</title>
   <link rel="stylesheet" href="../css/painel.css">
   <script src="../js/funcoes.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 </head>
 
 <body>
@@ -87,7 +90,7 @@
             OCORRÊNCIAS POR TIPO
           </div>
           <div class="bottom">
-
+            <canvas id="myChart" height="540"></canvas>
           </div>
         </div>
 
@@ -96,7 +99,7 @@
             STATUS DOS CASOS
           </div>
           <div class="bottom">
-
+            <canvas id="graficoStatus" height="540"></canvas>
           </div>
         </div>
 
@@ -119,6 +122,79 @@
 
 </html>
 <script>
+  const ctx = document.getElementById('myChart');
 
+   new Chart(ctx, {
+    type: 'bar',
+    plugins: [ChartDataLabels], // ativa o plugin dos números
+    data: {
+      labels: [
+        ['PODERES', 'PSÍQUICOS'],
+        'ESPÍRITOS',
+        ['LOCAIS', 'ASSOMBRADOS'],
+        'SEITAS'
+      ],
+      datasets: [{
+        data: [10, 7, 5, 2],
+        backgroundColor: ['#D250FF', '#3FE275', '#00DEAF', '#FDB123'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false // remove os retângulos coloridos
+        },
+        datalabels: {
+          anchor: 'end', // gruda no topo da barra
+          align: 'end',  // fica para fora, acima da barra
+          color: '#0A0D22',
+          font: {
+            size: 16,
+            weight: 'bold'
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },   // sem linhas verticais
+          border: { display: false }, // sem a linha do eixo X
+          ticks: {
+            maxRotation: 0,
+            minRotation: 0
+          }
+        },
+        y: {
+          display: false, // esconde o eixo Y e as linhas horizontais
+          beginAtZero: true,
+          grace: '10%'    // folga no topo para o número caber
+        }
+      }
+    }
+  });
+
+  const ctx2 = document.getElementById('graficoStatus')
+
+  new Chart(ctx2, {
+    type: 'doughnut',
+    data: {
+      labels: ['EM INVESTIGAÇÃO', 'RESOLVIDOS', 'SEM EXPLICAÇÃO'],
+      datasets: [{
+        data: [11, 9, 4],
+        backgroundColor: ['#FD7D23', '#3FE275', '#E23235'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '55%',
+      plugins: {
+        legend: { display: false }
+      }
+    }
+  });
 
 </script>
