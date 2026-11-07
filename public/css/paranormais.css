@@ -44,7 +44,6 @@ main .paranormal-card {
   margin-top: 24px;
   height: auto;
   flex: 1;
-  background-color: var(--rosa-choque);
   transition: 0.7s cubic-bezier(0.08, 0.82, 0.17, 1);
   background-size: cover;
   filter: brightness(0.6);
