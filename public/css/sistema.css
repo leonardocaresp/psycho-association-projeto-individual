@@ -93,10 +93,10 @@ nav button {
     width: 100%;
     font-weight: 600;
     color: white;
-    background-color: var(--roxo-claro);
-    box-shadow: 8px 8px white;
+    background-color: var(--azul-escuro);
+    border: solid 3px white;
+    box-shadow: 3px 3px white;
     cursor: pointer;
-    border: none;
     transition: 0.8s cubic-bezier(0.08, 0.82, 0.17, 1);
     margin-top: auto;
 }
@@ -113,8 +113,12 @@ main {
   flex-direction: column;
   margin-left: 360px;
   width: auto;
-  min-height: 100vh;
+  min-height: 100%;
   padding: 20px 40px;
+}
+
+main h2 {
+  color: var(--rosa-choque);
 }
 
 .carregamento {

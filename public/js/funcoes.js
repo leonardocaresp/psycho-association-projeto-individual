@@ -9,7 +9,7 @@ function apagarCarregamento() { window.addEventListener('pageshow', function (ev
   function trocarTela(link) {
     var carregamento = document.createElement('div')
     carregamento.classList.add('carregamento')
-    carregamento.innerHTML = '<img src="/public/assets/carregamento.gif">'
+    carregamento.innerHTML = '<img src="/assets/carregamento.gif">'
 
     document.body.appendChild(carregamento)
 

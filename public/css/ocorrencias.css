@@ -1,0 +1,290 @@
+@import url(sistema.css);
+
+.paranormais-content {
+  display: flex;
+  width: auto;
+  height: 90vh;
+  column-gap: 12px;
+}
+
+.top-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.top-container h2 {
+  color: var(--rosa-choque);
+}
+
+.top-container span {
+  color: var(--azul-escuro);
+}
+
+.top-container button {
+  padding: 12px 12px;
+  margin-top: 24px;
+  font-size: 24px;
+  width: 100%;
+  font-weight: 600;
+  color: white;
+  background-color: var(--roxo-claro);
+  box-shadow: 8px 8px var(--azul-escuro);
+  cursor: pointer;
+  border: none;
+  transition: 0.8s cubic-bezier(0.08, 0.82, 0.17, 1);
+  margin-top: auto;
+}
+
+.top-container button:hover {
+  transform: rotate(0.5deg);
+  filter: brightness(90%);
+  box-shadow: none;
+}
+
+.ocorrencias-bottom {
+  display: flex;
+  flex-direction: column;
+}
+
+.ocorrencia-card {
+  display: flex;
+  background-color: var(--azul-escuro);
+  padding: 24px;
+  clip-path: polygon(0% 0%, 95% 0%, 100% 100%, 0% 100%);
+}
+
+.ocorrencia-card .left {
+  display: flex;
+  flex-direction: column;
+  row-gap: 12px;
+  width: 70%;
+}
+
+.ocorrencia-card .left .text {
+  display: flex;
+  flex-direction: column;
+  row-gap: 2px;
+}
+
+.ocorrencia-card .left .text h4 {
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 14px;
+}
+
+.ocorrencia-card .left .text h2 {
+  font-weight: 600;
+  color: white;
+  font-size: 32px;
+  line-height: 32px;
+}
+
+.ocorrencia-card .left .text p {
+  font-weight: 400;
+  color: white;
+  font-size: 14px;
+}
+
+.ocorrencia-card .left .text p span {
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.611);
+  font-size: 14px;
+}
+
+.ocorrencia-card .left .info {
+  display: flex;
+  column-gap: 12px;
+}
+
+.ocorrencia-card .left .info .type {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  font-size: 16px;
+  color: white;
+  font-weight: 500;
+}
+
+.pink-bkg {
+  background-color: var(--rosa-choque);
+}
+.purple-bkg {
+  background-color: var(--roxo-claro);
+}
+.pink-bkg {
+  background-color: var(--rosa-choque);
+}
+.pink-bkg {
+  background-color: var(--rosa-choque);
+}
+
+.ocorrencia-card .left .info .status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  font-size: 16px;
+  font-weight: 500;
+  border: solid;
+}
+
+.em-andamento {
+  border-color: #e23235;
+  color: #e23235;
+}
+
+.resolvido {
+  border-color: var(--verde-claro);
+  color: var(--verde-claro);
+}
+
+.ocorrencia-card .left details summary {
+  color: var(--rosa-choque);
+  cursor: pointer;
+}
+
+.ocorrencia-card .left details p {
+  color: white;
+}
+
+.ocorrencia-card .right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  column-gap: 24px;
+  width: 30%;
+  padding-right: 5%;
+}
+
+.ocorrencia-card .right button {
+    padding: 2px 24px;
+    color: white;
+    box-shadow: 3px 3px white;
+    transition: 0.8s cubic-bezier(0.08, 0.82, 0.17, 1);
+    cursor: pointer;
+}
+
+.ocorrencia-card .right button:hover {
+    transform: rotate(1deg);
+    filter: brightness(90%);
+    box-shadow: none;
+}
+
+.editar {
+  border: solid 2px white;
+  background: none;
+}
+
+.excluir {
+    border: 2px solid white;
+    background-color: var(--roxo-claro);
+}
+
+.popup-container {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.494);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.popup {
+  width: 50%;
+  background-color: var(--azul-escuro);
+  border: solid 2px white;
+  padding: 40px;
+}
+
+.popup .text h2{
+  color: white;
+}
+
+.popup .text h3{
+  color: var(--azul-claro)
+}
+
+input {
+  background-color: rgba(255, 255, 255, 0.103);
+  color: white;
+  font-size: 24px;
+  border: solid 3px var(--rosa-choque);
+  padding: 0px 12px;
+  height: 56px;
+}
+
+input:focus {
+  outline-color: var(--azul-claro);
+}
+
+.desc {
+  padding: 40px 12px;
+}
+
+.input-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 18px;
+}
+
+label {
+  color: var(--rosa-choque);
+} 
+
+.selects {
+  display: flex;
+  column-gap: 12px;
+}
+
+select {
+  background-color: rgba(255, 255, 255, 0.103);
+  color: white;
+  font-size: 24px;
+  border: solid 3px var(--rosa-choque);
+  padding: 0px 12px;
+  height: 56px;
+}
+
+.popup .buttons button {
+    padding: 2px 24px;
+    font-size: 32px;
+    color: white;
+    box-shadow: 3px 3px white;
+    transition: 0.8s cubic-bezier(0.08, 0.82, 0.17, 1);
+    cursor: pointer;
+}
+
+.popup .buttons button:hover {
+    transform: rotate(1deg);
+    filter: brightness(90%);
+    box-shadow: none;
+}
+
+.popup .buttons {
+  display: flex;
+  column-gap: 24px;
+}
+
+.salvar {
+    border: 2px solid white;
+    background-color: var(--roxo-claro);
+    width: 60%;
+}
+
+.cancelar {
+  border: solid 2px white;
+  background: none;
+  width: 40%;
+}

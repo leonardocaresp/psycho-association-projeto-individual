@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PsychoAssociation | Relatórios</title>
+  <link rel="stylesheet" href="../css/ocorrencias.css">
+  <script src="../js/funcoes.js"></script>
+</head>
+
+<body>
+  <nav>
+    <div class="user-info">
+      <span class="user-name">Leonardo Cardoso</span>
+      <span class="user-email">leo@gmail.com</span>
+      <span class="user-level">Nível 1</span>
+    </div>
+    <div class="nav-button" onclick="window.location = 'paranormais.html'">
+      <span>PARANORMAIS</span>
+    </div>
+    <div class="nav-button" onclick="window.location = 'quiz.html'">
+      <span>QUIZ</span>
+    </div>
+    <div class="nav-button selected">
+      <span>OCORRÊNCIAS</span>
+    </div>
+    <div class="nav-button" onclick="window.location = 'dashboard.html'">
+      <span>PAINEL</span>
+    </div>
+    <button onclick="window.location = 'index.html'">
+      DESCONECTAR
+    </button>
+  </nav>
+
+  <main>
+    <div class="top-container">
+      <h2>RELATÓRIO DE CASOS</h2>
+      <div>
+        <button onclick="abrirPopup()">+ NOVA OCORRÊNCIA</button>
+      </div>
+    </div>
+    <div>
+      <div class="ocorrencias-top">
+
+      </div>
+      <div class="ocorrencias-bottom">
+
+        <div class="ocorrencia-card">
+          <div class="left">
+            <div class="text">
+              <h4>Caso #01</h4>
+              <h2>Objetos flutuando na sala de aula</h2>
+              <p>Registrado por: <span>Leonardo Cardoso</span></p>
+            </div>
+
+            <div class="info">
+              <div class="type purple-bkg">
+                PODER PSíQUICO
+              </div>
+              <div class="status resolvido">
+                RESOLVIDO
+              </div>
+            </div>
+
+            <details>
+              <summary>Mais detalhes</summary>
+              <p>Um professor relatou que os materiais escolares começaram a levitar durante a aula de matemática. A
+                situação foi resolvida após uma conversa com o responsável.</p>
+            </details>
+          </div>
+          <div class="right">
+            <button class="editar">EDITAR</button>
+            <button class="excluir">EXCLUIR</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    
+  </main>
+</body>
+
+</html>
+<script>
+  apagarCarregamento()
+
+  function abrirPopup() {
+
+     var popup = document.createElement('div')
+      popup.classList.add('popup-container')
+
+      popup.innerHTML = ` <div class="popup">
+        <div class="text">
+          <h2>ABRIR OCORRÊNCIA</h2>
+          <h3>REGISTRE UM CASO</h3>
+        </div>
+        <div class="form">
+          <div class="input-container">
+            <label for="ipt_title">Título</label>
+            <input type="text" id="ipt_title" placeholder="Insira o título da ocorrência">
+          </div>
+
+          <div class="selects">
+            <div class="input-container">
+              <label for="select_type">Classificação</label>
+              <select id="select_type">
+                <option value="#" selected disabled>Selecione o tipo de evento</option>
+              </select>
+            </div>
+
+            <div class="input-container">
+              <label for="select_status">Status</label>
+              <select id="select_status">
+                <option value="#" selected disabled>Selecione o status atual da investigação</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-container">
+            <label for="ipt_place">Local</label>
+            <input type="text" id="ipt_place" placeholder="Insira o local do ocorrido">
+          </div>
+
+          <div class="input-container">
+            <label for="ipt_desc">Descrição</label>
+            <input class="desc" type="text" id="ipt_desc" placeholder="Informe mais detalhes sobre o relatório">
+          </div>
+
+          <div class="buttons">
+            <button class="salvar">SALVAR OCORRÊNCIA</button>
+            <button class="cancelar" onclick="fecharPopup()">CANCELAR</button>
+          </div>
+        </div>
+      </div>`
+
+    document.body.appendChild(popup)
+  }
+
+  function fecharPopup() {
+    var popup = document.querySelector('.popup-container')
+    popup.remove()
+  }
+ 
+</script>

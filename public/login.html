@@ -68,6 +68,7 @@
 
             if (resposta.ok) {
                 console.log(resposta);
+                console.log('testetete');
 
                 resposta.json().then(json => {
                     console.log(json);
@@ -77,6 +78,7 @@
                     sessionStorage.ID_USUARIO = json.id;
 
                     console.log('DEU CERTO')
+
 
                     setTimeout(function () {
                         window.location = "./dashboard/paranormais.html";
