@@ -14,14 +14,15 @@
 
 <body>
   <header>
-    
+    <div class="icon">
+      <img src="../assets/icon/psycho-association-logo.svg">
+    </div>
+    <div class="user-info">
+      <span>Ola, <span class="user-name">Leonardo Cardoso</span>!</span>
+      <span class="user-email">leo@gmail.com</span>
+    </div>
   </header>
   <nav>
-    <div class="user-info">
-      <span class="user-name">Leonardo Cardoso</span>
-      <span class="user-email">leo@gmail.com</span>
-      <span class="user-level">Nível 1</span>
-    </div>
     <div class="nav-button" onclick="window.location = 'paranormais.html'">
       <span>PARANORMAIS</span>
     </div>
@@ -93,7 +94,9 @@
             OCORRÊNCIAS POR TIPO
           </div>
           <div class="bottom">
-            <canvas id="myChart"></canvas>
+            <div class="chart-canvas">
+              <canvas id="myChart"></canvas>
+            </div>
           </div>
         </div>
 
@@ -102,7 +105,7 @@
             STATUS DOS CASOS
           </div>
           <div class="bottom">
-            <div style="position: relative; height: 30%;">
+            <div class="chart-canvas">
               <canvas id="graficoStatus"></canvas>
             </div>  
             <div class="status-metrics">
@@ -181,18 +184,15 @@
         }
       },
       scales: {
-        x: {
-          grid: { display: false },   // sem linhas verticais
-          border: { display: false }, // sem a linha do eixo X
+        x: { // sem a linha do eixo X
           ticks: {
             maxRotation: 0,
             minRotation: 0
           }
         },
-        y: {
-          display: false, // esconde o eixo Y e as linhas horizontais
+        y: { // esconde o eixo Y e as linhas horizontais
           beginAtZero: true,
-          grace: '10%'    // folga no topo para o número caber
+          grace: '20%'    // folga no topo para o número caber
         }
       }
     }
@@ -213,7 +213,6 @@
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      cutout: '55%',
       plugins: {
         legend: { display: false }
       }

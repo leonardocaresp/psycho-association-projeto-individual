@@ -13,10 +13,6 @@ main .paranormais-content {
   justify-content: space-between;
 }
 
-.top-container h2 {
-  color: var(--rosa-choque);
-}
-
 .top-container span {
   color: var(--azul-escuro);
 }

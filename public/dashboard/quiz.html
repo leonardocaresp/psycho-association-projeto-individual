@@ -11,14 +11,15 @@
 
 <body onload="onloadEsconder()">
   <header>
-    
+    <div class="icon">
+      <img src="../assets/icon/psycho-association-logo.svg">
+    </div>
+    <div class="user-info">
+      <span>Ola, <span class="user-name">Leonardo Cardoso</span>!</span>
+      <span class="user-email">leo@gmail.com</span>
+    </div>
   </header>
   <nav>
-    <div class="user-info">
-      <span class="user-name">Leonardo Cardoso</span>
-      <span class="user-email">leo@gmail.com</span>
-      <span class="user-level">Nível 1</span>
-    </div>
     <div class="nav-button" onclick="window.location = 'paranormais.html'">
       <span>PARANORMAIS</span>
     </div>
@@ -39,69 +40,70 @@
   <main>
     <div class="top-container">
       <h2>DESCUBRA O PARANORMAL MAIS PARECIDO COM VOCÊ</h2>
-      <div class="bottom-container">
-        <div id="pontuacaoEJogo" class="quiz-content">
-          <img src="../assets/imgs/arataka-reigen-quiz.png" id="reigen">
-          <button id="btnIniciarQuiz" onclick="iniciarQuiz()" class="start">INICIAR QUIZ</button>
+    </div>
+    <div class="bottom-container">
+      <div id="pontuacaoEJogo" class="quiz-content">
+        <img src="../assets/imgs/arataka-reigen-quiz.png" id="reigen">
+        <button id="btnIniciarQuiz" onclick="iniciarQuiz()" class="start">INICIAR QUIZ</button>
 
-          <div id="jogo" class="jogo-container">
+        <div id="jogo" class="jogo-container">
 
-            <div id="infoQuestao" class="info">
-              <span>Questão atual: <span id="spanNumeroDaQuestaoAtual"></span> de <span id="qtdQuestoes"></span>
-                questões.</span>
-              <div id="perguntaDaQuestaoAtual" class="question">
-                <span id="spanQuestaoExibida"></span>
-              </div>
-            </div>
-
-
-
-            <div id="opcoes" class="options-container">
-              <span class="choice">
-                <div>A</div>
-                <input type="radio" id="primeiraOpcao" name="option" class="radio" value="alternativaA" />
-                <label for="primeiraOpcao" class="option" id="labelOpcaoUm"></label>
-              </span>
-              <span class="choice">
-                <div>B</div>
-                <input type="radio" id="segundaOpcao" name="option" class="radio" value="alternativaB" />
-                <label for="segundaOpcao" class="option" id="labelOpcaoDois"></label>
-              </span>
-              <span class="choice">
-                <div>C</div>
-                <input type="radio" id="terceiraOpcao" name="option" class="radio" value="alternativaC" />
-                <label for="terceiraOpcao" class="option" id="labelOpcaoTres"></label>
-              </span>
-              <span class="choice">
-                <div>D</div>
-                <input type="radio" id="quartaOpcao" name="option" class="radio" value="alternativaD" />
-                <label for="quartaOpcao" class="option" id="labelOpcaoQuatro"></label>
-              </span>
-            </div>
-
-            <div id="botoes" class="buttons-container">
-              <div>
-                <button onclick="submeter()" id="btnSubmeter" class="submit">Submeter resposta</button>
-                <button onclick="avancar()" id="btnProx" class="next" disabled>Próxima questão</button>
-              </div>
-              <!-- <button onclick="finalizar()" id="btnConcluir" disabled>Finalizar Quiz</button> -->
-              <button onclick="tentarNovamente()" id="btnTentarNovamente" disabled>Tentar novamente</button>
+          <div id="infoQuestao" class="info">
+            <span>Questão atual: <span id="spanNumeroDaQuestaoAtual"></span> de <span id="qtdQuestoes"></span>
+              questões.</span>
+            <div id="perguntaDaQuestaoAtual" class="question">
+              <span id="spanQuestaoExibida"></span>
             </div>
           </div>
-          <div id="pontuacao" class="pontuacao">
-            <div id="pontuacaoDuranteJogo" class="flex-colunar padding-rem">
-              <span class="width-fit-content">QUANTIDADE DE ACERTOS: <span id="spanCertas"></span></span>
-              <span class="width-fit-content">QUANTIDADE DE ERROS: <span id="spanErradas"></span></span>
+
+
+
+          <div id="opcoes" class="options-container">
+            <span class="choice">
+              <div>A</div>
+              <input type="radio" id="primeiraOpcao" name="option" class="radio" value="alternativaA" />
+              <label for="primeiraOpcao" class="option" id="labelOpcaoUm"></label>
+            </span>
+            <span class="choice">
+              <div>B</div>
+              <input type="radio" id="segundaOpcao" name="option" class="radio" value="alternativaB" />
+              <label for="segundaOpcao" class="option" id="labelOpcaoDois"></label>
+            </span>
+            <span class="choice">
+              <div>C</div>
+              <input type="radio" id="terceiraOpcao" name="option" class="radio" value="alternativaC" />
+              <label for="terceiraOpcao" class="option" id="labelOpcaoTres"></label>
+            </span>
+            <span class="choice">
+              <div>D</div>
+              <input type="radio" id="quartaOpcao" name="option" class="radio" value="alternativaD" />
+              <label for="quartaOpcao" class="option" id="labelOpcaoQuatro"></label>
+            </span>
+          </div>
+
+          <div id="botoes" class="buttons-container">
+            <div>
+              <button onclick="submeter()" id="btnSubmeter" class="submit">Submeter resposta</button>
+              <button onclick="avancar()" id="btnProx" class="next" disabled>Próxima questão</button>
             </div>
-            <div id="pontuacaoFinalJogo" class="flex-colunar padding-rem">
-              <span id="pontuacaoFinal" class="width-fit-content">Pontuação Final:
-                <span id="spanPontuacaoFinal">***</span>
-              </span>
-              <span id="msgFinal" class="width-fit-content">***</span>
-            </div>
+            <!-- <button onclick="finalizar()" id="btnConcluir" disabled>Finalizar Quiz</button> -->
+            <button onclick="tentarNovamente()" id="btnTentarNovamente" disabled>Tentar novamente</button>
+          </div>
+        </div>
+        <div id="pontuacao" class="pontuacao">
+          <div id="pontuacaoDuranteJogo" class="flex-colunar padding-rem">
+            <span class="width-fit-content">QUANTIDADE DE ACERTOS: <span id="spanCertas"></span></span>
+            <span class="width-fit-content">QUANTIDADE DE ERROS: <span id="spanErradas"></span></span>
+          </div>
+          <div id="pontuacaoFinalJogo" class="flex-colunar padding-rem">
+            <span id="pontuacaoFinal" class="width-fit-content">Pontuação Final:
+              <span id="spanPontuacaoFinal">***</span>
+            </span>
+            <span id="msgFinal" class="width-fit-content">***</span>
           </div>
         </div>
       </div>
+    </div>
 
   </main>
 </body>

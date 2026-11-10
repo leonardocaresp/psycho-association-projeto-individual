@@ -5,28 +5,24 @@
   justify-content: space-between;
 }
 
-.top-container h2 {
-  color: var(--rosa-choque);
-}
-
 main .dashboard-container {
   display: flex;
   flex-direction: column;
   width: auto;
   flex: 1;
+  min-height: 0;
   row-gap: 24px;
+  overflow: hidden;
 }
 
 .kpi-row {
   display: flex;
   column-gap: 24px;
-  flex: 1;
-  width: 100%;
+  
 }
 
 .kpi {
   flex: 1;
-  height: 100%;
   border: solid 2px var(--azul-escuro);
   clip-path: polygon(0% 0%, 90% 0%, 100% 20%, 100% 100%, 0% 100%);
 }
@@ -36,37 +32,45 @@ main .dashboard-container {
   color: white;
   padding: 12px 12px;
   font-size: 24px;
+  box-sizing: border-box;
 }
 
 .kpi .bottom {
+  flex: 1;
   color: var(--azul-escuro);
   padding: 12px 12px;
   font-size: 50px;
   font-weight: 600;
+  box-sizing: border-box;
 }
 
 .charts-row {
-  flex: 4;
+  flex: 1;
   display: flex;
   column-gap: 24px;
 }
 
 .chart {
+  display: flex;
+  flex-direction: column;
   flex: 1;
-  height: 100%;
   border: solid 2px var(--azul-escuro);
   clip-path: polygon(0% 0%, 90% 0%, 100% 5%, 100% 100%, 0% 100%);
 }
 
 .chart .bottom {
-  padding: 10% 12px 0px 12px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  row-gap: 12px;
+  padding: 12px 12px 12px 12px;
 }
 
 .status-metrics {
-  margin-top: 48px;
   display: flex;
+  row-gap: 12px;
+  flex: 1;
   flex-direction: column;
-  row-gap: 24px;
 }
 
 .metric {
@@ -79,7 +83,7 @@ main .dashboard-container {
 
 .square {
   width: 35px;
-  height: 35px;
+  height: 35px; 
 }
 
 .orange {
@@ -92,4 +96,9 @@ main .dashboard-container {
 
 .red {
   background-color: #E23235;
+}
+
+.chart-canvas {
+  position: relative;   /* exigido pelo Chart.js no modo responsivo */
+  flex: 1;              /* o gráfico ocupa o espaço que sobrar */
 }
