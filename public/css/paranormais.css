@@ -1,7 +1,7 @@
 @import url(sistema.css);
 
 
-main .paranormais-content {
+main .bottom-container {
   display: flex;
   width: auto;
   flex: 1;

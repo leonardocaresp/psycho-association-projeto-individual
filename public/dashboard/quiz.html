@@ -7,6 +7,9 @@
   <title>PsychoAssociation | Paranormais</title>
   <link rel="stylesheet" href="../css/quiz.css">
   <script src="../js/funcoes.js"></script>
+  <link rel="icon" type="image/x-icon" href="../assets/icon/psycho-association-logo.svg">
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 
 <body onload="onloadEsconder()">
@@ -20,18 +23,23 @@
     </div>
   </header>
   <nav>
-    <div class="nav-button" onclick="window.location = 'paranormais.html'">
-      <span>PARANORMAIS</span>
-    </div>
-    <div class="nav-button selected">
-      <span>QUIZ</span>
+    <div class="nav-button" onclick="window.location = 'dashboard.html'">
+      <span>PAINEL DE CONTROLE</span>
+      <span><i class="material-icons">dashboard</i></span>
     </div>
     <div class="nav-button" onclick="window.location = 'ocorrencias.html'">
       <span>OCORRÊNCIAS</span>
+     <span><i class="material-icons">view_comfy</i></span>
     </div>
-    <div class="nav-button" onclick="window.location = 'dashboard.html'">
-      <span>PAINEL</span>
+    <div class="nav-button" onclick="window.location = 'paranormais.html'">
+      <span>ARQUIVO DE INDIVÍDUOS</span>
+      <span><i class="material-icons"">group</i></span>
     </div>
+    <div class="nav-button selected" onclick="window.location = 'quiz.html'">
+      <span>EXAME DE APTIDÃO</span>
+      <span><i class="material-icons">quiz</i></span>
+    </div>
+
     <button onclick="window.location = '../index.html'">
       DESCONECTAR
     </button>

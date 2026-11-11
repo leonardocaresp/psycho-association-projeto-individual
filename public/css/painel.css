@@ -5,14 +5,13 @@
   justify-content: space-between;
 }
 
-main .dashboard-container {
+.bottom-container {
   display: flex;
   flex-direction: column;
   width: auto;
   flex: 1;
   min-height: 0;
   row-gap: 24px;
-  overflow: hidden;
 }
 
 .kpi-row {

@@ -6,10 +6,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PsychoAssociation | Relatórios</title>
   <link rel="stylesheet" href="../css/painel.css">
+  <link rel="icon" type="image/x-icon" href="../assets/icon/psycho-association-logo.svg">
   <script src="../js/funcoes.js"></script>
+
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
 </head>
 
 <body>
@@ -23,18 +31,23 @@
     </div>
   </header>
   <nav>
-    <div class="nav-button" onclick="window.location = 'paranormais.html'">
-      <span>PARANORMAIS</span>
-    </div>
-    <div class="nav-button" onclick="window.location = 'quiz.html'">
-      <span>QUIZ</span>
+    <div class="nav-button selected">
+      <span>PAINEL DE CONTROLE</span>
+      <span><i class="material-icons">dashboard</i></span>
     </div>
     <div class="nav-button" onclick="window.location = 'ocorrencias.html'">
       <span>OCORRÊNCIAS</span>
+     <span><i class="material-icons">view_comfy</i></span>
     </div>
-    <div class="nav-button selected">
-      <span>PAINEL</span>
+    <div class="nav-button" onclick="window.location = 'paranormais.html'">
+      <span>ARQUIVO DE INDIVÍDUOS</span>
+      <span><i class="material-icons"">group</i></span>
     </div>
+    <div class="nav-button" onclick="window.location = 'quiz.html'">
+      <span>EXAME DE APTIDÃO</span>
+      <span><i class="material-icons">quiz</i></span>
+    </div>
+
     <button onclick="window.location = '../index.html'">
       DESCONECTAR
     </button>
@@ -42,10 +55,13 @@
 
   <main>
     <div class="top-container">
-      <h2>PAINEL GERAL</h2>
+      <div>
+        <h2>BEM-VINDO DE VOLTA, LEONARDO.</h2>
+        <h3>Confira seu desempenho e as atividades recentes da organização.</h3>
+      </div>
     </div>
 
-    <div class="dashboard-container">
+    <div class="bottom-container">
 
       <div class="kpi-row">
 
@@ -107,7 +123,7 @@
           <div class="bottom">
             <div class="chart-canvas">
               <canvas id="graficoStatus"></canvas>
-            </div>  
+            </div>
             <div class="status-metrics">
               <div class="metric">
                 <div class="orange square"></div>
@@ -124,10 +140,10 @@
                 SEM EXPLICAÇÃO - 16%
               </div>
             </div>
-            
+
           </div>
         </div>
-        
+
 
         <div class="chart">
           <div class="top">
@@ -150,7 +166,7 @@
 <script>
   const ctx = document.getElementById('myChart');
 
-   new Chart(ctx, {
+  new Chart(ctx, {
     type: 'bar',
     plugins: [ChartDataLabels], // ativa o plugin dos números
     data: {

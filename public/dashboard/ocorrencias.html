@@ -7,6 +7,10 @@
   <title>PsychoAssociation | Relatórios</title>
   <link rel="stylesheet" href="../css/ocorrencias.css">
   <script src="../js/funcoes.js"></script>
+
+  <link rel="icon" type="image/x-icon" href="../assets/icon/psycho-association-logo.svg">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 
 <body>
@@ -20,18 +24,23 @@
     </div>
   </header>
   <nav>
+    <div class="nav-button" onclick="window.location = 'dashboard.html'">
+      <span>PAINEL DE CONTROLE</span>
+      <span><i class="material-icons">dashboard</i></span>
+    </div>
+    <div class="nav-button selected" onclick="window.location = 'ocorrencias.html'">
+      <span>OCORRÊNCIAS</span>
+     <span><i class="material-icons">view_comfy</i></span>
+    </div>
     <div class="nav-button" onclick="window.location = 'paranormais.html'">
-      <span>PARANORMAIS</span>
+      <span>ARQUIVO DE INDIVÍDUOS</span>
+      <span><i class="material-icons"">group</i></span>
     </div>
     <div class="nav-button" onclick="window.location = 'quiz.html'">
-      <span>QUIZ</span>
+      <span>EXAME DE APTIDÃO</span>
+      <span><i class="material-icons">quiz</i></span>
     </div>
-    <div class="nav-button selected">
-      <span>OCORRÊNCIAS</span>
-    </div>
-    <div class="nav-button" onclick="window.location = 'dashboard.html'">
-      <span>PAINEL</span>
-    </div>
+
     <button onclick="window.location = '../index.html'">
       DESCONECTAR
     </button>
@@ -44,7 +53,7 @@
         <button onclick="abrirPopup()">+ NOVA OCORRÊNCIA</button>
       </div>
     </div>
-    <div>
+    <div class="bottom-container">
       <div class="ocorrencias-top">
 
       </div>
