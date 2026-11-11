@@ -26,11 +26,14 @@
       <img src="../assets/icon/psycho-association-logo.svg">
     </div>
     <div class="user-info">
-      <span>Ola, <span class="user-name">Leonardo Cardoso</span>!</span>
+      <span class="user-name">Leonardo Cardoso</span>
       <span class="user-email">leo@gmail.com</span>
     </div>
   </header>
   <nav>
+    <button class="close-nav" onclick="fecharNav()">
+      <
+    </button>
     <div class="nav-button selected">
       <span>PAINEL DE CONTROLE</span>
       <span><i class="material-icons">dashboard</i></span>
@@ -48,7 +51,7 @@
       <span><i class="material-icons">quiz</i></span>
     </div>
 
-    <button onclick="window.location = '../index.html'">
+    <button class="disconnect" onclick="window.location = '../index.html'">
       DESCONECTAR
     </button>
   </nav>
@@ -164,6 +167,7 @@
 
 </html>
 <script>
+
   const ctx = document.getElementById('myChart');
 
   new Chart(ctx, {

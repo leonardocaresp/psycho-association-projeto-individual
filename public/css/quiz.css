@@ -69,9 +69,10 @@ main .quiz-content {
   align-self: flex-start;
   row-gap: 24px;
   width: 65%;
-  height: 89%;
+  height: 100%;
   border: solid 5px var(--azul-escuro);
-  padding: 3%;
+  padding: 24px;
+  box-sizing: border-box;
 }
 
 .jogo-container .info {

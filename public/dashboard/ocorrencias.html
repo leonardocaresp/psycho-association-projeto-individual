@@ -19,16 +19,19 @@
       <img src="../assets/icon/psycho-association-logo.svg">
     </div>
     <div class="user-info">
-      <span>Ola, <span class="user-name">Leonardo Cardoso</span>!</span>
+      <span class="user-name">Leonardo Cardoso</span>
       <span class="user-email">leo@gmail.com</span>
     </div>
   </header>
   <nav>
+    <button class="close-nav" onclick="fecharNav()">
+      <
+    </button>
     <div class="nav-button" onclick="window.location = 'dashboard.html'">
       <span>PAINEL DE CONTROLE</span>
       <span><i class="material-icons">dashboard</i></span>
     </div>
-    <div class="nav-button selected" onclick="window.location = 'ocorrencias.html'">
+    <div class="nav-button selected">
       <span>OCORRÊNCIAS</span>
      <span><i class="material-icons">view_comfy</i></span>
     </div>
@@ -41,7 +44,7 @@
       <span><i class="material-icons">quiz</i></span>
     </div>
 
-    <button onclick="window.location = '../index.html'">
+    <button class="disconnect" onclick="window.location = '../index.html'">
       DESCONECTAR
     </button>
   </nav>

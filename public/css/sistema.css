@@ -13,11 +13,12 @@ main {
   display: flex;
   flex-direction: column;
   row-gap: 24px;
-  margin-left: 340px;
+  margin-left: calc(13% + 40px);
   width: auto;
   height: 100%;
   padding: 130px 40px 30px 40px;
   box-sizing: border-box;
+  transition: 0.2s;
 }
 
 header {
@@ -28,9 +29,9 @@ header {
   top: 0;
   right: 0;
   left: 0;
-  height: 100px;
+  height: 80px;
   background-color: var(--azul-escuro);
-  padding: 0px 40px;
+  padding: 6px 40px;
   z-index: 100;
 }
 
@@ -41,10 +42,23 @@ nav {
   position: fixed;
   background-color: var(--azul-escuro);
   left: 0;
-  top: 100px;
+  top: 80px;
   bottom: 0;
-  width: 260px;
+  width: 11%;
   padding: 40px 40px;
+  transition: 0.3s;
+}
+
+.close-nav {
+  position: absolute;
+  cursor: pointer;
+  top: 45%;
+  left: 100%;
+  color: white;
+  background-color: var(--azul-escuro);
+  z-index: 5;
+  padding: 10px;
+  border: none;
 }
 
 .user-info {
@@ -56,12 +70,12 @@ nav {
 }
 
 .user-info .user-name {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 700;
 }
 
 .user-info .user-email {
-  font-size: 18px;
+  font-size: 14px;
 }
 
 .user-info .user-level {
@@ -73,7 +87,7 @@ nav {
   justify-content: space-between;
   align-items: center;
   background-color: rgba(255, 255, 255, 0.101);
-  padding: 24px 24px;
+  padding: 12px 24px;
   position: relative;
   cursor: pointer;
 }
@@ -120,11 +134,16 @@ nav {
 
 .nav-button span {
   color: white;
-  font-size: 18px;
+  font-weight: 500;
+  font-size: 14px;
   transition: 0.7s cubic-bezier(0.08, 0.82, 0.17, 1);
 }
 
-nav button {
+i {
+  width: 14px;
+}
+
+nav .disconnect {
     padding: 12px 12px;
     margin-top: 24px;
     font-size: 14px;
@@ -140,7 +159,7 @@ nav button {
 }
 
 
-nav button:hover {
+nav .disconnect:hover {
     transform: rotate(0.5deg);
     filter: brightness(90%);
     box-shadow: none;
