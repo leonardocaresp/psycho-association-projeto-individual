@@ -311,10 +311,7 @@ p {
 .universe-cards .card .card-top-cyan::after {
   content: '';
   position: absolute;
-  top: 5px;
-  left: 5px;
-  right: 5px;
-  bottom: 5px;
+  inset: 4px;
   background-color: var(--azul-claro);
   clip-path: polygon(0% 0%, 90% 0%, 100% 21%, 100% 100%, 0% 100%);
   z-index: -1;
@@ -323,10 +320,7 @@ p {
 .universe-cards .card .card-top-green::after {
   content: '';
   position: absolute;
-  top: 5px;
-  left: 5px;
-  right: 5px;
-  bottom: 5px;
+  inset: 4px;
   background-color: var(--verde-claro);
   clip-path: polygon(0% 0%, 90% 0%, 100% 21%, 100% 100%, 0% 100%);
   z-index: -1;
@@ -335,10 +329,7 @@ p {
 .universe-cards .card .card-top-yellow::after {
   content: '';
   position: absolute;
-  top: 5px;
-  left: 5px;
-  right: 5px;
-  bottom: 5px;
+  inset: 4px;
   background-color: var(--amarelo-forte);
   clip-path: polygon(0% 0%, 90% 0%, 100% 21%, 100% 100%, 0% 100%);
   z-index: -1;
@@ -347,10 +338,7 @@ p {
 .universe-cards .card .card-top-purple::after {
   content: '';
   position: absolute;
-  top: 5px;
-  left: 5px;
-  right: 5px;
-  bottom: 5px;
+  inset: 4px;
   background-color: var(--roxo-claro);
   clip-path: polygon(0% 0%, 90% 0%, 100% 21%, 100% 100%, 0% 100%);
   z-index: -1;
@@ -363,24 +351,13 @@ p {
 }
 
 .universe-cards .card .card-bottom {
+    margin-top: -1px;
     padding: 0px 24px;
     background-color: white;
+    border: solid 5px var(--azul-escuro);
+    border-top: none;
     height: 70%;
     color: var(--azul-escuro);
-    background-color: var(--azul-escuro);
-    clip-path: polygon(0% 0%, 100% 0%, 100% 1000%, 10% 100%, 0% 70%);
-}
-
-.universe-cards .card .card-bottom:before {
-  content: '';
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  right: 5px;
-  bottom: 5px;
-  background-color: white;
-  clip-path: polygon(0% 0%, 100% 0%, 100% 1000%, 10% 100%, 0% 79%);
-  z-index: -100;
 }
 
 .universe-cards .card .card-bottom p {
@@ -485,14 +462,3 @@ footer div h2 {
     justify-self: flex-end;
 }
 
-.carregamento {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: black;
-    position: fixed;
-    top: 0;
-    z-index: 100000;
-}

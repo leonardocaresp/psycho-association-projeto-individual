@@ -55,3 +55,15 @@ li {
     max-width: 1440px;
     padding: 0px 24px;
 }
+
+.carregamento {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    position: fixed;
+    top: 0;
+    z-index: 100000;
+}

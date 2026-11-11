@@ -7,7 +7,8 @@
     <title>PsychoAssociation | Login</title>
     <link rel="stylesheet" href="css/login.css">
     <script src="./js/sessao.js"></script>
-    <link rel="icon" type="image/x-icon" href="../assets/icon/psycho-association-logo.svg">
+    <script src="./js/funcoes.js"></script>
+    <link rel="icon" type="image/x-icon" href="assets/icon/psycho-association-logo.svg">
 </head>
 
 <body>
@@ -81,9 +82,7 @@
                     console.log('DEU CERTO')
 
 
-                    setTimeout(function () {
-                        window.location = "./dashboard/dashboard.html";
-                    }, 1000); // apenas para exibir o loading
+                    trocarTela('./dashboard/dashboard.html') // apenas para exibir o loading
 
                 });
 

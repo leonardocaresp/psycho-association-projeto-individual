@@ -55,6 +55,8 @@
   flex: 1;
   border: solid 2px var(--azul-escuro);
   clip-path: polygon(0% 0%, 90% 0%, 100% 5%, 100% 100%, 0% 100%);
+  min-width: 0;
+  min-height: 0;
 }
 
 .chart .bottom {
@@ -100,4 +102,11 @@
 .chart-canvas {
   position: relative;   /* exigido pelo Chart.js no modo responsivo */
   flex: 1;              /* o gráfico ocupa o espaço que sobrar */
+  min-width: 0;
+  min-height: 0;
+}
+
+.chart-canvas canvas {
+  position: absolute;
+  inset: 0;
 }

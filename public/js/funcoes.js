@@ -1,3 +1,5 @@
+apagarCarregamento()
+
 function apagarCarregamento() {
   window.addEventListener("pageshow", function (event) {
     var carregamentoExistente = document.querySelector(".carregamento");
@@ -10,7 +12,7 @@ function apagarCarregamento() {
 function trocarTela(link) {
   var carregamento = document.createElement("div");
   carregamento.classList.add("carregamento");
-  carregamento.innerHTML = `<img src="${window.location.origin}/public/assets/carregamento.gif">`;
+  carregamento.innerHTML = `<img src="${window.location.origin}/assets/carregamento.gif">`;
 
   document.body.appendChild(carregamento);
 
@@ -32,7 +34,7 @@ function fecharNav() {
     nav.style.padding = "0px";
 
     main.style.marginLeft = "0px";
-    main.style.padding = "130px 80px 30px 80px";
+    main.style.padding = "100px 80px 30px 80px";
 
     nav.innerHTML = `<button class="close-nav" onclick="fecharNav()">
       >
@@ -48,9 +50,9 @@ function fecharNav() {
     nav.style.display = "flex";
 
     main.style.marginLeft = `calc(${navWidth + 2}% + ${navPadding}px)`;
-    main.style.padding = "130px 40px 30px 40px";
+    main.style.padding = "100px 40px 30px 40px";
 
-    if (window.location.href == `${window.location.origin}/public/dashboard/dashboard.html`) {
+    if (window.location.href == `${window.location.origin}/public/dashboard/dashboard.html` || window.location.href == `${window.location.origin}/dashboard/dashboard.html`) {
       nav.innerHTML = `<button class="close-nav" onclick="fecharNav()">
       <
     </button>
@@ -74,7 +76,7 @@ function fecharNav() {
     <button class="disconnect" onclick="trocarTela('../index.html')">
       DESCONECTAR
     </button>`
-    } else if (window.location.href == `${window.location.origin}/public/dashboard/paranormais.html`) {
+    } else if (window.location.href == `${window.location.origin}/public/dashboard/paranormais.html` || window.location.href == `${window.location.origin}/dashboard/paranormais.html`) {
        nav.innerHTML = `<button class="close-nav" onclick="fecharNav()">
       <
     </button>
@@ -98,7 +100,7 @@ function fecharNav() {
     <button class="disconnect" onclick="trocarTela('../index.html')">
       DESCONECTAR
     </button>`
-    } else if (window.location.href == `${window.location.origin}/public/dashboard/quiz.html`) {
+    } else if (window.location.href == `${window.location.origin}/public/dashboard/quiz.html` || window.location.href == `${window.location.origin}/dashboard/quiz.html`) {
        nav.innerHTML = `<button class="close-nav" onclick="fecharNav()">
       <
     </button>
@@ -114,15 +116,15 @@ function fecharNav() {
       <span>ARQUIVO DE INDIVÍDUOS</span>
       <span><i class="material-icons"">group</i></span>
     </div>
-    <div class="nav-button selected" onclick="trocarTela('../index.html')">
+    <div class="nav-button selected">
       <span>EXAME DE APTIDÃO</span>
       <span><i class="material-icons">quiz</i></span>
     </div>
 
-    <button class="disconnect" onclick="window.location = '../index.html'">
+    <button class="disconnect" onclick="trocarTela('../index.html')">
       DESCONECTAR
     </button>`
-    } else if (window.location.href == `${window.location.origin}/public/dashboard/ocorrencias.html`) {
+    } else if (window.location.href == `${window.location.origin}/public/dashboard/ocorrencias.html` || window.location.href == `${window.location.origin}/dashboard/.html`) {
       nav.innerHTML = `<button class="close-nav" onclick="fecharNav()">
       <
     </button>

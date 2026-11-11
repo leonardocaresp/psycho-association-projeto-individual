@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="./css/home.css">
   <link rel="icon" href="./assets/icon/favicon2.ico">
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link rel="icon" type="image/x-icon" href="../assets/icon/psycho-association-logo.svg">
+  <link rel="icon" type="image/x-icon" href="assets/icon/psycho-association-logo.svg">
 
 </head>
 
@@ -24,8 +24,8 @@
     <ul>
       <li><a href="#about">ORGANIZAÇÃO</a></li>
       <li><a href="#universe">CLASSIFICAÇÕES</a></li>
-      <button class="cadastro" onclick="trocarTela('cadastro.html')">RECRUTAMENTO</button>
-      <button class="login" onclick="trocarTela('login.html')">LOGIN</button>
+      <button class="cadastro" onclick="window.location = 'cadastro.html'">RECRUTAMENTO</button>
+      <button class="login" onclick="window.location = 'login.html'">LOGIN</button>
     </ul>
   </div>
 </header>
@@ -129,7 +129,7 @@
           Psycho Association está em busca de novos membros para ajudar a investigar e documentar fenômenos paranormais.
         </p>
       </div>
-      <button onclick="trocarTela('cadastro.html')">SOLICITAR RECRUTAMENTO</button>
+      <button onclick="window.location = 'cadastro.html'">SOLICITAR RECRUTAMENTO</button>
       <div class="call-image">
         <img src="assets/imgs/shigeo-kageyama.png" class="img-1">
         <img src="assets/imgs/shigeo-kageyama-outline.png" class="img-2">
@@ -149,9 +149,3 @@
   </footer>
 </body>
 </html>
-
-<script>
-
-  apagarCarregamento()
-
-</script>

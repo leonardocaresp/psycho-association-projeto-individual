@@ -12,11 +12,11 @@ body {
 main {
   display: flex;
   flex-direction: column;
-  row-gap: 24px;
+  row-gap: 36px;
   margin-left: calc(13% + 40px);
   width: auto;
   height: 100%;
-  padding: 130px 40px 30px 40px;
+  padding: 100px 40px 30px 40px;
   box-sizing: border-box;
   transition: 0.2s;
 }
@@ -29,20 +29,25 @@ header {
   top: 0;
   right: 0;
   left: 0;
-  height: 80px;
+  height: 60px;
   background-color: var(--azul-escuro);
   padding: 6px 40px;
   z-index: 100;
 }
 
+header img {
+  width: 80%;
+}
+
 nav {
   display: flex;
+  align-items: center;
   flex-direction: column;
   row-gap: 12px;
   position: fixed;
   background-color: var(--azul-escuro);
   left: 0;
-  top: 80px;
+  top: 60px;
   bottom: 0;
   width: 11%;
   padding: 40px 40px;
@@ -84,6 +89,8 @@ nav {
 
 .nav-button {
   display: flex;
+  width: 100%;
+  box-sizing: border-box;
   justify-content: space-between;
   align-items: center;
   background-color: rgba(255, 255, 255, 0.101);
@@ -145,7 +152,6 @@ i {
 
 nav .disconnect {
     padding: 12px 12px;
-    margin-top: 24px;
     font-size: 14px;
     width: 100%;
     font-weight: 600;
@@ -176,17 +182,5 @@ nav .disconnect:hover {
   opacity: 0.8;
   font-size: 18px;
   font-weight: 500;
-}
-
-.carregamento {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: black;
-    position: fixed;
-    top: 0;
-    z-index: 100000;
 }
 

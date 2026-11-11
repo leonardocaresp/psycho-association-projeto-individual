@@ -12,7 +12,6 @@
 .top-container {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 24px;
 }
 
 .top-container span {
@@ -27,7 +26,7 @@
   font-weight: 600;
   color: white;
   background-color: var(--roxo-claro);
-  box-shadow: 8px 8px var(--azul-escuro);
+  box-shadow: 5px 5px var(--azul-escuro);
   cursor: pointer;
   border: none;
   transition: 0.8s cubic-bezier(0.08, 0.82, 0.17, 1);
@@ -40,7 +39,53 @@
   box-shadow: none;
 }
 
-.ocorrencias-bottom {
+.ocorrencias-filter {
+  display: flex;
+  column-gap: 24px;
+}
+
+.ocorrencias-filter .search-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 5;
+  border: solid 2px var(--azul-escuro);
+}
+
+.ocorrencias-filter input {
+  padding: 4px 12px;
+  border: none;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ocorrencias-filter i {
+  margin-right: 16px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.ocorrencias-filter select {
+  flex: 1;
+  border: solid 2px var(--azul-escuro);
+}
+
+.ocorrencias-filter select:focus {
+  outline: none;
+  border: solid 2px var(--azul-escuro);
+}
+
+.ocorrencias-filterselect:has(option[disabled]:checked) {
+  color: #999;
+}
+
+.ocorrencias-filter select option:not([disabled]) {
+  color: var(--azul-escuro);
+}
+
+
+.ocorrencias-container {
   display: flex;
   width: 100%;
   flex-direction: column;
@@ -208,21 +253,21 @@
   color: var(--azul-claro)
 }
 
-input {
+.popup input {
   background-color: rgba(255, 255, 255, 0.103);
   color: white;
   font-size: 24px;
   border: solid 3px var(--rosa-choque);
   padding: 0px 12px;
-  height: 56px;
+  min-height: 56px;
 }
 
-input:focus {
+.popup input:focus {
   outline-color: var(--azul-claro);
 }
 
 .desc {
-  padding: 40px 12px;
+  padding: 40px 12px !important;
 }
 
 .input-container {
@@ -238,7 +283,7 @@ input:focus {
   row-gap: 18px;
 }
 
-label {
+.popup label {
   color: var(--rosa-choque);
 } 
 
@@ -247,7 +292,7 @@ label {
   column-gap: 12px;
 }
 
-select {
+.popup select {
   background-color: rgba(255, 255, 255, 0.103);
   color: white;
   font-size: 24px;
@@ -258,11 +303,13 @@ select {
 
 .popup .buttons button {
     padding: 2px 24px;
+    width: 50%;
     font-size: 32px;
     color: white;
     box-shadow: 3px 3px white;
     transition: 0.8s cubic-bezier(0.08, 0.82, 0.17, 1);
     cursor: pointer;
+    box-sizing: border-box;
 }
 
 .popup .buttons button:hover {
@@ -287,3 +334,5 @@ select {
   background: none;
   width: 40%;
 }
+
+
