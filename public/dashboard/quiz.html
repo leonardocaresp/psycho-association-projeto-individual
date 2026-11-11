@@ -47,18 +47,40 @@
 
   <main>
     <div class="top-container">
-      <h2>DESCUBRA O PARANORMAL MAIS PARECIDO COM VOCÊ</h2>
+      <div>
+        <h2>EXAME DE APTIDÃO PARANORMAL</h2>
+        <h3>Antes de assumir suas responsabilidades como membro da Psycho Association, você precisa demonstrar que possui os conhecimentos necessários para lidar com ocorrências paranormais.</h3>
+      </div>
     </div>
+     <div class="infos-quiz">
+        <span>
+          <h3>20</h3>
+          <h4>Questões</h4>
+        </span>
+        <span>
+          <h3>100</h3>
+          <h4>Pontos máximos</h4>
+        </span>
+        <span>
+          <h3>5 - 10 min</h3>
+          <h4>Duração estimada</h4>
+        </span>
+        <span>
+          <h3>Múltipla escolha</h3>
+          <h4>Formato</h4>
+        </span>
+      </div>
     <div class="bottom-container">
+     
       <div id="pontuacaoEJogo" class="quiz-content">
+        <button id="btnIniciarQuiz" onclick="iniciarQuiz()" class="start">INICIAR TESTE</button>
         <img src="../assets/imgs/arataka-reigen-quiz.png" id="reigen">
-        <button id="btnIniciarQuiz" onclick="iniciarQuiz()" class="start">INICIAR QUIZ</button>
-
         <div id="jogo" class="jogo-container">
 
           <div id="infoQuestao" class="info">
             <span>Questão atual: <span id="spanNumeroDaQuestaoAtual"></span> de <span id="qtdQuestoes"></span>
               questões.</span>
+            <progress id="barra" class="progress-bar" value="1" max="20"></progress>
             <div id="perguntaDaQuestaoAtual" class="question">
               <span id="spanQuestaoExibida"></span>
             </div>
@@ -120,36 +142,189 @@
 <script>
   apagarCarregamento()
 
-  const listaDeQuestoes = [
+ 
 
-    {
-      pergunta: "Qual mês tem 30 dias?",
-      alternativaA: "Janeiro",
-      alternativaB: "Dezembro",
-      alternativaC: "Junho",
-      alternativaD: "Agosto",
-      alternativaCorreta: "alternativaC"
-    },
+  {
+    pergunta: "Durante uma investigação, sua equipe identifica objetos levitando sempre que um adolescente entra em determinado cômodo. Qual é a hipótese mais provável?",
+    alternativaA: "Manifestação de telecinese",
+    alternativaB: "Possessão espiritual",
+    alternativaC: "Anomalia territorial",
+    alternativaD: "Manifestação meteorológica",
+    alternativaCorreta: "alternativaA"
+  },
 
-    {
-      pergunta: "Quantas horas tem em um dia?",
-      alternativaA: "30 horas",
-      alternativaB: "38 horas",
-      alternativaC: "48 horas",
-      alternativaD: "24 horas",
-      alternativaCorreta: "alternativaD"
-    },
+  {
+    pergunta: "Moradores relatam ouvir vozes vindas de um apartamento vazio. Qual deve ser o primeiro procedimento da equipe?",
+    alternativaA: "Classificar imediatamente o local como assombrado",
+    alternativaB: "Registrar os relatos e buscar evidências que confirmem a ocorrência",
+    alternativaC: "Solicitar a demolição do imóvel",
+    alternativaD: "Ignorar os relatos por falta de confirmação visual",
+    alternativaCorreta: "alternativaB"
+  },
 
-    {
-      pergunta: "Qual destes números é ímpar?",
-      alternativaA: "Dez",
-      alternativaB: "Doze",
-      alternativaC: "Oito",
-      alternativaD: "Onze",
-      alternativaCorreta: "alternativaD"
-    }
+  {
+    pergunta: "Qual alternativa descreve corretamente uma possessão espiritual?",
+    alternativaA: "Um indivíduo consegue mover objetos com a mente",
+    alternativaB: "Um ambiente apresenta alterações inexplicáveis de temperatura",
+    alternativaC: "Uma entidade espiritual assume o controle do corpo de um indivíduo",
+    alternativaD: "Uma pessoa consegue prever acontecimentos futuros",
+    alternativaCorreta: "alternativaC"
+  },
 
-  ]
+  {
+    pergunta: "Durante uma investigação, um equipamento começa a apresentar leituras anormais. O que deve ser feito antes de considerar os resultados como evidências paranormais?",
+    alternativaA: "Encerrar a investigação",
+    alternativaB: "Descartar imediatamente o equipamento",
+    alternativaC: "Classificar a ocorrência como uma manifestação espiritual",
+    alternativaD: "Verificar o funcionamento e a calibração do equipamento",
+    alternativaCorreta: "alternativaD"
+  },
+
+  {
+    pergunta: "Uma gravação registra vozes em um ambiente aparentemente vazio, mas nenhuma outra evidência foi encontrada. Qual conclusão é mais adequada?",
+    alternativaA: "O local está definitivamente possuído",
+    alternativaB: "A ocorrência precisa de investigação adicional",
+    alternativaC: "Uma entidade específica está presente no local",
+    alternativaD: "A gravação comprova a existência de um espírito agressivo",
+    alternativaCorreta: "alternativaB"
+  },
+
+  {
+    pergunta: "O que caracteriza uma manifestação de telecinese?",
+    alternativaA: "A capacidade de se comunicar com espíritos",
+    alternativaB: "A capacidade de prever acontecimentos",
+    alternativaC: "A capacidade de movimentar objetos utilizando a mente",
+    alternativaD: "A capacidade de desaparecer fisicamente",
+    alternativaCorreta: "alternativaC"
+  },
+
+  {
+    pergunta: "Durante uma investigação, sua equipe identifica uma região com temperatura muito inferior ao restante do ambiente. Qual seria a atitude mais adequada?",
+    alternativaA: "Investigar a origem da alteração e comparar as medições com o ambiente ao redor",
+    alternativaB: "Concluir imediatamente que existe um espírito no local",
+    alternativaC: "Abandonar o local sem registrar a ocorrência",
+    alternativaD: "Classificar o fenômeno como telecinese",
+    alternativaCorreta: "alternativaA"
+  },
+
+  {
+    pergunta: "Dois moradores apresentam relatos diferentes sobre uma mesma ocorrência paranormal. Como a equipe deve proceder?",
+    alternativaA: "Considerar apenas o relato mais detalhado",
+    alternativaB: "Descartar os dois depoimentos",
+    alternativaC: "Escolher aleatoriamente uma das versões",
+    alternativaD: "Coletar depoimentos individuais e comparar as informações",
+    alternativaCorreta: "alternativaD"
+  },
+
+  {
+    pergunta: "Uma entidade espiritual apresenta comportamento agressivo durante uma investigação. Qual deve ser a prioridade da equipe?",
+    alternativaA: "Tentar estabelecer contato físico imediatamente",
+    alternativaB: "Garantir a segurança dos integrantes e manter uma distância segura",
+    alternativaC: "Provocar a entidade para observar sua reação",
+    alternativaD: "Dividir a equipe para investigar diferentes cômodos",
+    alternativaCorreta: "alternativaB"
+  },
+
+  {
+    pergunta: "Uma ocorrência apresenta movimentação inexplicável de objetos, mas o fenômeno acontece apenas quando não há testemunhas presentes. Qual procedimento pode ajudar a investigação?",
+    alternativaA: "Encerrar o caso por falta de testemunhas",
+    alternativaB: "Classificar a ocorrência como uma possessão",
+    alternativaC: "Instalar equipamentos de registro para observar o ambiente durante a ausência de pessoas",
+    alternativaD: "Concluir que os objetos estão sendo movimentados por uma entidade",
+    alternativaCorreta: "alternativaC"
+  },
+
+  {
+    pergunta: "Uma equipe investigou uma ocorrência, mas não conseguiu identificar sua origem nem encontrar evidências suficientes. Qual status deve ser atribuído ao relatório?",
+    alternativaA: "Resolvido",
+    alternativaB: "Descartado",
+    alternativaC: "Concluído com sucesso",
+    alternativaD: "Inconclusivo",
+    alternativaCorreta: "alternativaD"
+  },
+
+  {
+    pergunta: "Durante uma investigação, foram identificados padrões de manifestações sempre às 18h, 20h e 22h. Caso o padrão continue, quando deverá ocorrer a próxima manifestação?",
+    alternativaA: "00h",
+    alternativaB: "23h",
+    alternativaC: "01h",
+    alternativaD: "02h",
+    alternativaCorreta: "alternativaA"
+  },
+
+  {
+    pergunta: "Diversos moradores de um mesmo edifício relatam manifestações semelhantes, mesmo sem terem conversado entre si. O que essa informação representa para a investigação?",
+    alternativaA: "Uma prova definitiva de possessão",
+    alternativaB: "Um conjunto de relatos independentes que pode ajudar a corroborar a ocorrência",
+    alternativaC: "Uma evidência de que todos os moradores possuem poderes psíquicos",
+    alternativaD: "Uma confirmação de que o edifício está condenado",
+    alternativaCorreta: "alternativaB"
+  },
+
+  {
+    pergunta: "Um equipamento utilizado para detectar atividade paranormal começa a apresentar resultados inconsistentes. Após verificar o aparelho, a equipe identifica que sua bateria está quase descarregada. O que deve ser feito?",
+    alternativaA: "Registrar os resultados como evidências definitivas",
+    alternativaB: "Classificar o local como uma zona de alta atividade paranormal",
+    alternativaC: "Substituir a bateria e repetir as medições",
+    alternativaD: "Descartar todas as evidências coletadas durante a investigação",
+    alternativaCorreta: "alternativaC"
+  },
+
+  {
+    pergunta: "Qual conjunto de informações é essencial para documentar corretamente uma ocorrência paranormal?",
+    alternativaA: "Nome do investigador e opinião pessoal sobre o fenômeno",
+    alternativaB: "Apenas o tipo de entidade identificada",
+    alternativaC: "Somente a localização e o status da ocorrência",
+    alternativaD: "Data, localização, descrição do fenômeno e evidências coletadas",
+    alternativaCorreta: "alternativaD"
+  },
+
+  {
+    pergunta: "Durante uma investigação, um indivíduo demonstra capacidade de movimentar objetos sem contato físico, utilizando apenas sua mente. Como ele deve ser classificado?",
+    alternativaA: "Indivíduo com habilidades psíquicas",
+    alternativaB: "Entidade espiritual",
+    alternativaC: "Anomalia territorial",
+    alternativaD: "Objeto paranormal",
+    alternativaCorreta: "alternativaA"
+  },
+
+  {
+    pergunta: "Uma equipe identifica uma ocorrência aparentemente paranormal, mas ainda existem possíveis explicações naturais para o fenômeno. Qual é a melhor conduta?",
+    alternativaA: "Ignorar todas as explicações naturais",
+    alternativaB: "Investigar as diferentes hipóteses antes de estabelecer uma conclusão",
+    alternativaC: "Classificar imediatamente o caso como uma manifestação espiritual",
+    alternativaD: "Encerrar o relatório sem registrar as evidências",
+    alternativaCorreta: "alternativaB"
+  },
+
+  {
+    pergunta: "Durante uma investigação, a equipe percebe que as manifestações cessam sempre que determinado indivíduo deixa o ambiente. O que pode ser concluído com essa informação?",
+    alternativaA: "O indivíduo é definitivamente uma entidade espiritual",
+    alternativaB: "A ocorrência está completamente resolvida",
+    alternativaC: "Existe uma possível relação entre o indivíduo e as manifestações, que precisa ser investigada",
+    alternativaD: "O ambiente não apresenta nenhuma atividade paranormal",
+    alternativaCorreta: "alternativaC"
+  },
+
+  {
+    pergunta: "Um investigador precisa compartilhar informações sobre uma ocorrência que envolve dados pessoais de uma testemunha. Qual é a conduta mais adequada?",
+    alternativaA: "Publicar todos os dados para facilitar a investigação",
+    alternativaB: "Enviar as informações para qualquer membro da organização",
+    alternativaC: "Compartilhar os dados em redes sociais para buscar testemunhas",
+    alternativaD: "Compartilhar apenas com pessoas autorizadas e preservar as informações pessoais",
+    alternativaCorreta: "alternativaD"
+  },
+
+  {
+    pergunta: "Após uma investigação, a equipe consegue identificar a origem do fenômeno e confirmar que ele não representa mais uma ameaça. Qual deve ser o próximo procedimento?",
+    alternativaA: "Atualizar o status para resolvido e arquivar as informações finais da investigação",
+    alternativaB: "Excluir o relatório para liberar espaço no sistema",
+    alternativaC: "Manter a ocorrência como não investigada",
+    alternativaD: "Criar outro relatório sem relação com o caso anterior",
+    alternativaCorreta: "alternativaA"
+  }
+];
+
 
   // variáveis globais    
   let numeroDaQuestaoAtual = 0
@@ -171,6 +346,8 @@
     document.getElementById('jogo').style.display = "flex"
     document.getElementById('reigen').style.display = "block"
     document.getElementById('btnIniciarQuiz').style.display = "none"
+    document.querySelector('.infos-quiz').style.display = "none"
+    document.querySelector('.top-container').style.display = "none"
 
     document.getElementById('qtdQuestoes').innerHTML = quantidadeDeQuestoes
 
@@ -217,6 +394,7 @@
 
       checarResposta()
     }
+
   }
 
   function habilitarAlternativas(trueOrFalse) {
@@ -234,6 +412,8 @@
     btnSubmeter.disabled = false
 
     desmarcarRadioButtons()
+
+    barra.value += 1
 
     if (numeroDaQuestaoAtual < quantidadeDeQuestoes - 1) {
       preencherHTMLcomQuestaoAtual(numeroDaQuestaoAtual)
