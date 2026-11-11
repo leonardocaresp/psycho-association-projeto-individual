@@ -10,7 +10,7 @@ function apagarCarregamento() {
 function trocarTela(link) {
   var carregamento = document.createElement("div");
   carregamento.classList.add("carregamento");
-  carregamento.innerHTML = '<img src="/assets/carregamento.gif">';
+  carregamento.innerHTML = `<img src="${window.location.origin}/public/assets/carregamento.gif">`;
 
   document.body.appendChild(carregamento);
 
@@ -71,7 +71,7 @@ function fecharNav() {
       <span><i class="material-icons">quiz</i></span>
     </div>
 
-    <button class="disconnect" onclick="window.location = '../index.html'">
+    <button class="disconnect" onclick="trocarTela('../index.html')">
       DESCONECTAR
     </button>`
     } else if (window.location.href == `${window.location.origin}/public/dashboard/paranormais.html`) {
@@ -95,7 +95,7 @@ function fecharNav() {
       <span><i class="material-icons">quiz</i></span>
     </div>
 
-    <button class="disconnect" onclick="window.location = '../index.html'">
+    <button class="disconnect" onclick="trocarTela('../index.html')">
       DESCONECTAR
     </button>`
     } else if (window.location.href == `${window.location.origin}/public/dashboard/quiz.html`) {
@@ -114,7 +114,7 @@ function fecharNav() {
       <span>ARQUIVO DE INDIVÍDUOS</span>
       <span><i class="material-icons"">group</i></span>
     </div>
-    <div class="nav-button selected" onclick="window.location = 'quiz.html'">
+    <div class="nav-button selected" onclick="trocarTela('../index.html')">
       <span>EXAME DE APTIDÃO</span>
       <span><i class="material-icons">quiz</i></span>
     </div>
@@ -138,7 +138,7 @@ function fecharNav() {
       <span>ARQUIVO DE INDIVÍDUOS</span>
       <span><i class="material-icons"">group</i></span>
     </div>
-    <div class="nav-button" onclick="window.location = 'quiz.html'">
+    <div class="nav-button" onclick="trocarTela('../index.html')">
       <span>EXAME DE APTIDÃO</span>
       <span><i class="material-icons">quiz</i></span>
     </div>
