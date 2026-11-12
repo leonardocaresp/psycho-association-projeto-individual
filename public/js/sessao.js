@@ -27,3 +27,15 @@ function limparFormulario(tipo) {
         ipt_password_confirmed.value = ''
     }
 }
+
+function aguardar() {
+    console.log('aguardando')
+}
+
+function finalizarAguardar(texto) {
+    console.log('finalizar aguardar')
+
+    if (texto) {
+        console.log(texto);
+    }
+}

@@ -63,6 +63,53 @@
     var senhaVar = ipt_password.value;
     var confirmacaoSenhaVar = ipt_password_confirmed.value;
 
+    let message = ''
+
+    let popup = document.createElement('div')
+    popup.classList.add('confirmation-popup')
+    setTimeout(() => {
+      popup.remove()
+    }, 1800)
+
+    //Validações de senha
+    let senhaTemMaiuscula = senhaVar != senhaVar.toLowerCase()
+    let senhaTemMinúscula = senhaVar != senhaVar.toUpperCase()
+
+    let senhaTemNúmero = false
+    let senhaTemCaracterEspecial = false
+    let senhaTemAcento = false
+
+    const caracteresEspeciais = [
+      '!', '@', '#', '$', '%', '¨', '&', '*', '(', ')', '-', '_', '+', '=',
+      '´', '`', '{', '}', '[', ']', '^', '~', '<', '>', ',', '.', ':', ';',
+      '/', '?', '\\', '|', '"', "'", '§', 'ª', 'º', '°', '£', '¢', '¬', '³', '²', '¹'
+    ];
+
+    const caracteresAcentuados = [
+      'á', 'à', 'â', 'ã', 'é', 'ê', 'í', 'ó', 'ô', 'õ', 'ú', 'ü', 'ç',
+      'Á', 'À', 'Â', 'Ã', 'É', 'Ê', 'Í', 'Ó', 'Ô', 'Õ', 'Ú', 'Ü', 'Ç'
+    ];
+
+    let senhaTemEspaço = senhaVar.includes(' ')
+
+
+    for (let i = 0; i < senhaVar.length; i++) {
+      for (let j = 0; j < 10; j++) {
+        if (senhaVar[i] == j) {
+          senhaTemNúmero = true
+        }
+
+        if (senhaVar[i] == caracteresEspeciais[j]) {
+          senhaTemCaracterEspecial = true
+        }
+
+        if (senhaVar[i] == caracteresAcentuados[j]) {
+          senhaTemAcento = true
+        }
+
+      }
+    }
+
     // Verificando se há algum campo em branco
     if (
       nomeVar == "" ||
@@ -71,42 +118,107 @@
       confirmacaoSenhaVar == ""
     ) {
 
+      message = 'Preencha todos os campos!'
+      popup.innerHTML = `<div>${message}</div>`
+      document.body.appendChild(popup)
+
       finalizarAguardar();
       return false;
+
+    } else if (senhaVar != confirmacaoSenhaVar) {
+      
+      let input = document.getElementById('ipt_password')
+      message = 'As senhas digitadas devem ser iguais!'
+      input.classList.add('error')
+      input.focus()
+      input.parentElement.innerHTML += `<span style="color: red;">${message}</span>`
+
+      finalizarAguardar();
+      return false;
+
+    } else if (!senhaTemMaiuscula || !senhaTemMinúscula) {
+
+      message = 'Sua senha deve possuir letras maíusculas e minúsculas!'
+      popup.innerHTML = `<div>${message}</div>`
+      document.body.appendChild(popup)
+
+      finalizarAguardar();
+      return false;
+
+    } else if (!senhaTemNúmero) {
+
+      message = 'Sua senha deve possuir pelo menos um número!'
+      popup.innerHTML = `<div>${message}</div>`
+      document.body.appendChild(popup)
+
+      finalizarAguardar();
+      return false;
+
+    } else if (senhaTemAcento) {
+
+      message = 'Sua senha NÃO pode possuir acento!'
+      popup.innerHTML = `<div>${message}</div>`
+      document.body.appendChild(popup)
+
+      finalizarAguardar();
+      return false;
+
+    } else if (senhaTemEspaço) {
+
+      message = 'Sua senha NÃO pode possuir espaços!'
+      popup.innerHTML = `<div>${message}</div>`
+      document.body.appendChild(popup)
+
+      finalizarAguardar();
+      return false;
+
+    } else if (!senhaTemCaracterEspecial) {
+
+      message = 'Sua senha deve possuir pelo menos um caracter especial!'
+      popup.innerHTML = `<div>${message}</div>`
+      document.body.appendChild(popup)
+
+      finalizarAguardar();
+      return false;
+
     }
 
-    // Enviando o valor da nova input
-    fetch("/usuarios/cadastrar", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        // crie um atributo que recebe o valor recuperado aqui
-        // Agora vá para o arquivo routes/usuario.js
-        nomeServer: nomeVar,
-        emailServer: emailVar,
-        senhaServer: senhaVar
-      }),
-    })
-      .then(function (resposta) {
-        console.log("resposta: ", resposta);
-
-        if (resposta.ok) {
-          setTimeout(() => {
-            window.location = "login.html";
-          }, "2000");
-
-          limparFormulario('cadastro');
-          finalizarAguardar();
-        } else {
-          throw "Houve um erro ao tentar realizar o cadastro!";
-        }
+      // Enviando o valor da nova input
+      fetch("/usuarios/cadastrar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          // crie um atributo que recebe o valor recuperado aqui
+          // Agora vá para o arquivo routes/usuario.js
+          nomeServer: nomeVar,
+          emailServer: emailVar,
+          senhaServer: senhaVar
+        }),
       })
-      .catch(function (resposta) {
-        console.log(`#ERRO: ${resposta}`);
-        finalizarAguardar();
-      });
+        .then(function (resposta) {
+          console.log("resposta: ", resposta);
+
+          if (resposta.ok) {
+            message = 'Você será redirecionado à tela de login.'
+            popup.innerHTML = `<div>${message}</div>`
+            document.body.appendChild(popup)
+
+            setTimeout(() => {
+              window.location = "login.html";
+            }, "2000");
+
+            limparFormulario('cadastro');
+            finalizarAguardar();
+          } else {
+            throw "Houve um erro ao tentar realizar o cadastro!";
+          }
+        })
+        .catch(function (resposta) {
+          console.log(`#ERRO: ${resposta}`);
+          finalizarAguardar();
+        });
 
     return false;
   }
