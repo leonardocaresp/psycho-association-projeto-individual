@@ -1,4 +1,3 @@
-apagarCarregamento()
 
 function apagarCarregamento() {
   window.addEventListener("pageshow", function (event) {
@@ -73,7 +72,7 @@ function fecharNav() {
       <span><i class="material-icons">quiz</i></span>
     </div>
 
-    <button class="disconnect" onclick="trocarTela('../index.html')">
+    <button class="disconnect" onclick="limparSessao()">
       DESCONECTAR
     </button>`
     } else if (window.location.href == `${window.location.origin}/public/dashboard/paranormais.html` || window.location.href == `${window.location.origin}/dashboard/paranormais.html`) {
@@ -97,7 +96,7 @@ function fecharNav() {
       <span><i class="material-icons">quiz</i></span>
     </div>
 
-    <button class="disconnect" onclick="trocarTela('../index.html')">
+    <button class="disconnect" onclick="limparSessao()">
       DESCONECTAR
     </button>`
     } else if (window.location.href == `${window.location.origin}/public/dashboard/quiz.html` || window.location.href == `${window.location.origin}/dashboard/quiz.html`) {
@@ -121,7 +120,7 @@ function fecharNav() {
       <span><i class="material-icons">quiz</i></span>
     </div>
 
-    <button class="disconnect" onclick="trocarTela('../index.html')">
+    <button class="disconnect" onclick="limparSessao()">
       DESCONECTAR
     </button>`
     } else if (window.location.href == `${window.location.origin}/public/dashboard/ocorrencias.html` || window.location.href == `${window.location.origin}/dashboard/ocorrencias.html`) {
@@ -145,7 +144,7 @@ function fecharNav() {
       <span><i class="material-icons">quiz</i></span>
     </div>
 
-    <button class="disconnect" onclick="window.location = '../index.html'">
+    <button class="disconnect" onclick="limparSessao()">
       DESCONECTAR
     </button>`
     }

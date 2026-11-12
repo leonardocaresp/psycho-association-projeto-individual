@@ -6,20 +6,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PsychoAssociation | Paranormais</title>
   <link rel="stylesheet" href="../css/paranormais.css">
+
   <script src="../js/funcoes.js"></script>
+  <script src="../js/sessao.js"></script>
+
   <link rel="icon" type="image/x-icon" href="../assets/icon/psycho-association-logo.svg">
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 
-<body>
+<body onload="apagarCarregamento(); validarSessao()">
   <header>
     <div class="icon">
       <img src="../assets/icon/psycho-association-logo.svg">
     </div>
     <div class="user-info">
-      <span class="user-name">Leonardo Cardoso</span>
-      <span class="user-email">leo@gmail.com</span>
+      <span class="user-name" id="b_usuario"></span>
+      <span class="user-email" id="e_usuario"></span>
     </div>
   </header>
   <nav>
@@ -43,7 +46,7 @@
       <span><i class="material-icons">quiz</i></span>
     </div>
 
-    <button class="disconnect" onclick="trocarTela('../index.html')">
+    <button class="disconnect" onclick="limparSessao()">
       DESCONECTAR
     </button>
   </nav>

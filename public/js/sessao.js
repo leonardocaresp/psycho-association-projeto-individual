@@ -1,29 +1,22 @@
 // sessão
+function limparSessao() {
+    sessionStorage.clear();
+    trocarTela("../index.html")
+}
+
 function validarSessao() {
     var email = sessionStorage.EMAIL_USUARIO;
     var nome = sessionStorage.NOME_USUARIO;
 
     var b_usuario = document.getElementById("b_usuario");
+    var e_usuario = document.getElementById("e_usuario");
 
     if (email != null && nome != null) {
         b_usuario.innerHTML = nome;
+        e_usuario.innerHTML = email;
     } else {
-        window.location = "../login.html";
+        trocarTela("../login.html");
     }
-}
-
-function limparSessao() {
-    sessionStorage.clear();
-    window.location = "../login.html";
-}
-
-// carregamento (loading)
-function aguardar() {
-    console.log('aguardando')
-}
-
-function finalizarAguardar(texto) {
-    console.log('finalizar aguardar')
 }
 
 function limparFormulario(tipo) {

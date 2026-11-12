@@ -67,6 +67,7 @@ main .quiz-content {
 .jogo-container {
   display: flex;
   flex-direction: column;
+  background-color: white;
   align-self: flex-start;
   row-gap: 24px;
   width: 65%;
