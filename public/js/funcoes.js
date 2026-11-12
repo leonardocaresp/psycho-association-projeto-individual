@@ -124,7 +124,7 @@ function fecharNav() {
     <button class="disconnect" onclick="trocarTela('../index.html')">
       DESCONECTAR
     </button>`
-    } else if (window.location.href == `${window.location.origin}/public/dashboard/ocorrencias.html` || window.location.href == `${window.location.origin}/dashboard/.html`) {
+    } else if (window.location.href == `${window.location.origin}/public/dashboard/ocorrencias.html` || window.location.href == `${window.location.origin}/dashboard/ocorrencias.html`) {
       nav.innerHTML = `<button class="close-nav" onclick="fecharNav()">
       <
     </button>

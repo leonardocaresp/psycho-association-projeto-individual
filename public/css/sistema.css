@@ -7,6 +7,7 @@ html {
 
 body {
   height: 100vh;
+  background-color: rgba(81, 89, 130, 0.06);
 }
 
 main {
@@ -172,13 +173,13 @@ nav .disconnect:hover {
 }
 
 .top-container h2 {
-  color: var(--rosa-choque);
+  color: var(--azul-escuro);
   font-size: 34px;
   line-height: 34px;
 }
 
 .top-container h3 {
-  color: var(--azul-escuro);
+  color: var(--rosa-choque); 
   opacity: 0.8;
   font-size: 18px;
   font-weight: 500;

@@ -34,7 +34,8 @@
 }
 
 .infos-quiz span {
-  border: solid 3px #0a0d2421;
+  border: solid 3px var(--azul-escuro);
+  background-color: white;
   flex: 1;
   padding: 12px;
   transition: 0.2s ease-out;

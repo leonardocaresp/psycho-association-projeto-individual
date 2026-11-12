@@ -84,24 +84,27 @@
           </div>
           <div class="bottom">
             11
+            <span>45,8% do total</span>
           </div>
         </div>
 
         <div class="kpi">
           <div class="top">
-            RESOLVIDOS
+            TAXA DE RESOLUÇÃO
           </div>
           <div class="bottom">
-            9
+            37,5%
+            <span>9 de 24 ocorrências</span>
           </div>
         </div>
 
         <div class="kpi">
           <div class="top">
-            SEM EXPLICAÇÃO
+            INCONCLUSIVAS
           </div>
           <div class="bottom">
             4
+            <span>16,7% do total</span>
           </div>
         </div>
 
@@ -111,7 +114,7 @@
 
         <div class="chart">
           <div class="top">
-            OCORRÊNCIAS POR TIPO
+            OCORRÊNCIAS POR CLASSIFICAÇÃO
           </div>
           <div class="bottom">
             <div class="chart-canvas">
@@ -122,7 +125,7 @@
 
         <div class="chart">
           <div class="top">
-            STATUS DOS CASOS
+            DISTRIBUIÇÃO DOS STATUS
           </div>
           <div class="bottom">
             <div class="chart-canvas">
@@ -131,17 +134,20 @@
             <div class="status-metrics">
               <div class="metric">
                 <div class="orange square"></div>
-                EM INVESTIGAÇÃO - 46%
+                <span>EM INVESTIGAÇÃO</span>
+                <span class="valor">11 (46%)</span>
               </div>
-
+              <hr>
               <div class="metric">
                 <div class="green square"></div>
-                RESOLVIDOS - 38%
+                <span>RESOLVIDOS</span>
+                <span class="valor">9 (38%)</span>
               </div>
-
+              <hr>
               <div class="metric">
                 <div class="red square"></div>
-                SEM EXPLICAÇÃO - 16%
+                <span>SEM EXPLICAÇÃO</span>
+                <span class="valor">4 (16%)</span>
               </div>
             </div>
 
@@ -149,12 +155,14 @@
         </div>
 
 
-        <div class="chart">
+        <div class="chart" style="flex: 1.5;">
           <div class="top">
-            RANKING DO EXAME
+            EVOLUÇÃO DOS REGISTROS
           </div>
           <div class="bottom">
-
+            <div class="chart-canvas">
+              <canvas id="graficoRegistros"></canvas>
+            </div>
           </div>
         </div>
 
@@ -199,7 +207,7 @@
           align: 'end',  // fica para fora, acima da barra
           color: '#0A0D22',
           font: {
-            size: 16,
+            size: 14,
             weight: 'bold'
           }
         }
@@ -236,6 +244,31 @@
       maintainAspectRatio: false,
       plugins: {
         legend: { display: false }
+      }
+    }
+  });
+
+  const ctx3 = document.getElementById('graficoRegistros')
+  
+  new Chart(ctx3, {
+    type: 'line',
+    data: {
+      labels: ['Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov'],
+      datasets: [{
+        data: [11, 9, 4, 11, 9, 4],
+        borderColor: '#E22672'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      },
+    scales: {
+        y: {
+          beginAtZero: true  
+        }
       }
     }
   });

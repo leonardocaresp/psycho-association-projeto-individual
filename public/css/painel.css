@@ -31,16 +31,25 @@
   color: white;
   padding: 12px 12px;
   font-size: 24px;
+  font-weight: 500;
   box-sizing: border-box;
 }
 
 .kpi .bottom {
+  display: flex;
+  flex-direction: column;
   flex: 1;
   color: var(--azul-escuro);
   padding: 12px 12px;
   font-size: 50px;
   font-weight: 600;
   box-sizing: border-box;
+  background-color: white;
+}
+
+.kpi .bottom span {
+  font-weight: 500;
+  opacity: 0.8;
 }
 
 .charts-row {
@@ -62,16 +71,18 @@
 .chart .bottom {
   display: flex;
   flex-direction: column;
+  justify-content: space-around;
+  background-color: white;
   flex: 1;
-  row-gap: 12px;
-  padding: 12px 12px 12px 12px;
+  row-gap: 24px;
+  padding: 24px;
 }
 
 .status-metrics {
   display: flex;
   row-gap: 12px;
-  flex: 1;
   flex-direction: column;
+  width: 100%;
 }
 
 .metric {
@@ -80,6 +91,10 @@
   align-items: center;
   width: 100%;
   color: var(--azul-escuro);
+}
+
+.metric .valor{
+  margin-left: auto;
 }
 
 .square {
