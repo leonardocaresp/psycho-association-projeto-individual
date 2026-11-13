@@ -234,46 +234,69 @@
     const popup = document.createElement('div');
     popup.classList.add('popup-container');
 
+    let tituloPopup = 'ABRIR OCORRÊNCIA';
+    let subtituloPopup = 'REGISTRE UM CASO';
+    let textoBotaoSalvar = 'SALVAR OCORRÊNCIA';
+    let valorTitulo = '';
+    let valorClassificacao = '';
+    let valorStatus = '';
+    let valorLocal = '';
+    let valorDescricao = '';
+
+    if (editando) {
+      tituloPopup = 'EDITAR OCORRÊNCIA';
+      subtituloPopup = 'ATUALIZE O CASO';
+      textoBotaoSalvar = 'ATUALIZAR OCORRÊNCIA';
+    }
+
+    if (editando && ocorrenciaAtual) {
+      valorTitulo = escapeHtml(ocorrenciaAtual.titulo);
+      valorClassificacao = ocorrenciaAtual.classificacao;
+      valorStatus = ocorrenciaAtual.status;
+      valorLocal = escapeHtml(ocorrenciaAtual.local);
+      valorDescricao = escapeHtml(ocorrenciaAtual.descricao);
+    }
+
     popup.innerHTML = `
       <div class="popup">
         <div class="text">
-          <h2>${editando ? 'EDITAR OCORRÊNCIA' : 'ABRIR OCORRÊNCIA'}</h2>
-          <h3>${editando ? 'ATUALIZE O CASO' : 'REGISTRE UM CASO'}</h3>
+          <h2>${tituloPopup}</h2>
+          <h3>${subtituloPopup}</h3>
         </div>
         <div class="form">
           <div class="input-container">
             <label for="ipt_title">Título</label>
-            <input maxlength="55" type="text" id="ipt_title" placeholder="Insira o título da ocorrência" value="${editando && ocorrenciaAtual ? escapeHtml(ocorrenciaAtual.titulo) : ''}">
+            <input maxlength="55" type="text" id="ipt_title" placeholder="Insira o título da ocorrência" value="${valorTitulo}">
           </div>
 
           <div class="selects">
             <div class="input-container">
               <label for="select_type_popup">Classificação</label>
               <select id="select_type_popup">
-                ${gerarOpcoesSelect(opcoesClassificacao, 'Selecione o tipo de evento', editando && ocorrenciaAtual ? ocorrenciaAtual.classificacao : '')}
+                ${gerarOpcoesSelect(opcoesClassificacao, 'Selecione o tipo de evento', valorClassificacao)}
               </select>
             </div>
 
             <div class="input-container">
               <label for="select_status_popup">Status</label>
               <select id="select_status_popup">
-                ${gerarOpcoesSelect(opcoesStatus, 'Selecione o status atual da investigação', editando && ocorrenciaAtual ? ocorrenciaAtual.status : '')}
+                ${gerarOpcoesSelect(opcoesStatus, 'Selecione o status atual da investigação', valorStatus)}
               </select>
             </div>
           </div>
 
           <div class="input-container">
             <label for="ipt_place">Local</label>
-            <input maxlength="100" type="text" id="ipt_place" placeholder="Insira o local do ocorrido" value="${editando && ocorrenciaAtual ? escapeHtml(ocorrenciaAtual.local) : ''}">
+            <input maxlength="100" type="text" id="ipt_place" placeholder="Insira o local do ocorrido" value="${valorLocal}">
           </div>
 
           <div class="input-container">
             <label for="ipt_desc">Descrição</label>
-            <input maxlength="500" class="desc" type="text" id="ipt_desc" placeholder="Informe mais detalhes sobre o relatório" value="${editando && ocorrenciaAtual ? escapeHtml(ocorrenciaAtual.descricao) : ''}">
+            <input maxlength="500" class="desc" type="text" id="ipt_desc" placeholder="Informe mais detalhes sobre o relatório" value="${valorDescricao}">
           </div>
 
           <div class="buttons">
-            <button class="salvar" onclick="salvarOcorrencia()">${editando ? 'ATUALIZAR OCORRÊNCIA' : 'SALVAR OCORRÊNCIA'}</button>
+            <button class="salvar" onclick="salvarOcorrencia()">${textoBotaoSalvar}</button>
             <button class="cancelar" onclick="fecharPopup()">CANCELAR</button>
           </div>
         </div>
@@ -318,10 +341,13 @@
     };
 
     const editando = idOcorrenciaEditando !== null;
-    const endpoint = editando
-      ? `/ocorrencias/editar/${idOcorrenciaEditando}`
-      : `/ocorrencias/publicar/${idUsuario}`;
-    const metodo = editando ? 'PUT' : 'POST';
+    let endpoint = `/ocorrencias/publicar/${idUsuario}`;
+    let metodo = 'POST';
+
+    if (editando) {
+      endpoint = `/ocorrencias/editar/${idOcorrenciaEditando}`;
+      metodo = 'PUT';
+    }
 
     fetch(endpoint, {
       method: metodo,
@@ -370,11 +396,20 @@
   }
 
   function gerarOpcoesSelect(opcoes, placeholder, valorSelecionado) {
-    let opcoesHtml = `<option value="" disabled ${valorSelecionado ? '' : 'selected'}>${placeholder}</option>`;
+    let atributoSelecionadoPlaceholder = 'selected';
+    if (valorSelecionado) {
+      atributoSelecionadoPlaceholder = '';
+    }
+
+    let opcoesHtml = `<option value="" disabled ${atributoSelecionadoPlaceholder}>${placeholder}</option>`;
 
     for (let i = 0; i < opcoes.length; i++) {
       const opcao = opcoes[i];
-      const selecionado = valorSelecionado === opcao ? 'selected' : '';
+      let selecionado = '';
+      if (valorSelecionado === opcao) {
+        selecionado = 'selected';
+      }
+
       opcoesHtml += `<option value="${opcao}" ${selecionado}>${opcao}</option>`;
     }
 

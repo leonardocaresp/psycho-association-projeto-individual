@@ -77,9 +77,15 @@
         const icone = botao.querySelector('i');
         const senhaOculta = input.type === 'password';
 
-        input.type = senhaOculta ? 'text' : 'password';
-        icone.textContent = senhaOculta ? 'visibility_off' : 'visibility';
-        botao.setAttribute('aria-label', senhaOculta ? 'Ocultar senha' : 'Mostrar senha');
+        if (senhaOculta) {
+            input.type = 'text';
+            icone.textContent = 'visibility_off';
+            botao.setAttribute('aria-label', 'Ocultar senha');
+        } else {
+            input.type = 'password';
+            icone.textContent = 'visibility';
+            botao.setAttribute('aria-label', 'Mostrar senha');
+        }
     }
 
      function entrar() {

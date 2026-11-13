@@ -71,9 +71,15 @@
     const icone = botao.querySelector('i');
     const senhaOculta = input.type === 'password';
 
-    input.type = senhaOculta ? 'text' : 'password';
-    icone.textContent = senhaOculta ? 'visibility_off' : 'visibility';
-    botao.setAttribute('aria-label', senhaOculta ? 'Ocultar senha' : 'Mostrar senha');
+    if (senhaOculta) {
+      input.type = 'text';
+      icone.textContent = 'visibility_off';
+      botao.setAttribute('aria-label', 'Ocultar senha');
+    } else {
+      input.type = 'password';
+      icone.textContent = 'visibility';
+      botao.setAttribute('aria-label', 'Mostrar senha');
+    }
   }
 
   function limparErrosCadastro() {
@@ -99,8 +105,32 @@
   }
 
   function emailValido(email) {
-    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regexEmail.test(email);
+    if (email.includes(' ')) {
+      return false;
+    }
+
+    const posicaoArroba = email.indexOf('@');
+    const ultimaPosicaoArroba = email.lastIndexOf('@');
+
+    if (posicaoArroba <= 0 || posicaoArroba !== ultimaPosicaoArroba) {
+      return false;
+    }
+
+    const dominio = email.slice(posicaoArroba + 1);
+    if (dominio.length < 3 || !dominio.includes('.')) {
+      return false;
+    }
+
+    const posicaoPontoNoDominio = dominio.indexOf('.');
+    if (posicaoPontoNoDominio <= 0 || posicaoPontoNoDominio === dominio.length - 1) {
+      return false;
+    }
+
+    if (dominio.includes('..')) {
+      return false;
+    }
+
+    return true;
   }
 
   function cadastrar() {
@@ -109,6 +139,7 @@
     const senhaInput = document.getElementById('ipt_password');
     const confirmarSenhaInput = document.getElementById('ipt_password_confirmed');
 
+    // .trim tira espaço da frente e de trás
     const nomeVar = nomeInput.value.trim();
     const emailVar = emailInput.value.trim();
     const senhaVar = senhaInput.value;
@@ -145,12 +176,51 @@
       formularioValido = false;
       primeiroInputComErro = primeiroInputComErro || senhaInput;
     } else {
-      const senhaTemMaiuscula = /[A-Z]/.test(senhaVar);
-      const senhaTemMinuscula = /[a-z]/.test(senhaVar);
-      const senhaTemNumero = /\d/.test(senhaVar);
-      const senhaTemCaracterEspecial = /[!@#$%^&*()_\-+=\[\]{};:'",.<>/?\\|`~]/.test(senhaVar);
-      const senhaTemAcento = /[áàâãéêíóôõúüçÁÀÂÃÉÊÍÓÔÕÚÜÇ]/.test(senhaVar);
-      const senhaTemEspaco = /\s/.test(senhaVar);
+      const caracteresEspeciais = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '-', '+', '=', '[', ']', '{', '}', ';', ':', '\'', '"', ',', '.', '<', '>', '/', '?', '\\', '|', '`', '~'];
+      const acentos = ['á', 'à', 'â', 'ã', 'é', 'ê', 'í', 'ó', 'ô', 'õ', 'ú', 'ü', 'ç', 'Á', 'À', 'Â', 'Ã', 'É', 'Ê', 'Í', 'Ó', 'Ô', 'Õ', 'Ú', 'Ü', 'Ç'];
+      const numeros = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+      let senhaTemMaiuscula = false;
+      let senhaTemMinuscula = false;
+      let senhaTemNumero = false;
+      let senhaTemCaracterEspecial = false;
+      let senhaTemAcento = false;
+      let senhaTemEspaco = false;
+
+      for (let i = 0; i < senhaVar.length; i++) {
+        const caractereAtual = senhaVar[i];
+        const caractereMaiusculo = caractereAtual.toUpperCase();
+        const caractereMinusculo = caractereAtual.toLowerCase();
+
+        if (caractereAtual === ' ') {
+          senhaTemEspaco = true;
+        }
+
+        if (numeros.includes(caractereAtual)) {
+          senhaTemNumero = true;
+        }
+
+        if (caracteresEspeciais.includes(caractereAtual)) {
+          senhaTemCaracterEspecial = true;
+        }
+
+        if (acentos.indexOf(caractereAtual) !== -1) {
+          senhaTemAcento = true;
+        }
+
+        const letraEhMaiuscula = caractereAtual === caractereMaiusculo;
+        const letraEhMinuscula = caractereAtual === caractereMinusculo;
+
+        if (!numeros.includes(caractereAtual) && !caracteresEspeciais.includes(caractereAtual) && caractereAtual !== ' ') {
+          if (letraEhMaiuscula && !letraEhMinuscula) {
+            senhaTemMaiuscula = true;
+          }
+
+          if (letraEhMinuscula && !letraEhMaiuscula) {
+            senhaTemMinuscula = true;
+          }
+        }
+      }
 
       if (senhaVar.length < 8) {
         exibirErroCampo(senhaInput, 'A senha deve ter pelo menos 8 caracteres.');

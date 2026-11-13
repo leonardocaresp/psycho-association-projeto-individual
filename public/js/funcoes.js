@@ -39,16 +39,13 @@ function fecharNav() {
       >
     </button>
     `
-
-    console.log(window.location.href)
-
     navAberta = false;
+
   } else {
     nav.style.width = `${navWidth}%`;
     nav.style.padding = `${navPadding}px`;
-    nav.style.display = "flex";
 
-    main.style.marginLeft = `calc(${navWidth + 2}% + ${navPadding}px)`;
+    main.style.marginLeft = `calc(${navWidth}% + ${navPadding * 2}px)`;
     main.style.padding = "100px 40px 30px 40px";
 
     if (window.location.href == `${window.location.origin}/public/dashboard/dashboard.html` || window.location.href == `${window.location.origin}/dashboard/dashboard.html`) {

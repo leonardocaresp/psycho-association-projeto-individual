@@ -384,6 +384,8 @@ Ao implementar consultas reais, substituir os valores estáticos pelos dados ret
 - Evitar abreviações que prejudiquem a compreensão.
 - Preferir funções simples e com responsabilidades bem definidas.
 - Evitar abstrações desnecessárias.
+- Não utilizar operador ternário (`condicao ? valorA : valorB`) em código novo; utilizar `if/else` explícito.
+- Sempre que surgir necessidade de usar função, método ou recurso que ainda não é utilizado no projeto, solicitar autorização explícita do desenvolvedor antes de aplicar.
 - Manter os scripts específicos de cada página dentro das respectivas tags `<script>` no HTML.
 - Manter os scripts compartilhados em `public/js/`.
 - Não introduzir módulos, bundlers ou ferramentas de compilação sem autorização.

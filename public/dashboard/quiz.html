@@ -16,7 +16,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body onload="apagarCarregamento(); onloadEsconder();  /* validarSessao(); */">
+<body onload="apagarCarregamento(); onloadEsconder();  validarSessao();">
   <header>
     <div class="icon">
       <img src="../assets/icon/psycho-association-logo.svg">
@@ -618,7 +618,11 @@ const listaDeQuestoes = montarQuestoesIntercaladas(examCategories);
   }
 
   function habilitarAlternativas(trueOrFalse) {
-    let opcaoEscolhida = trueOrFalse ? false : true;
+    let opcaoEscolhida = true;
+    if (trueOrFalse) {
+      opcaoEscolhida = false;
+    }
+
     const opcoesContainer = document.getElementById('opcoes');
 
     primeiraOpcao.disabled = opcaoEscolhida;
