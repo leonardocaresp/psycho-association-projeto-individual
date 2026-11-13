@@ -41,6 +41,7 @@
                 </div>
                 
                 <button onclick="entrar()">ENTRAR</button>
+                <span id="login_error_message" class="login-error-message"></span>
             </div>
             <p>Não tem uma conta? <a href="cadastro.html"><span>Faça um cadastro</span></a></p>
         </div>
@@ -51,6 +52,16 @@
 </html>
 
 <script>
+    function limparMensagemErroLogin() {
+        const mensagemErro = document.getElementById('login_error_message');
+        mensagemErro.textContent = '';
+    }
+
+    function exibirMensagemErroLogin(mensagem) {
+        const mensagemErro = document.getElementById('login_error_message');
+        mensagemErro.textContent = mensagem;
+    }
+
     function alternarVisibilidadeSenha(botao, idInput) {
         const input = document.getElementById(idInput);
         const icone = botao.querySelector('i');
@@ -62,6 +73,7 @@
     }
 
      function entrar() {
+        limparMensagemErroLogin();
 
         var emailVar = ipt_email.value;
         var senhaVar = ipt_password.value;
@@ -106,6 +118,7 @@
             } else {
 
                 console.log("Houve um erro ao tentar realizar o login!");
+                exibirMensagemErroLogin('Usuário ou senha incorretos.');
 
                 resposta.text().then(texto => {
                     console.error(texto);
@@ -115,6 +128,7 @@
 
         }).catch(function (erro) {
             console.log(erro);
+            exibirMensagemErroLogin('Usuário ou senha incorretos.');
         })
 
         return false;
