@@ -57,6 +57,16 @@
         mensagemErro.textContent = '';
     }
 
+    function limparErroInputsLogin() {
+        ipt_email.classList.remove('error');
+        ipt_password.classList.remove('error');
+    }
+
+    function exibirErroInputsLogin() {
+        ipt_email.classList.add('error');
+        ipt_password.classList.add('error');
+    }
+
     function exibirMensagemErroLogin(mensagem) {
         const mensagemErro = document.getElementById('login_error_message');
         mensagemErro.textContent = mensagem;
@@ -74,6 +84,7 @@
 
      function entrar() {
         limparMensagemErroLogin();
+        limparErroInputsLogin();
 
         var emailVar = ipt_email.value;
         var senhaVar = ipt_password.value;
@@ -119,6 +130,7 @@
 
                 console.log("Houve um erro ao tentar realizar o login!");
                 exibirMensagemErroLogin('Usuário ou senha incorretos.');
+                exibirErroInputsLogin();
 
                 resposta.text().then(texto => {
                     console.error(texto);
@@ -129,6 +141,7 @@
         }).catch(function (erro) {
             console.log(erro);
             exibirMensagemErroLogin('Usuário ou senha incorretos.');
+            exibirErroInputsLogin();
         })
 
         return false;

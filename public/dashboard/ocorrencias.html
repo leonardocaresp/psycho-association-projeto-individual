@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 
-<body onload="apagarCarregamento();  /* validarSessao(); */">
+<body onload="apagarCarregamento(); validarSessao(); inicializarOcorrencias();">
   <header>
     <div class="icon">
       <img src="../assets/icon/psycho-association-logo.svg">
@@ -65,56 +65,25 @@
 
       <div class="ocorrencias-filter">
         <div class="search-bar">
-          <input type="search" placeholder="Pesquise um caso">
+          <input id="ipt_search_ocorrencia" type="search" placeholder="Pesquise um caso">
           <i class="material-icons">search</i>
         </div>
-        <select name="">
-          <option value="#" selected disabled>Classificação</option>
-          <option>Poderes psíquicos</option>
-          <option>Entidades espirituais</option>
-          <option>Locais assombrados</option>
-          <option>Seitas paranormais</option>
+        <select id="select_filter_classificacao" name="classificacao">
+          <option value="">Todas classificações</option>
+          <option value="Poderes psíquicos">Poderes psíquicos</option>
+          <option value="Entidades espirituais">Entidades espirituais</option>
+          <option value="Locais assombrados">Locais assombrados</option>
+          <option value="Seitas paranormais">Seitas paranormais</option>
         </select>
-        <select name="" id="">
-          <option value="#" selected disabled>Status</option>
-          <option>Em investigação</option>
-          <option>Resolvidos</option>
-          <option>Sem explicação</option>
+        <select name="status" id="select_filter_status">
+          <option value="">Todos status</option>
+          <option value="Em investigação">Em investigação</option>
+          <option value="Resolvido">Resolvido</option>
+          <option value="Sem explicação">Sem explicação</option>
         </select>
       </div>
       
-      <div class="ocorrencias-container">
-
-        <div class="ocorrencia-card">
-          <div class="left">
-            <div class="text">
-              <h4>Caso #01</h4>
-              <h2>Objetos flutuando na sala de aula</h2>
-              <p>Registrado por: <span>Leonardo Cardoso</span></p>
-            </div>
-
-            <div class="info">
-              <div class="type purple-bkg">
-                PODER PSíQUICO
-              </div>
-              <div class="status resolvido">
-                RESOLVIDO
-              </div>
-            </div>
-
-            <details id="">
-              <summary>Mais detalhes</summary>
-              <p>Um professor relatou que os materiais escolares começaram a levitar durante a aula de matemática. A
-                situação foi resolvida após uma conversa com o responsável.</p>
-            </details>
-          </div>
-          <div class="right">
-            <button class="editar">EDITAR</button>
-            <button class="excluir">EXCLUIR</button>
-          </div>
-        </div>
-
-      </div>
+      <div class="ocorrencias-container" id="ocorrencias_container"></div>
     </div>
 
     
@@ -123,61 +92,340 @@
 
 </html>
 <script>
-  function abrirPopup() {
+  const opcoesClassificacao = [
+    'Poderes psíquicos',
+    'Entidades espirituais',
+    'Locais assombrados',
+    'Seitas paranormais'
+  ];
 
-     var popup = document.createElement('div')
-      popup.classList.add('popup-container')
+  const opcoesStatus = [
+    'Em investigação',
+    'Resolvido',
+    'Sem explicação'
+  ];
 
-      popup.innerHTML = ` <div class="popup">
+  let ocorrencias = [];
+  let idOcorrenciaEditando = null;
+  let inputBusca = null;
+  let selectClassificacaoFiltro = null;
+  let selectStatusFiltro = null;
+
+  function inicializarOcorrencias() {
+    inputBusca = document.getElementById('ipt_search_ocorrencia');
+    selectClassificacaoFiltro = document.getElementById('select_filter_classificacao');
+    selectStatusFiltro = document.getElementById('select_filter_status');
+
+    inputBusca.addEventListener('input', aplicarFiltros);
+    selectClassificacaoFiltro.addEventListener('change', aplicarFiltros);
+    selectStatusFiltro.addEventListener('change', aplicarFiltros);
+
+    listarOcorrencias();
+  }
+
+  function listarOcorrencias() {
+    fetch('/ocorrencias/listar')
+      .then(function (resposta) {
+        if (resposta.status == 204) {
+          ocorrencias = [];
+          renderizarOcorrencias([]);
+          return;
+        }
+
+        if (!resposta.ok) {
+          throw 'Erro ao listar ocorrências';
+        }
+
+        resposta.json().then(function (dados) {
+          ocorrencias = dados;
+          aplicarFiltros();
+        });
+      })
+      .catch(function (erro) {
+        console.log('#ERRO:', erro);
+      });
+  }
+
+  function aplicarFiltros() {
+    const textoBusca = normalizarTexto(inputBusca.value.trim());
+    const classificacaoSelecionada = selectClassificacaoFiltro.value;
+    const statusSelecionado = selectStatusFiltro.value;
+
+    const listaFiltrada = ocorrencias.filter(function (ocorrencia) {
+      const textoCompleto = normalizarTexto(`${ocorrencia.titulo} ${ocorrencia.local} ${ocorrencia.descricao} ${ocorrencia.nomeUsuario}`);
+
+      const passouBusca = textoCompleto.includes(textoBusca);
+      const passouClassificacao = classificacaoSelecionada === '' || ocorrencia.classificacao === classificacaoSelecionada;
+      const passouStatus = statusSelecionado === '' || normalizarTexto(ocorrencia.status).includes(normalizarTexto(statusSelecionado));
+
+      return passouBusca && passouClassificacao && passouStatus;
+    });
+
+    renderizarOcorrencias(listaFiltrada);
+  }
+
+  function renderizarOcorrencias(lista) {
+    const container = document.getElementById('ocorrencias_container');
+    container.innerHTML = '';
+
+    if (lista.length === 0) {
+      container.innerHTML = '<p class="empty-message">Nenhuma ocorrência encontrada.</p>';
+      return;
+    }
+
+    for (let i = 0; i < lista.length; i++) {
+      const ocorrencia = lista[i];
+      const card = document.createElement('div');
+      card.className = 'ocorrencia-card';
+
+      const classeTipo = obterClasseTipo(ocorrencia.classificacao);
+      const classeStatus = obterClasseStatus(ocorrencia.status);
+
+      card.innerHTML = `
+        <div class="left">
+          <div class="text">
+            <h4>Caso #${ocorrencia.idOcorrencia}</h4>
+            <p>Registrado por: <span>${escapeHtml(ocorrencia.nomeUsuario)}</span></p>
+            <h2>${escapeHtml(ocorrencia.titulo)} - <span>${escapeHtml(ocorrencia.local)}</span></h2>
+          </div>
+
+          <div class="info">
+            <div class="type ${classeTipo}">
+              ${escapeHtml(ocorrencia.classificacao).toUpperCase()}
+            </div>
+            <div class="status ${classeStatus}">
+              ${escapeHtml(ocorrencia.status).toUpperCase()}
+            </div>
+          </div>
+
+          <details>
+            <summary>Mais detalhes</summary>
+            <p>${escapeHtml(ocorrencia.descricao)}</p>
+          </details>
+        </div>
+        <div class="right">
+          <button class="editar" onclick="abrirPopup(${ocorrencia.idOcorrencia})">EDITAR</button>
+          <button class="excluir" onclick="excluirOcorrencia(${ocorrencia.idOcorrencia})">EXCLUIR</button>
+        </div>
+      `;
+
+      container.appendChild(card);
+    }
+  }
+
+  function abrirPopup(idOcorrencia = null) {
+    fecharPopup();
+
+    idOcorrenciaEditando = idOcorrencia;
+    const editando = idOcorrencia !== null;
+
+    let ocorrenciaAtual = null;
+    if (editando) {
+      ocorrenciaAtual = ocorrencias.find(function (item) {
+        return item.idOcorrencia === idOcorrencia;
+      });
+
+      if (!ocorrenciaAtual) {
+        alert('Ocorrência não encontrada. Atualize a página e tente novamente.');
+        return;
+      }
+    }
+
+    const popup = document.createElement('div');
+    popup.classList.add('popup-container');
+
+    popup.innerHTML = `
+      <div class="popup">
         <div class="text">
-          <h2>ABRIR OCORRÊNCIA</h2>
-          <h3>REGISTRE UM CASO</h3>
+          <h2>${editando ? 'EDITAR OCORRÊNCIA' : 'ABRIR OCORRÊNCIA'}</h2>
+          <h3>${editando ? 'ATUALIZE O CASO' : 'REGISTRE UM CASO'}</h3>
         </div>
         <div class="form">
           <div class="input-container">
             <label for="ipt_title">Título</label>
-            <input type="text" id="ipt_title" placeholder="Insira o título da ocorrência">
+            <input maxlength="55" type="text" id="ipt_title" placeholder="Insira o título da ocorrência" value="${editando && ocorrenciaAtual ? escapeHtml(ocorrenciaAtual.titulo) : ''}">
           </div>
 
           <div class="selects">
             <div class="input-container">
-              <label for="select_type">Classificação</label>
-              <select id="select_type">
-                <option value="#" selected disabled>Selecione o tipo de evento</option>
+              <label for="select_type_popup">Classificação</label>
+              <select id="select_type_popup">
+                ${gerarOpcoesSelect(opcoesClassificacao, 'Selecione o tipo de evento', editando && ocorrenciaAtual ? ocorrenciaAtual.classificacao : '')}
               </select>
             </div>
 
             <div class="input-container">
-              <label for="select_status">Status</label>
-              <select id="select_status">
-                <option value="#" selected disabled>Selecione o status atual da investigação</option>
+              <label for="select_status_popup">Status</label>
+              <select id="select_status_popup">
+                ${gerarOpcoesSelect(opcoesStatus, 'Selecione o status atual da investigação', editando && ocorrenciaAtual ? ocorrenciaAtual.status : '')}
               </select>
             </div>
           </div>
 
           <div class="input-container">
             <label for="ipt_place">Local</label>
-            <input type="text" id="ipt_place" placeholder="Insira o local do ocorrido">
+            <input maxlength="100" type="text" id="ipt_place" placeholder="Insira o local do ocorrido" value="${editando && ocorrenciaAtual ? escapeHtml(ocorrenciaAtual.local) : ''}">
           </div>
 
           <div class="input-container">
             <label for="ipt_desc">Descrição</label>
-            <input class="desc" type="text" id="ipt_desc" placeholder="Informe mais detalhes sobre o relatório">
+            <input maxlength="500" class="desc" type="text" id="ipt_desc" placeholder="Informe mais detalhes sobre o relatório" value="${editando && ocorrenciaAtual ? escapeHtml(ocorrenciaAtual.descricao) : ''}">
           </div>
 
           <div class="buttons">
-            <button class="salvar">SALVAR OCORRÊNCIA</button>
+            <button class="salvar" onclick="salvarOcorrencia()">${editando ? 'ATUALIZAR OCORRÊNCIA' : 'SALVAR OCORRÊNCIA'}</button>
             <button class="cancelar" onclick="fecharPopup()">CANCELAR</button>
           </div>
         </div>
-      </div>`
+      </div>
+    `;
 
-    document.body.appendChild(popup)
+    document.body.appendChild(popup);
   }
 
   function fecharPopup() {
-    var popup = document.querySelector('.popup-container')
-    popup.remove()
+    const popup = document.querySelector('.popup-container');
+    if (popup) {
+      popup.remove();
+    }
+    idOcorrenciaEditando = null;
   }
- 
+
+  function salvarOcorrencia() {
+    const titulo = document.getElementById('ipt_title').value.trim();
+    const classificacao = document.getElementById('select_type_popup').value;
+    const status = document.getElementById('select_status_popup').value;
+    const local = document.getElementById('ipt_place').value.trim();
+    const descricao = document.getElementById('ipt_desc').value.trim();
+
+    if (titulo === '' || classificacao === '' || status === '' || local === '' || descricao === '') {
+      alert('Preencha todos os campos da ocorrência.');
+      return;
+    }
+
+    const idUsuario = sessionStorage.ID_USUARIO;
+    if (!idUsuario) {
+      alert('Usuário não identificado. Faça login novamente.');
+      return;
+    }
+
+    const corpo = {
+      titulo: titulo,
+      classificacao: classificacao,
+      status: status,
+      local: local,
+      descricao: descricao
+    };
+
+    const editando = idOcorrenciaEditando !== null;
+    const endpoint = editando
+      ? `/ocorrencias/editar/${idOcorrenciaEditando}`
+      : `/ocorrencias/publicar/${idUsuario}`;
+    const metodo = editando ? 'PUT' : 'POST';
+
+    fetch(endpoint, {
+      method: metodo,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(corpo)
+    })
+      .then(function (resposta) {
+        if (resposta.ok) {
+          fecharPopup();
+          listarOcorrencias();
+        } else {
+          throw 'Erro ao salvar ocorrência';
+        }
+      })
+      .catch(function (erro) {
+        console.log('#ERRO:', erro);
+        alert('Não foi possível salvar a ocorrência.');
+      });
+  }
+
+  function excluirOcorrencia(idOcorrencia) {
+    const confirmou = confirm('Deseja realmente excluir essa ocorrência?');
+    if (!confirmou) {
+      return;
+    }
+
+    fetch(`/ocorrencias/deletar/${idOcorrencia}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(function (resposta) {
+        if (resposta.ok) {
+          listarOcorrencias();
+        } else {
+          throw 'Erro ao excluir ocorrência';
+        }
+      })
+      .catch(function (erro) {
+        console.log('#ERRO:', erro);
+        alert('Não foi possível excluir a ocorrência.');
+      });
+  }
+
+  function gerarOpcoesSelect(opcoes, placeholder, valorSelecionado) {
+    let opcoesHtml = `<option value="" disabled ${valorSelecionado ? '' : 'selected'}>${placeholder}</option>`;
+
+    for (let i = 0; i < opcoes.length; i++) {
+      const opcao = opcoes[i];
+      const selecionado = valorSelecionado === opcao ? 'selected' : '';
+      opcoesHtml += `<option value="${opcao}" ${selecionado}>${opcao}</option>`;
+    }
+
+    return opcoesHtml;
+  }
+
+  function obterClasseTipo(classificacao) {
+    if (classificacao === 'Entidades espirituais') {
+      return 'pink-bkg';
+    }
+
+    if (classificacao === 'Locais assombrados') {
+      return 'yellow-bkg';
+    }
+
+    if (classificacao === 'Seitas paranormais') {
+      return 'green-bkg';
+    }
+
+    return 'purple-bkg';
+  }
+
+  function obterClasseStatus(status) {
+    const statusNormalizado = normalizarTexto(status);
+
+    if (statusNormalizado.includes('investig')) {
+      return 'em-andamento';
+    }
+
+    if (statusNormalizado.includes('resolvid')) {
+      return 'resolvido';
+    }
+
+    return 'sem-explicacao';
+  }
+
+  function normalizarTexto(texto) {
+    return (texto || '')
+      .toString()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function escapeHtml(texto) {
+    return (texto || '')
+      .toString()
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
 </script>

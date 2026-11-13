@@ -109,6 +109,10 @@ input:focus {
   font-size: 20px;
 }
 
+.error {
+  outline: 3px solid #dc143c !important;
+}
+
 .form-container > button {
     padding: 12px 12px;
     margin-top: 24px;
