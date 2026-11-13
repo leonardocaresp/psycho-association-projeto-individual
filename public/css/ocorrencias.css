@@ -318,7 +318,7 @@
 
 .selects {
   display: flex;
-  column-gap: 12px;
+  column-gap: 24px;
 }
 
 .popup select {

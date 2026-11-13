@@ -13,6 +13,7 @@
   <link rel="icon" type="image/x-icon" href="../assets/icon/psycho-association-logo.svg">
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body onload="apagarCarregamento(); onloadEsconder();  /* validarSessao(); */">
@@ -80,8 +81,12 @@
      
       <div id="pontuacaoEJogo" class="quiz-content">
         <button id="btnIniciarQuiz" onclick="iniciarQuiz()" class="start">INICIAR TESTE</button>
-        <img src="../assets/imgs/arataka-reigen-quiz.png" id="reigen">
+        <!-- <img src="../assets/imgs/arataka-reigen-quiz.png" id="reigen"> -->
         <div id="jogo" class="jogo-container">
+          <div class="timer-quiz">
+            <span id="spanTempoQuiz">10:00</span>
+            <i class="material-icons">timer</i>
+          </div>
 
           <div id="infoQuestao" class="info">
             <span>Questão atual: <span id="spanNumeroDaQuestaoAtual"></span> de <span id="qtdQuestoes"></span>
@@ -95,24 +100,24 @@
 
 
           <div id="opcoes" class="options-container">
-            <span class="choice">
-              <div>A</div>
-              <input type="radio" id="primeiraOpcao" name="option" class="radio" value="alternativaA" />
+            <span class="choice" onclick="selecionarOpcaoPorId('primeiraOpcao')">
+              <div class="choice-letter">A</div>
+              <input type="radio" id="primeiraOpcao" name="option" class="radio" value="0" />
               <label for="primeiraOpcao" class="option" id="labelOpcaoUm"></label>
             </span>
-            <span class="choice">
-              <div>B</div>
-              <input type="radio" id="segundaOpcao" name="option" class="radio" value="alternativaB" />
+            <span class="choice" onclick="selecionarOpcaoPorId('segundaOpcao')">
+              <div class="choice-letter">B</div>
+              <input type="radio" id="segundaOpcao" name="option" class="radio" value="1" />
               <label for="segundaOpcao" class="option" id="labelOpcaoDois"></label>
             </span>
-            <span class="choice">
-              <div>C</div>
-              <input type="radio" id="terceiraOpcao" name="option" class="radio" value="alternativaC" />
+            <span class="choice" onclick="selecionarOpcaoPorId('terceiraOpcao')">
+              <div class="choice-letter">C</div>
+              <input type="radio" id="terceiraOpcao" name="option" class="radio" value="2" />
               <label for="terceiraOpcao" class="option" id="labelOpcaoTres"></label>
             </span>
-            <span class="choice">
-              <div>D</div>
-              <input type="radio" id="quartaOpcao" name="option" class="radio" value="alternativaD" />
+            <span class="choice" onclick="selecionarOpcaoPorId('quartaOpcao')">
+              <div class="choice-letter">D</div>
+              <input type="radio" id="quartaOpcao" name="option" class="radio" value="3" />
               <label for="quartaOpcao" class="option" id="labelOpcaoQuatro"></label>
             </span>
           </div>
@@ -122,21 +127,47 @@
               <button onclick="submeter()" id="btnSubmeter" class="submit">Submeter resposta</button>
               <button onclick="avancar()" id="btnProx" class="next" disabled>Próxima questão</button>
             </div>
-            <!-- <button onclick="finalizar()" id="btnConcluir" disabled>Finalizar Quiz</button> -->
-            <button onclick="tentarNovamente()" id="btnTentarNovamente" disabled>Tentar novamente</button>
           </div>
         </div>
-        <div id="pontuacao" class="pontuacao">
-          <div id="pontuacaoDuranteJogo" class="flex-colunar padding-rem">
-            <span class="width-fit-content">QUANTIDADE DE ACERTOS: <span id="spanCertas"></span></span>
-            <span class="width-fit-content">QUANTIDADE DE ERROS: <span id="spanErradas"></span></span>
+        <div id="resultadoFinal" class="resultado-final">
+          <div class="resultado-titulo">
+            <h2>RESULTADO FINAL</h2>
+            <h3 id="msgFinal">-</h3>
           </div>
-          <div id="pontuacaoFinalJogo" class="flex-colunar padding-rem">
-            <span id="pontuacaoFinal" class="width-fit-content">Pontuação Final:
-              <span id="spanPontuacaoFinal">***</span>
-            </span>
-            <span id="msgFinal" class="width-fit-content">***</span>
+
+          <div class="resultado-kpi-row">
+            <div class="kpi">
+              <div class="top">ACERTOS TOTAIS</div>
+              <div class="bottom"><span id="spanPontuacaoFinal">0 / 20</span></div>
+            </div>
+            <div class="kpi">
+              <div class="top">PERCENTUAL FINAL</div>
+              <div class="bottom"><span id="spanPercentualFinal">0%</span></div>
+            </div>
           </div>
+
+          <div class="resultado-charts-row">
+            <div class="chart">
+              <div class="top">MÉTRICAS POR CATEGORIA</div>
+              <div class="bottom resultado-categorias">
+                <span>Paranormal: <strong id="acerto_paranormal">0/5</strong></span>
+                <span>Investigação: <strong id="acerto_investigacao">0/5</strong></span>
+                <span>Contenção: <strong id="acerto_contencao">0/5</strong></span>
+                <span>Estratégia: <strong id="acerto_estrategia">0/5</strong></span>
+              </div>
+            </div>
+
+            <div class="chart" style="flex: 1.4;">
+              <div class="top">DESEMPENHO POR CATEGORIA</div>
+              <div class="bottom">
+                <div class="radar-container">
+                  <canvas id="radarCategorias"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button onclick="tentarNovamente()" id="btnTentarNovamente" class="start btn-resultado">Tentar novamente</button>
         </div>
       </div>
     </div>
@@ -146,337 +177,529 @@
 
 </html>
 <script>
- 
-const listaDeQuestoes = [
-  {
-    pergunta: "Durante uma investigação, sua equipe identifica objetos levitando sempre que um adolescente entra em determinado cômodo. Qual é a hipótese mais provável?",
-    alternativaA: "Manifestação de telecinese",
-    alternativaB: "Possessão espiritual",
-    alternativaC: "Anomalia territorial",
-    alternativaD: "Manifestação meteorológica",
-    alternativaCorreta: "alternativaA"
-  },
+const examCategories = {
+  paranormal: [
+    {
+      question: "Qual é a principal característica de uma manifestação espiritual?",
+      alternatives: [
+        "A presença de alterações ou fenômenos inexplicáveis associados a uma entidade.",
+        "A ocorrência de fenômenos exclusivamente naturais.",
+        "A existência obrigatória de objetos amaldiçoados.",
+        "A presença de atividades sísmicas."
+      ],
+      correctAnswer: 0
+    },
+    {
+      question: "O que caracteriza um objeto assombrado?",
+      alternatives: [
+        "Um objeto que possui grande valor histórico.",
+        "Um objeto associado a manifestações ou atividades paranormais.",
+        "Um objeto que apresenta defeitos de fabricação.",
+        "Um objeto que foi abandonado por seu proprietário."
+      ],
+      correctAnswer: 1
+    },
+    {
+      question: "O que é uma possessão espiritual?",
+      alternatives: [
+        "Quando uma entidade influencia ou assume o controle de um indivíduo.",
+        "Quando uma pessoa apresenta habilidades físicas incomuns.",
+        "Quando um espírito aparece em fotografias.",
+        "Quando um objeto muda de localização sozinho."
+      ],
+      correctAnswer: 0
+    },
+    {
+      question: "Qual situação pode indicar a presença de uma maldição?",
+      alternatives: [
+        "Uma sequência de acontecimentos sem relação com o ambiente.",
+        "A ocorrência de eventos anormais associados a uma pessoa ou local.",
+        "A deterioração natural de um imóvel antigo.",
+        "A presença de animais em uma residência."
+      ],
+      correctAnswer: 1
+    },
+    {
+      question: "Por que é importante classificar o nível de ameaça de uma entidade?",
+      alternatives: [
+        "Para determinar seu valor comercial.",
+        "Para identificar sua idade aproximada.",
+        "Para avaliar os riscos e definir os procedimentos adequados.",
+        "Para descobrir sua localização original."
+      ],
+      correctAnswer: 2
+    }
+  ],
 
-  {
-    pergunta: "Moradores relatam ouvir vozes vindas de um apartamento vazio. Qual deve ser o primeiro procedimento da equipe?",
-    alternativaA: "Classificar imediatamente o local como assombrado",
-    alternativaB: "Registrar os relatos e buscar evidências que confirmem a ocorrência",
-    alternativaC: "Solicitar a demolição do imóvel",
-    alternativaD: "Ignorar os relatos por falta de confirmação visual",
-    alternativaCorreta: "alternativaB"
-  },
+  investigacao: [
+    {
+      question: "Durante uma ocorrência, moradores relatam ouvir vozes durante a madrugada. Qual deve ser a primeira atitude do agente?",
+      alternatives: [
+        "Concluir imediatamente que existe um espírito.",
+        "Investigar os relatos e buscar evidências que confirmem o fenômeno.",
+        "Recomendar que os moradores abandonem o imóvel.",
+        "Ignorar os relatos por não apresentarem provas."
+      ],
+      correctAnswer: 1
+    },
+    {
+      question: "Dois moradores apresentam versões diferentes sobre uma manifestação paranormal. O que o investigador deve fazer?",
+      alternatives: [
+        "Considerar apenas o relato mais assustador.",
+        "Descartar os dois relatos.",
+        "Comparar as informações e buscar evidências independentes.",
+        "Escolher a versão apresentada primeiro."
+      ],
+      correctAnswer: 2
+    },
+    {
+      question: "Durante uma investigação, o agente encontra marcas incomuns em uma parede. Qual é a melhor conduta?",
+      alternatives: [
+        "Remover as marcas imediatamente.",
+        "Fotografar, registrar e analisar as evidências.",
+        "Concluir que foram produzidas por uma entidade.",
+        "Ignorar as marcas e continuar a investigação."
+      ],
+      correctAnswer: 1
+    },
+    {
+      question: "Qual é a utilidade de identificar padrões em ocorrências paranormais?",
+      alternatives: [
+        "Relacionar eventos e identificar possíveis causas em comum.",
+        "Evitar a necessidade de registrar evidências.",
+        "Determinar automaticamente a identidade da entidade.",
+        "Eliminar a possibilidade de novas ocorrências."
+      ],
+      correctAnswer: 0
+    },
+    {
+      question: "Uma residência apresenta quedas frequentes de temperatura sempre no mesmo cômodo. O que o investigador deve considerar?",
+      alternatives: [
+        "Que a presença de um espírito está confirmada.",
+        "Que o fenômeno deve ser ignorado.",
+        "Que é necessário investigar possíveis causas ambientais e paranormais.",
+        "Que todos os cômodos devem apresentar a mesma temperatura."
+      ],
+      correctAnswer: 2
+    }
+  ],
 
-  {
-    pergunta: "Qual alternativa descreve corretamente uma possessão espiritual?",
-    alternativaA: "Um indivíduo consegue mover objetos com a mente",
-    alternativaB: "Um ambiente apresenta alterações inexplicáveis de temperatura",
-    alternativaC: "Uma entidade espiritual assume o controle do corpo de um indivíduo",
-    alternativaD: "Uma pessoa consegue prever acontecimentos futuros",
-    alternativaCorreta: "alternativaC"
-  },
+  contencao: [
+    {
+      question: "Qual é o principal objetivo de um procedimento de contenção?",
+      alternatives: [
+        "Eliminar qualquer evidência da ocorrência.",
+        "Impedir ou limitar a manifestação e seus possíveis danos.",
+        "Atrair outras entidades para o local.",
+        "Aumentar a atividade paranormal."
+      ],
+      correctAnswer: 1
+    },
+    {
+      question: "Uma entidade apresenta comportamento hostil durante uma investigação. Qual deve ser a prioridade da equipe?",
+      alternatives: [
+        "Tentar estabelecer contato físico com a entidade.",
+        "Continuar a investigação sem alterações.",
+        "Garantir a segurança das pessoas e seguir o protocolo de contenção.",
+        "Separar os agentes para investigar mais rapidamente."
+      ],
+      correctAnswer: 2
+    },
+    {
+      question: "Por que uma área afetada por atividade paranormal pode precisar ser isolada?",
+      alternatives: [
+        "Para evitar a circulação de pessoas e reduzir possíveis riscos.",
+        "Para aumentar a concentração de energia espiritual.",
+        "Para impedir que outros agentes tenham acesso aos relatórios.",
+        "Para garantir que a entidade permaneça no local."
+      ],
+      correctAnswer: 0
+    },
+    {
+      question: "Um agente percebe uma alteração intensa em sua própria energia espiritual. Qual atitude é mais adequada?",
+      alternatives: [
+        "Ignorar a alteração e continuar trabalhando.",
+        "Tentar liberar toda a energia de uma vez.",
+        "Comunicar a equipe e seguir os procedimentos de segurança.",
+        "Abandonar os equipamentos no local."
+      ],
+      correctAnswer: 2
+    },
+    {
+      question: "Antes de iniciar a contenção de uma entidade desconhecida, o que deve ser feito?",
+      alternatives: [
+        "Atacar imediatamente para evitar uma reação.",
+        "Avaliar o nível de ameaça e as características da manifestação.",
+        "Desligar todos os equipamentos de monitoramento.",
+        "Permitir que civis se aproximem para observar."
+      ],
+      correctAnswer: 1
+    }
+  ],
 
-  {
-    pergunta: "Durante uma investigação, um equipamento começa a apresentar leituras anormais. O que deve ser feito antes de considerar os resultados como evidências paranormais?",
-    alternativaA: "Encerrar a investigação",
-    alternativaB: "Descartar imediatamente o equipamento",
-    alternativaC: "Classificar a ocorrência como uma manifestação espiritual",
-    alternativaD: "Verificar o funcionamento e a calibração do equipamento",
-    alternativaCorreta: "alternativaD"
-  },
+  estrategia: [
+    {
+      question: "Durante uma ocorrência, dois agentes discordam sobre como abordar uma entidade. Qual é a melhor decisão?",
+      alternatives: [
+        "Permitir que cada um execute seu próprio plano.",
+        "Escolher a estratégia mais arriscada para economizar tempo.",
+        "Discutir as opções considerando as evidências e os riscos.",
+        "Interromper a operação permanentemente."
+      ],
+      correctAnswer: 2
+    },
+    {
+      question: "Uma equipe recebe informações de que uma ocorrência pode ser mais perigosa do que o esperado. O que deve fazer?",
+      alternatives: [
+        "Ignorar as novas informações para cumprir o cronograma.",
+        "Reavaliar o planejamento e adaptar os procedimentos.",
+        "Enviar apenas um agente para verificar a situação.",
+        "Divulgar as informações para os moradores antes de confirmar os fatos."
+      ],
+      correctAnswer: 1
+    },
+    {
+      question: "Qual é a importância da comunicação durante uma operação paranormal?",
+      alternatives: [
+        "Garantir que os agentes compartilhem informações relevantes e coordenem suas ações.",
+        "Evitar que os agentes precisem seguir um planejamento.",
+        "Permitir que cada membro tome decisões sem informar os demais.",
+        "Reduzir a quantidade de registros da ocorrência."
+      ],
+      correctAnswer: 0
+    },
+    {
+      question: "Um agente percebe que seu colega está em perigo enquanto a equipe executa uma operação. O que deve fazer?",
+      alternatives: [
+        "Continuar sua tarefa independentemente da situação.",
+        "Abandonar todos os equipamentos e fugir.",
+        "Comunicar a equipe e agir conforme o protocolo de segurança.",
+        "Esperar que outro agente perceba o problema."
+      ],
+      correctAnswer: 2
+    },
+    {
+      question: "Uma equipe precisa escolher entre investigar uma nova pista ou garantir a evacuação de civis em uma área de risco. Qual deve ser a prioridade?",
+      alternatives: [
+        "Investigar a pista, pois ela pode resolver a ocorrência.",
+        "Garantir a segurança e evacuação dos civis.",
+        "Dividir a equipe igualmente sem avaliar os riscos.",
+        "Esperar que a situação se resolva sozinha."
+      ],
+      correctAnswer: 1
+    }
+  ]
+};
 
-  {
-    pergunta: "Uma gravação registra vozes em um ambiente aparentemente vazio, mas nenhuma outra evidência foi encontrada. Qual conclusão é mais adequada?",
-    alternativaA: "O local está definitivamente possuído",
-    alternativaB: "A ocorrência precisa de investigação adicional",
-    alternativaC: "Uma entidade específica está presente no local",
-    alternativaD: "A gravação comprova a existência de um espírito agressivo",
-    alternativaCorreta: "alternativaB"
-  },
+function montarQuestoesIntercaladas(categorias) {
+  const ordemCategorias = ['paranormal', 'investigacao', 'contencao', 'estrategia'];
+  const questoesIntercaladas = [];
 
-  {
-    pergunta: "O que caracteriza uma manifestação de telecinese?",
-    alternativaA: "A capacidade de se comunicar com espíritos",
-    alternativaB: "A capacidade de prever acontecimentos",
-    alternativaC: "A capacidade de movimentar objetos utilizando a mente",
-    alternativaD: "A capacidade de desaparecer fisicamente",
-    alternativaCorreta: "alternativaC"
-  },
-
-  {
-    pergunta: "Durante uma investigação, sua equipe identifica uma região com temperatura muito inferior ao restante do ambiente. Qual seria a atitude mais adequada?",
-    alternativaA: "Investigar a origem da alteração e comparar as medições com o ambiente ao redor",
-    alternativaB: "Concluir imediatamente que existe um espírito no local",
-    alternativaC: "Abandonar o local sem registrar a ocorrência",
-    alternativaD: "Classificar o fenômeno como telecinese",
-    alternativaCorreta: "alternativaA"
-  },
-
-  {
-    pergunta: "Dois moradores apresentam relatos diferentes sobre uma mesma ocorrência paranormal. Como a equipe deve proceder?",
-    alternativaA: "Considerar apenas o relato mais detalhado",
-    alternativaB: "Descartar os dois depoimentos",
-    alternativaC: "Escolher aleatoriamente uma das versões",
-    alternativaD: "Coletar depoimentos individuais e comparar as informações",
-    alternativaCorreta: "alternativaD"
-  },
-
-  {
-    pergunta: "Uma entidade espiritual apresenta comportamento agressivo durante uma investigação. Qual deve ser a prioridade da equipe?",
-    alternativaA: "Tentar estabelecer contato físico imediatamente",
-    alternativaB: "Garantir a segurança dos integrantes e manter uma distância segura",
-    alternativaC: "Provocar a entidade para observar sua reação",
-    alternativaD: "Dividir a equipe para investigar diferentes cômodos",
-    alternativaCorreta: "alternativaB"
-  },
-
-  {
-    pergunta: "Uma ocorrência apresenta movimentação inexplicável de objetos, mas o fenômeno acontece apenas quando não há testemunhas presentes. Qual procedimento pode ajudar a investigação?",
-    alternativaA: "Encerrar o caso por falta de testemunhas",
-    alternativaB: "Classificar a ocorrência como uma possessão",
-    alternativaC: "Instalar equipamentos de registro para observar o ambiente durante a ausência de pessoas",
-    alternativaD: "Concluir que os objetos estão sendo movimentados por uma entidade",
-    alternativaCorreta: "alternativaC"
-  },
-
-  {
-    pergunta: "Uma equipe investigou uma ocorrência, mas não conseguiu identificar sua origem nem encontrar evidências suficientes. Qual status deve ser atribuído ao relatório?",
-    alternativaA: "Resolvido",
-    alternativaB: "Descartado",
-    alternativaC: "Concluído com sucesso",
-    alternativaD: "Inconclusivo",
-    alternativaCorreta: "alternativaD"
-  },
-
-  {
-    pergunta: "Durante uma investigação, foram identificados padrões de manifestações sempre às 18h, 20h e 22h. Caso o padrão continue, quando deverá ocorrer a próxima manifestação?",
-    alternativaA: "00h",
-    alternativaB: "23h",
-    alternativaC: "01h",
-    alternativaD: "02h",
-    alternativaCorreta: "alternativaA"
-  },
-
-  {
-    pergunta: "Diversos moradores de um mesmo edifício relatam manifestações semelhantes, mesmo sem terem conversado entre si. O que essa informação representa para a investigação?",
-    alternativaA: "Uma prova definitiva de possessão",
-    alternativaB: "Um conjunto de relatos independentes que pode ajudar a corroborar a ocorrência",
-    alternativaC: "Uma evidência de que todos os moradores possuem poderes psíquicos",
-    alternativaD: "Uma confirmação de que o edifício está condenado",
-    alternativaCorreta: "alternativaB"
-  },
-
-  {
-    pergunta: "Um equipamento utilizado para detectar atividade paranormal começa a apresentar resultados inconsistentes. Após verificar o aparelho, a equipe identifica que sua bateria está quase descarregada. O que deve ser feito?",
-    alternativaA: "Registrar os resultados como evidências definitivas",
-    alternativaB: "Classificar o local como uma zona de alta atividade paranormal",
-    alternativaC: "Substituir a bateria e repetir as medições",
-    alternativaD: "Descartar todas as evidências coletadas durante a investigação",
-    alternativaCorreta: "alternativaC"
-  },
-
-  {
-    pergunta: "Qual conjunto de informações é essencial para documentar corretamente uma ocorrência paranormal?",
-    alternativaA: "Nome do investigador e opinião pessoal sobre o fenômeno",
-    alternativaB: "Apenas o tipo de entidade identificada",
-    alternativaC: "Somente a localização e o status da ocorrência",
-    alternativaD: "Data, localização, descrição do fenômeno e evidências coletadas",
-    alternativaCorreta: "alternativaD"
-  },
-
-  {
-    pergunta: "Durante uma investigação, um indivíduo demonstra capacidade de movimentar objetos sem contato físico, utilizando apenas sua mente. Como ele deve ser classificado?",
-    alternativaA: "Indivíduo com habilidades psíquicas",
-    alternativaB: "Entidade espiritual",
-    alternativaC: "Anomalia territorial",
-    alternativaD: "Objeto paranormal",
-    alternativaCorreta: "alternativaA"
-  },
-
-  {
-    pergunta: "Uma equipe identifica uma ocorrência aparentemente paranormal, mas ainda existem possíveis explicações naturais para o fenômeno. Qual é a melhor conduta?",
-    alternativaA: "Ignorar todas as explicações naturais",
-    alternativaB: "Investigar as diferentes hipóteses antes de estabelecer uma conclusão",
-    alternativaC: "Classificar imediatamente o caso como uma manifestação espiritual",
-    alternativaD: "Encerrar o relatório sem registrar as evidências",
-    alternativaCorreta: "alternativaB"
-  },
-
-  {
-    pergunta: "Durante uma investigação, a equipe percebe que as manifestações cessam sempre que determinado indivíduo deixa o ambiente. O que pode ser concluído com essa informação?",
-    alternativaA: "O indivíduo é definitivamente uma entidade espiritual",
-    alternativaB: "A ocorrência está completamente resolvida",
-    alternativaC: "Existe uma possível relação entre o indivíduo e as manifestações, que precisa ser investigada",
-    alternativaD: "O ambiente não apresenta nenhuma atividade paranormal",
-    alternativaCorreta: "alternativaC"
-  },
-
-  {
-    pergunta: "Um investigador precisa compartilhar informações sobre uma ocorrência que envolve dados pessoais de uma testemunha. Qual é a conduta mais adequada?",
-    alternativaA: "Publicar todos os dados para facilitar a investigação",
-    alternativaB: "Enviar as informações para qualquer membro da organização",
-    alternativaC: "Compartilhar os dados em redes sociais para buscar testemunhas",
-    alternativaD: "Compartilhar apenas com pessoas autorizadas e preservar as informações pessoais",
-    alternativaCorreta: "alternativaD"
-  },
-
-  {
-    pergunta: "Após uma investigação, a equipe consegue identificar a origem do fenômeno e confirmar que ele não representa mais uma ameaça. Qual deve ser o próximo procedimento?",
-    alternativaA: "Atualizar o status para resolvido e arquivar as informações finais da investigação",
-    alternativaB: "Excluir o relatório para liberar espaço no sistema",
-    alternativaC: "Manter a ocorrência como não investigada",
-    alternativaD: "Criar outro relatório sem relação com o caso anterior",
-    alternativaCorreta: "alternativaA"
+  for (let rodada = 0; rodada < 5; rodada++) {
+    for (let i = 0; i < ordemCategorias.length; i++) {
+      const categoria = ordemCategorias[i];
+      const questao = categorias[categoria][rodada];
+      questoesIntercaladas.push({
+        category: categoria,
+        question: questao.question,
+        alternatives: questao.alternatives,
+        correctAnswer: questao.correctAnswer
+      });
+    }
   }
-];
+
+  return questoesIntercaladas;
+}
+
+const listaDeQuestoes = montarQuestoesIntercaladas(examCategories);
 
 
   // variáveis globais    
-  let numeroDaQuestaoAtual = 0
-  let pontuacaoFinal = 0
-  let tentativaIncorreta = 0
-  let certas = 0
-  let erradas = 0
-  let quantidadeDeQuestoes = listaDeQuestoes.length
-  // let isUltima = numeroDaQuestaoAtual == quantidadeDeQuestoes-1 ? true : false
+  let numeroDaQuestaoAtual = 0;
+  let pontuacaoFinal = 0;
+  let quantidadeDeQuestoes = listaDeQuestoes.length;
+  let graficoRadar = null;
+  let opcoesConfiguradas = false;
+  let atalhoEnterConfigurado = false;
+  let tempoRestanteSegundos = 600;
+  let intervaloTimer = null;
+  let quizFinalizado = false;
+
+  const acertosPorCategoria = {
+    paranormal: 0,
+    investigacao: 0,
+    contencao: 0,
+    estrategia: 0
+  };
 
   function onloadEsconder() {
-    document.getElementById('pontuacao').style.display = "none"
-    document.getElementById('jogo').style.display = "none"
-    document.getElementById('reigen').style.display = "none"
+    const imagemReigen = document.getElementById('reigen');
+    configurarSelecaoOpcoes();
+    configurarAtalhoEnter();
+    document.getElementById('resultadoFinal').style.display = "none";
+    document.getElementById('jogo').style.display = "none";
+    atualizarTempoQuiz();
+    if (imagemReigen) {
+      imagemReigen.style.display = "none";
+    }
+  }
+
+  function formatarTempo(totalSegundos) {
+    const minutos = Math.floor(totalSegundos / 60);
+    const segundos = totalSegundos % 60;
+    const minutosFormatados = String(minutos).padStart(2, '0');
+    const segundosFormatados = String(segundos).padStart(2, '0');
+    return `${minutosFormatados}:${segundosFormatados}`;
+  }
+
+  function atualizarTempoQuiz() {
+    document.getElementById('spanTempoQuiz').innerHTML = formatarTempo(tempoRestanteSegundos);
+  }
+
+  function pararTimerQuiz() {
+    if (intervaloTimer) {
+      clearInterval(intervaloTimer);
+      intervaloTimer = null;
+    }
+  }
+
+  function iniciarTimerQuiz() {
+    pararTimerQuiz();
+    tempoRestanteSegundos = 600;
+    atualizarTempoQuiz();
+
+    intervaloTimer = setInterval(function () {
+      tempoRestanteSegundos--;
+      atualizarTempoQuiz();
+
+      if (tempoRestanteSegundos <= 0) {
+        pararTimerQuiz();
+        if (!quizFinalizado) {
+          alert('Tempo esgotado! O exame será encerrado automaticamente.');
+          finalizarJogo();
+        }
+      }
+    }, 1000);
+  }
+
+  function configurarAtalhoEnter() {
+    if (atalhoEnterConfigurado) {
+      return;
+    }
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key !== 'Enter') {
+        return;
+      }
+
+      const jogo = document.getElementById('jogo');
+      const resultadoFinal = document.getElementById('resultadoFinal');
+      const quizAtivo = jogo.style.display === 'flex' && resultadoFinal.style.display !== 'flex';
+
+      if (!quizAtivo) {
+        return;
+      }
+
+      event.preventDefault();
+
+      if (!btnSubmeter.disabled) {
+        submeter();
+        return;
+      }
+
+      if (!btnProx.disabled) {
+        avancar();
+      }
+    });
+
+    atalhoEnterConfigurado = true;
   }
 
   function iniciarQuiz() {
-    document.getElementById('pontuacao').style.display = "flex"
-    document.getElementById('jogo').style.display = "flex"
-    document.getElementById('reigen').style.display = "block"
-    document.getElementById('btnIniciarQuiz').style.display = "none"
-    document.querySelector('.infos-quiz').style.display = "none"
-    document.querySelector('.top-container').style.display = "none"
+    const imagemReigen = document.getElementById('reigen');
+    document.getElementById('jogo').style.display = "flex";
+    if (imagemReigen) {
+      imagemReigen.style.display = "block";
+    }
+    document.getElementById('resultadoFinal').style.display = "none";
+    document.getElementById('btnIniciarQuiz').style.display = "none";
+    document.querySelector('.infos-quiz').style.display = "none";
+    document.querySelector('.top-container').style.display = "none";
 
-    document.getElementById('qtdQuestoes').innerHTML = quantidadeDeQuestoes
+    quizFinalizado = false;
 
-    preencherHTMLcomQuestaoAtual(0)
+    document.getElementById('qtdQuestoes').innerHTML = quantidadeDeQuestoes;
+    barra.max = quantidadeDeQuestoes;
+    barra.value = 1;
+    iniciarTimerQuiz();
 
-    btnSubmeter.disabled = false
-    btnProx.disabled = true
-    // btnConcluir.disabled = true
-    btnTentarNovamente.disabled = true
+    preencherHTMLcomQuestaoAtual(0);
+
+    btnSubmeter.disabled = false;
+    btnProx.disabled = true;
+    btnTentarNovamente.disabled = true;
   }
 
   function preencherHTMLcomQuestaoAtual(index) {
-    habilitarAlternativas(true)
-    const questaoAtual = listaDeQuestoes[index]
-    numeroDaQuestaoAtual = index
-    console.log("questaoAtual")
-    console.log(questaoAtual)
-    document.getElementById("spanNumeroDaQuestaoAtual").innerHTML = Number(index) + 1 // ajustando porque o index começa em 0
-    document.getElementById("spanQuestaoExibida").innerHTML = questaoAtual.pergunta;
-    document.getElementById("labelOpcaoUm").innerHTML = questaoAtual.alternativaA;
-    document.getElementById("labelOpcaoDois").innerHTML = questaoAtual.alternativaB;
-    document.getElementById("labelOpcaoTres").innerHTML = questaoAtual.alternativaC;
-    document.getElementById("labelOpcaoQuatro").innerHTML = questaoAtual.alternativaD;
+    habilitarAlternativas(true);
+    const questaoAtual = listaDeQuestoes[index];
+    numeroDaQuestaoAtual = index;
+    document.getElementById("spanNumeroDaQuestaoAtual").innerHTML = Number(index) + 1;
+    document.getElementById("spanQuestaoExibida").innerHTML = questaoAtual.question;
+    document.getElementById("labelOpcaoUm").innerHTML = questaoAtual.alternatives[0];
+    document.getElementById("labelOpcaoDois").innerHTML = questaoAtual.alternatives[1];
+    document.getElementById("labelOpcaoTres").innerHTML = questaoAtual.alternatives[2];
+    document.getElementById("labelOpcaoQuatro").innerHTML = questaoAtual.alternatives[3];
+    barra.value = index + 1;
   }
 
   function submeter() {
     const options = document.getElementsByName("option"); // recupera alternativas no html
 
-    let hasChecked = false
+    let hasChecked = false;
     for (let i = 0; i < options.length; i++) {
       if (options[i].checked) {
-        hasChecked = true
-        break
+        hasChecked = true;
+        break;
       }
     }
 
     if (!hasChecked) {
-      alert("Não há alternativas escolhidas. Escolha uma opção.")
+      alert("Não há alternativas escolhidas. Escolha uma opção.");
     } else {
-      btnSubmeter.disabled = true
-      btnProx.disabled = false
+      btnSubmeter.disabled = true;
+      btnProx.disabled = false;
 
-      habilitarAlternativas(false)
+      habilitarAlternativas(false);
 
-      checarResposta()
+      checarResposta();
     }
 
   }
 
-  function habilitarAlternativas(trueOrFalse) {
-    let opcaoEscolhida = trueOrFalse ? false : true
+  function configurarSelecaoOpcoes() {
+    if (opcoesConfiguradas) {
+      return;
+    }
 
-    primeiraOpcao.disabled = opcaoEscolhida
-    segundaOpcao.disabled = opcaoEscolhida
-    terceiraOpcao.disabled = opcaoEscolhida
-    quartaOpcao.disabled = opcaoEscolhida
+    const options = document.getElementsByName("option");
+    options.forEach((option) => {
+      option.addEventListener('change', atualizarOpcaoSelecionadaVisual);
+    });
+
+    opcoesConfiguradas = true;
+  }
+
+  function selecionarOpcaoPorId(idOpcao) {
+    const opcao = document.getElementById(idOpcao);
+
+    if (!opcao || opcao.disabled) {
+      return;
+    }
+
+    opcao.checked = true;
+    atualizarOpcaoSelecionadaVisual();
+  }
+
+  function atualizarOpcaoSelecionadaVisual() {
+    const cards = document.querySelectorAll('.choice');
+
+    cards.forEach((card) => {
+      card.classList.remove('quiz-option-selected');
+    });
+
+    const opcaoSelecionada = document.querySelector('input[name="option"]:checked');
+    if (opcaoSelecionada) {
+      const cardSelecionado = opcaoSelecionada.closest('.choice');
+      if (cardSelecionado) {
+        cardSelecionado.classList.add('quiz-option-selected');
+      }
+    }
+  }
+
+  function habilitarAlternativas(trueOrFalse) {
+    let opcaoEscolhida = trueOrFalse ? false : true;
+    const opcoesContainer = document.getElementById('opcoes');
+
+    primeiraOpcao.disabled = opcaoEscolhida;
+    segundaOpcao.disabled = opcaoEscolhida;
+    terceiraOpcao.disabled = opcaoEscolhida;
+    quartaOpcao.disabled = opcaoEscolhida;
+
+    if (opcaoEscolhida) {
+      opcoesContainer.classList.add('options-locked');
+    } else {
+      opcoesContainer.classList.remove('options-locked');
+    }
 
   }
 
   function avancar() {
-    btnProx.disabled = true
-    btnSubmeter.disabled = false
-
-    desmarcarRadioButtons()
-
-    barra.value += 1
-
-    if (numeroDaQuestaoAtual < quantidadeDeQuestoes - 1) {
-      preencherHTMLcomQuestaoAtual(numeroDaQuestaoAtual)
-    } else if (numeroDaQuestaoAtual == quantidadeDeQuestoes - 1) {
-      alert("Atenção... a próxima é a ultima questão!")
-      preencherHTMLcomQuestaoAtual(numeroDaQuestaoAtual)
-    } else {
-      finalizarJogo()
+    if (numeroDaQuestaoAtual >= quantidadeDeQuestoes - 1) {
+      finalizarJogo();
+      return;
     }
-    limparCoresBackgroundOpcoes()
+
+    btnProx.disabled = true;
+    btnSubmeter.disabled = false;
+
+    desmarcarRadioButtons();
+    limparCoresBackgroundOpcoes();
+
+    preencherHTMLcomQuestaoAtual(numeroDaQuestaoAtual + 1);
   }
 
   function tentarNovamente() {
-    // atualiza a página
-    window.location.reload()
+    window.location.reload();
   }
 
   function checarResposta() {
-    const questaoAtual = listaDeQuestoes[numeroDaQuestaoAtual] // questão atual 
-    const respostaQuestaoAtual = questaoAtual.alternativaCorreta // qual é a resposta correta da questão atual
+    const questaoAtual = listaDeQuestoes[numeroDaQuestaoAtual];
+    const respostaQuestaoAtual = String(questaoAtual.correctAnswer);
+    const options = document.getElementsByName("option");
 
-    const options = document.getElementsByName("option"); // recupera alternativas no html
-
-    let alternativaCorreta = null // variável para armazenar a alternativa correta
+    let alternativaCorreta = null;
+    let alternativaEscolhida = null;
 
     options.forEach((option) => {
       if (option.value === respostaQuestaoAtual) {
-        console.log("alternativaCorreta está no componente: " + alternativaCorreta)
-        alternativaCorreta = option.labels[0].id
+        alternativaCorreta = option;
       }
-    })
 
-    // verifica se resposta assinalada é correta
-    options.forEach((option) => {
-      if (option.checked === true && option.value === respostaQuestaoAtual) {
-        document.getElementById(alternativaCorreta).classList.add("text-success-with-bg")
-        pontuacaoFinal++
-        certas++
-        document.getElementById("spanCertas").innerHTML = certas
-        numeroDaQuestaoAtual++
-      } else if (option.checked && option.value !== respostaQuestaoAtual) {
-        const wrongLabelId = option.labels[0].id
-
-        document.getElementById(wrongLabelId).classList.add("text-danger-with-bg")
-        document.getElementById(alternativaCorreta).classList.add("text-success-with-bg")
-        tentativaIncorreta++
-        erradas++
-        document.getElementById("spanErradas").innerHTML = erradas
-        numeroDaQuestaoAtual++
+      if (option.checked) {
+        alternativaEscolhida = option;
       }
-    })
+    });
+
+    if (!alternativaCorreta || !alternativaEscolhida) {
+      return;
+    }
+
+    const cardCorreto = alternativaCorreta.closest('.choice');
+
+    if (alternativaEscolhida.value === respostaQuestaoAtual) {
+      cardCorreto.classList.remove('quiz-option-selected');
+      cardCorreto.classList.add('quiz-option-correct');
+
+      pontuacaoFinal++;
+      acertosPorCategoria[questaoAtual.category]++;
+    } else {
+      const cardErrado = alternativaEscolhida.closest('.choice');
+
+      cardErrado.classList.remove('quiz-option-selected');
+      cardErrado.classList.add('quiz-option-wrong');
+      cardCorreto.classList.remove('quiz-option-selected');
+      cardCorreto.classList.add('quiz-option-correct');
+    }
   }
 
   function limparCoresBackgroundOpcoes() {
-    const options = document.getElementsByName("option");
-    options.forEach((option) => {
-      document.getElementById(option.labels[0].id).classList.remove("text-danger-with-bg")
-      document.getElementById(option.labels[0].id).classList.remove("text-success-with-bg")
-    })
+    const cards = document.querySelectorAll('.choice');
+    cards.forEach((card) => {
+      card.classList.remove('quiz-option-selected');
+      card.classList.remove('quiz-option-correct');
+      card.classList.remove('quiz-option-wrong');
+    });
   }
 
   function desmarcarRadioButtons() {
@@ -484,40 +707,127 @@ const listaDeQuestoes = [
     for (let i = 0; i < options.length; i++) {
       options[i].checked = false;
     }
+
+    atualizarOpcaoSelecionadaVisual();
   }
 
   function finalizarJogo() {
-    let textoParaMensagemFinal = null
-    let classComCoresParaMensagemFinal = null
-    const porcentagemFinalDeAcertos = pontuacaoFinal / quantidadeDeQuestoes
+    if (quizFinalizado) {
+      return;
+    }
+
+    quizFinalizado = true;
+    pararTimerQuiz();
+
+    const imagemReigen = document.getElementById('reigen');
+    let textoParaMensagemFinal = null;
+    let classComCoresParaMensagemFinal = null;
+    const porcentagemFinalDeAcertos = pontuacaoFinal / quantidadeDeQuestoes;
 
     if (porcentagemFinalDeAcertos <= 0.3) {
-      textoParaMensagemFinal = "Parece que você não estudou..."
-      classComCoresParaMensagemFinal = "text-danger-with-bg"
+      textoParaMensagemFinal = "Parece que você precisa reforçar seus estudos.";
+      classComCoresParaMensagemFinal = "subtitle-danger";
     }
     else if (porcentagemFinalDeAcertos > 0.3 && porcentagemFinalDeAcertos < 0.9) {
-      textoParaMensagemFinal = "Pode melhorar na próxima, hein!"
-      classComCoresParaMensagemFinal = "text-warning-with-bg"
+      textoParaMensagemFinal = "Bom desempenho, mas ainda dá para evoluir.";
+      classComCoresParaMensagemFinal = "subtitle-warning";
     }
     else if (porcentagemFinalDeAcertos >= 0.9) {
-      textoParaMensagemFinal = "Uau, parabéns!"
-      classComCoresParaMensagemFinal = "text-success-with-bg"
+      textoParaMensagemFinal = "Excelente! Você está pronto para as operações.";
+      classComCoresParaMensagemFinal = "subtitle-success";
     }
 
-    textoParaMensagemFinal += "<br> Você acertou " + Math.round((porcentagemFinalDeAcertos) * 100) + "% das questões."
+    const percentual = Math.round((porcentagemFinalDeAcertos) * 100);
 
+    document.getElementById('msgFinal').innerHTML = textoParaMensagemFinal;
+    document.getElementById('msgFinal').classList.remove('subtitle-danger', 'subtitle-warning', 'subtitle-success');
+    document.getElementById('msgFinal').classList.add(classComCoresParaMensagemFinal);
+    document.getElementById('spanPontuacaoFinal').innerHTML = `${pontuacaoFinal} / ${quantidadeDeQuestoes}`;
+    document.getElementById('spanPercentualFinal').innerHTML = `${percentual}%`;
 
-    document.getElementById('msgFinal').innerHTML = textoParaMensagemFinal
-    document.getElementById('msgFinal').classList.add(classComCoresParaMensagemFinal)
-    document.getElementById('spanPontuacaoFinal').innerHTML = pontuacaoFinal
+    document.getElementById('acerto_paranormal').innerHTML = `${acertosPorCategoria.paranormal}/5`;
+    document.getElementById('acerto_investigacao').innerHTML = `${acertosPorCategoria.investigacao}/5`;
+    document.getElementById('acerto_contencao').innerHTML = `${acertosPorCategoria.contencao}/5`;
+    document.getElementById('acerto_estrategia').innerHTML = `${acertosPorCategoria.estrategia}/5`;
 
-    document.getElementById('jogo').classList.add("text-new-gray")
+    document.getElementById('jogo').style.display = 'none';
+    if (imagemReigen) {
+      imagemReigen.style.display = 'none';
+    }
+    document.getElementById('resultadoFinal').style.display = 'flex';
 
-    btnProx.disabled = true
-    btnSubmeter.disabled = true
-    // btnConcluir.disabled = true
-    btnTentarNovamente.disabled = false
+    btnProx.disabled = true;
+    btnSubmeter.disabled = true;
+    btnTentarNovamente.disabled = false;
 
+    renderizarGraficoRadar();
+  }
+
+  function renderizarGraficoRadar() {
+    const contexto = document.getElementById('radarCategorias');
+
+    if (graficoRadar) {
+      graficoRadar.destroy();
+    }
+
+    graficoRadar = new Chart(contexto, {
+      type: 'radar',
+      data: {
+        labels: ['Paranormal', 'Investigação', 'Contenção', 'Estratégia'],
+        datasets: [{
+          label: 'Acertos por categoria',
+          data: [
+            acertosPorCategoria.paranormal,
+            acertosPorCategoria.investigacao,
+            acertosPorCategoria.contencao,
+            acertosPorCategoria.estrategia
+          ],
+          fill: true,
+          backgroundColor: 'rgba(210, 80, 255, 0.2)',
+          borderColor: '#D250FF',
+          pointBackgroundColor: '#E22672',
+          pointBorderColor: '#ffffff',
+          pointHoverBackgroundColor: '#ffffff',
+          pointHoverBorderColor: '#E22672',
+          borderWidth: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            min: 0,
+            max: 5,
+            ticks: {
+              stepSize: 1,
+              backdropColor: 'transparent',
+              color: '#0A0D24'
+            },
+            pointLabels: {
+              color: '#0A0D24',
+              font: {
+                size: 14,
+                weight: '600'
+              }
+            },
+            grid: {
+              color: 'rgba(10, 13, 36, 0.25)'
+            },
+            angleLines: {
+              color: 'rgba(10, 13, 36, 0.25)'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            labels: {
+              color: '#0A0D24'
+            }
+          }
+        }
+      }
+    });
   }
 
 </script>
