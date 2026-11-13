@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PsychoAssociation | Login</title>
     <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script src="./js/sessao.js"></script>
     <script src="./js/funcoes.js"></script>
     <link rel="icon" type="image/x-icon" href="assets/icon/psycho-association-logo.svg">
@@ -30,7 +31,13 @@
                 </div>
                 <div class="input-container">
                     <label for="ipt_password">Senha</label>
-                    <input type="text" id="ipt_password" placeholder="Insira sua senha">
+                    <div class="password-input-wrapper">
+                        <input type="password" id="ipt_password" placeholder="Insira sua senha">
+                        <button type="button" class="toggle-password" aria-label="Mostrar senha"
+                            onclick="alternarVisibilidadeSenha(this, 'ipt_password')">
+                            <i class="material-icons">visibility</i>
+                        </button>
+                    </div>
                 </div>
                 
                 <button onclick="entrar()">ENTRAR</button>
@@ -44,6 +51,16 @@
 </html>
 
 <script>
+    function alternarVisibilidadeSenha(botao, idInput) {
+        const input = document.getElementById(idInput);
+        const icone = botao.querySelector('i');
+        const senhaOculta = input.type === 'password';
+
+        input.type = senhaOculta ? 'text' : 'password';
+        icone.textContent = senhaOculta ? 'visibility_off' : 'visibility';
+        botao.setAttribute('aria-label', senhaOculta ? 'Ocultar senha' : 'Mostrar senha');
+    }
+
      function entrar() {
 
         var emailVar = ipt_email.value;

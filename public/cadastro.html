@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PsychoAssociation | Cadastro</title>
   <link rel="stylesheet" href="css/cadastro.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <script src="./js/sessao.js"></script>
   <script src="./js/funcoes.js"></script>
   <link rel="icon" type="image/x-icon" href="assets/icon/psycho-association-logo.svg">
@@ -35,11 +36,23 @@
         </div>
         <div class="input-container">
           <label for="ipt_password">Senha</label>
-          <input type="text" id="ipt_password" placeholder="Insira sua senha">
+          <div class="password-input-wrapper">
+            <input type="password" id="ipt_password" placeholder="Insira sua senha">
+            <button type="button" class="toggle-password" aria-label="Mostrar senha"
+              onclick="alternarVisibilidadeSenha(this, 'ipt_password')">
+              <i class="material-icons">visibility</i>
+            </button>
+          </div>
         </div>
         <div class="input-container">
           <label for="ipt_password_confirmed">Confirmar senha</label>
-          <input type="text" id="ipt_password_confirmed" placeholder="Insira sua senha novamente">
+          <div class="password-input-wrapper">
+            <input type="password" id="ipt_password_confirmed" placeholder="Insira sua senha novamente">
+            <button type="button" class="toggle-password" aria-label="Mostrar senha"
+              onclick="alternarVisibilidadeSenha(this, 'ipt_password_confirmed')">
+              <i class="material-icons">visibility</i>
+            </button>
+          </div>
         </div>
         <button onclick="cadastrar()">CADASTRAR-SE</button>
       </div>
@@ -53,135 +66,142 @@
 </html>
 
 <script>
+  function alternarVisibilidadeSenha(botao, idInput) {
+    const input = document.getElementById(idInput);
+    const icone = botao.querySelector('i');
+    const senhaOculta = input.type === 'password';
+
+    input.type = senhaOculta ? 'text' : 'password';
+    icone.textContent = senhaOculta ? 'visibility_off' : 'visibility';
+    botao.setAttribute('aria-label', senhaOculta ? 'Ocultar senha' : 'Mostrar senha');
+  }
+
+  function limparErrosCadastro() {
+    const mensagensErro = document.querySelectorAll('.input-error-message');
+    const inputsComErro = document.querySelectorAll('.input-container input.error');
+
+    mensagensErro.forEach((mensagem) => mensagem.remove());
+    inputsComErro.forEach((input) => input.classList.remove('error'));
+  }
+
+  function exibirErroCampo(inputElement, mensagem) {
+    inputElement.classList.add('error');
+
+    const inputContainer = inputElement.closest('.input-container');
+    let spanErro = inputContainer.querySelector('.input-error-message');
+    if (!spanErro) {
+      spanErro = document.createElement('span');
+      spanErro.classList.add('input-error-message');
+      inputContainer.appendChild(spanErro);
+    }
+
+    spanErro.textContent = mensagem;
+  }
+
+  function emailValido(email) {
+    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regexEmail.test(email);
+  }
+
   function cadastrar() {
-    // aguardar();
+    const nomeInput = document.getElementById('ipt_name');
+    const emailInput = document.getElementById('ipt_email');
+    const senhaInput = document.getElementById('ipt_password');
+    const confirmarSenhaInput = document.getElementById('ipt_password_confirmed');
 
-    //Recupere o valor da nova input pelo nome do id
-    // Agora vá para o método fetch logo abaixo
-    var nomeVar = ipt_name.value;
-    var emailVar = ipt_email.value;
-    var senhaVar = ipt_password.value;
-    var confirmacaoSenhaVar = ipt_password_confirmed.value;
+    const nomeVar = nomeInput.value.trim();
+    const emailVar = emailInput.value.trim();
+    const senhaVar = senhaInput.value;
+    const confirmacaoSenhaVar = confirmarSenhaInput.value;
 
-    let message = ''
+    let message = '';
+    let formularioValido = true;
+    let primeiroInputComErro = null;
 
-    let popup = document.createElement('div')
-    popup.classList.add('confirmation-popup')
-    setTimeout(() => {
-      popup.remove()
-    }, 1800)
+    limparErrosCadastro();
 
-    //Validações de senha
-    let senhaTemMaiuscula = senhaVar != senhaVar.toLowerCase()
-    let senhaTemMinúscula = senhaVar != senhaVar.toUpperCase()
+    if (nomeVar === '') {
+      exibirErroCampo(nomeInput, 'Preencha o nome de usuário.');
+      formularioValido = false;
+      primeiroInputComErro = primeiroInputComErro || nomeInput;
+    } else if (nomeVar.length < 3) {
+      exibirErroCampo(nomeInput, 'O nome deve ter pelo menos 3 caracteres.');
+      formularioValido = false;
+      primeiroInputComErro = primeiroInputComErro || nomeInput;
+    }
 
-    let senhaTemNúmero = false
-    let senhaTemCaracterEspecial = false
-    let senhaTemAcento = false
+    if (emailVar === '') {
+      exibirErroCampo(emailInput, 'Preencha o e-mail.');
+      formularioValido = false;
+      primeiroInputComErro = primeiroInputComErro || emailInput;
+    } else if (!emailValido(emailVar)) {
+      exibirErroCampo(emailInput, 'Digite um e-mail válido. Ex: nome@dominio.com');
+      formularioValido = false;
+      primeiroInputComErro = primeiroInputComErro || emailInput;
+    }
 
-    const caracteresEspeciais = [
-      '!', '@', '#', '$', '%', '¨', '&', '*', '(', ')', '-', '_', '+', '=',
-      '´', '`', '{', '}', '[', ']', '^', '~', '<', '>', ',', '.', ':', ';',
-      '/', '?', '\\', '|', '"', "'", '§', 'ª', 'º', '°', '£', '¢', '¬', '³', '²', '¹'
-    ];
+    if (senhaVar === '') {
+      exibirErroCampo(senhaInput, 'Preencha a senha.');
+      formularioValido = false;
+      primeiroInputComErro = primeiroInputComErro || senhaInput;
+    } else {
+      const senhaTemMaiuscula = /[A-Z]/.test(senhaVar);
+      const senhaTemMinuscula = /[a-z]/.test(senhaVar);
+      const senhaTemNumero = /\d/.test(senhaVar);
+      const senhaTemCaracterEspecial = /[!@#$%^&*()_\-+=\[\]{};:'",.<>/?\\|`~]/.test(senhaVar);
+      const senhaTemAcento = /[áàâãéêíóôõúüçÁÀÂÃÉÊÍÓÔÕÚÜÇ]/.test(senhaVar);
+      const senhaTemEspaco = /\s/.test(senhaVar);
 
-    const caracteresAcentuados = [
-      'á', 'à', 'â', 'ã', 'é', 'ê', 'í', 'ó', 'ô', 'õ', 'ú', 'ü', 'ç',
-      'Á', 'À', 'Â', 'Ã', 'É', 'Ê', 'Í', 'Ó', 'Ô', 'Õ', 'Ú', 'Ü', 'Ç'
-    ];
-
-    let senhaTemEspaço = senhaVar.includes(' ')
-
-
-    for (let i = 0; i < senhaVar.length; i++) {
-      for (let j = 0; j < 10; j++) {
-        if (senhaVar[i] == j) {
-          senhaTemNúmero = true
-        }
-
-        if (senhaVar[i] == caracteresEspeciais[j]) {
-          senhaTemCaracterEspecial = true
-        }
-
-        if (senhaVar[i] == caracteresAcentuados[j]) {
-          senhaTemAcento = true
-        }
-
+      if (senhaVar.length < 8) {
+        exibirErroCampo(senhaInput, 'A senha deve ter pelo menos 8 caracteres.');
+        formularioValido = false;
+        primeiroInputComErro = primeiroInputComErro || senhaInput;
+      } else if (!senhaTemMaiuscula || !senhaTemMinuscula) {
+        exibirErroCampo(senhaInput, 'A senha deve possuir letras maiúsculas e minúsculas.');
+        formularioValido = false;
+        primeiroInputComErro = primeiroInputComErro || senhaInput;
+      } else if (!senhaTemNumero) {
+        exibirErroCampo(senhaInput, 'A senha deve possuir pelo menos um número.');
+        formularioValido = false;
+        primeiroInputComErro = primeiroInputComErro || senhaInput;
+      } else if (senhaTemAcento) {
+        exibirErroCampo(senhaInput, 'A senha não pode possuir acentos.');
+        formularioValido = false;
+        primeiroInputComErro = primeiroInputComErro || senhaInput;
+      } else if (senhaTemEspaco) {
+        exibirErroCampo(senhaInput, 'A senha não pode possuir espaços.');
+        formularioValido = false;
+        primeiroInputComErro = primeiroInputComErro || senhaInput;
+      } else if (!senhaTemCaracterEspecial) {
+        exibirErroCampo(senhaInput, 'A senha deve possuir pelo menos um caractere especial.');
+        formularioValido = false;
+        primeiroInputComErro = primeiroInputComErro || senhaInput;
       }
     }
 
-    // Verificando se há algum campo em branco
-    if (
-      nomeVar == "" ||
-      emailVar == "" ||
-      senhaVar == "" ||
-      confirmacaoSenhaVar == ""
-    ) {
-
-      message = 'Preencha todos os campos!'
-      popup.innerHTML = `<div>${message}</div>`
-      document.body.appendChild(popup)
-
-      finalizarAguardar();
-      return false;
-
-    } else if (senhaVar != confirmacaoSenhaVar) {
-      
-      let input = document.getElementById('ipt_password')
-      message = 'As senhas digitadas devem ser iguais!'
-      input.classList.add('error')
-      input.focus()
-      input.parentElement.innerHTML += `<span style="color: red;">${message}</span>`
-
-      finalizarAguardar();
-      return false;
-
-    } else if (!senhaTemMaiuscula || !senhaTemMinúscula) {
-
-      message = 'Sua senha deve possuir letras maíusculas e minúsculas!'
-      popup.innerHTML = `<div>${message}</div>`
-      document.body.appendChild(popup)
-
-      finalizarAguardar();
-      return false;
-
-    } else if (!senhaTemNúmero) {
-
-      message = 'Sua senha deve possuir pelo menos um número!'
-      popup.innerHTML = `<div>${message}</div>`
-      document.body.appendChild(popup)
-
-      finalizarAguardar();
-      return false;
-
-    } else if (senhaTemAcento) {
-
-      message = 'Sua senha NÃO pode possuir acento!'
-      popup.innerHTML = `<div>${message}</div>`
-      document.body.appendChild(popup)
-
-      finalizarAguardar();
-      return false;
-
-    } else if (senhaTemEspaço) {
-
-      message = 'Sua senha NÃO pode possuir espaços!'
-      popup.innerHTML = `<div>${message}</div>`
-      document.body.appendChild(popup)
-
-      finalizarAguardar();
-      return false;
-
-    } else if (!senhaTemCaracterEspecial) {
-
-      message = 'Sua senha deve possuir pelo menos um caracter especial!'
-      popup.innerHTML = `<div>${message}</div>`
-      document.body.appendChild(popup)
-
-      finalizarAguardar();
-      return false;
-
+    if (confirmacaoSenhaVar === '') {
+      exibirErroCampo(confirmarSenhaInput, 'Confirme a senha.');
+      formularioValido = false;
+      primeiroInputComErro = primeiroInputComErro || confirmarSenhaInput;
+    } else if (senhaVar !== confirmacaoSenhaVar) {
+      exibirErroCampo(confirmarSenhaInput, 'As senhas digitadas devem ser iguais.');
+      formularioValido = false;
+      primeiroInputComErro = primeiroInputComErro || confirmarSenhaInput;
     }
+
+    if (!formularioValido) {
+      if (primeiroInputComErro) {
+        primeiroInputComErro.focus();
+      }
+      return false;
+    }
+
+    const popup = document.createElement('div');
+    popup.classList.add('confirmation-popup');
+
+    setTimeout(() => {
+      popup.remove();
+    }, 1800);
 
       // Enviando o valor da nova input
       fetch("/usuarios/cadastrar", {
@@ -201,9 +221,9 @@
           console.log("resposta: ", resposta);
 
           if (resposta.ok) {
-            message = 'Você será redirecionado à tela de login.'
-            popup.innerHTML = `<div>${message}</div>`
-            document.body.appendChild(popup)
+            message = 'Você será redirecionado à tela de login.';
+            popup.innerHTML = `<div>${message}</div>`;
+            document.body.appendChild(popup);
 
             setTimeout(() => {
               window.location = "login.html";
