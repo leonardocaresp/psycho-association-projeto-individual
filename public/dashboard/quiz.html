@@ -124,8 +124,7 @@
 
           <div id="botoes" class="buttons-container">
             <div>
-              <button onclick="submeter()" id="btnSubmeter" class="submit">Submeter resposta</button>
-              <button onclick="avancar()" id="btnProx" class="next" disabled>Próxima questão</button>
+              <button onclick="avancar()" id="btnProx" class="submit">Próxima questão</button>
             </div>
           </div>
         </div>
@@ -135,33 +134,37 @@
             <h3 id="msgFinal">-</h3>
           </div>
 
-          <div class="resultado-kpi-row">
-            <div class="kpi">
-              <div class="top">ACERTOS TOTAIS</div>
-              <div class="bottom"><span id="spanPontuacaoFinal">0 / 20</span></div>
-            </div>
-            <div class="kpi">
-              <div class="top">PERCENTUAL FINAL</div>
-              <div class="bottom"><span id="spanPercentualFinal">0%</span></div>
-            </div>
-          </div>
+          <div class="resultado-layout">
+            <div class="resultado-left-column">
+              <div class="resultado-kpi-row">
+                <div class="kpi">
+                  <div class="top">ACERTOS TOTAIS</div>
+                  <div class="bottom"><span id="spanPontuacaoFinal">0 / 20</span></div>
+                </div>
+                <div class="kpi">
+                  <div class="top">PERCENTUAL FINAL</div>
+                  <div class="bottom"><span id="spanPercentualFinal">0%</span></div>
+                </div>
+              </div>
 
-          <div class="resultado-charts-row">
-            <div class="chart">
-              <div class="top">MÉTRICAS POR CATEGORIA</div>
-              <div class="bottom resultado-categorias">
-                <span>Paranormal: <strong id="acerto_paranormal">0/5</strong></span>
-                <span>Investigação: <strong id="acerto_investigacao">0/5</strong></span>
-                <span>Contenção: <strong id="acerto_contencao">0/5</strong></span>
-                <span>Estratégia: <strong id="acerto_estrategia">0/5</strong></span>
+              <div class="chart">
+                <div class="top">MÉTRICAS POR CATEGORIA</div>
+                <div class="bottom resultado-categorias">
+                  <span>Paranormal: <strong id="acerto_paranormal">0/5</strong></span>
+                  <span>Investigação: <strong id="acerto_investigacao">0/5</strong></span>
+                  <span>Contenção: <strong id="acerto_contencao">0/5</strong></span>
+                  <span>Estratégia: <strong id="acerto_estrategia">0/5</strong></span>
+                </div>
               </div>
             </div>
 
-            <div class="chart" style="flex: 1.4;">
-              <div class="top">DESEMPENHO POR CATEGORIA</div>
-              <div class="bottom">
-                <div class="radar-container">
-                  <canvas id="radarCategorias"></canvas>
+            <div class="resultado-right-column">
+              <div class="chart">
+                <div class="top">DESEMPENHO POR CATEGORIA</div>
+                <div class="bottom">
+                  <div class="radar-container">
+                    <canvas id="radarCategorias"></canvas>
+                  </div>
                 </div>
               </div>
             </div>
@@ -423,7 +426,12 @@ const listaDeQuestoes = montarQuestoesIntercaladas(examCategories);
   let atalhoEnterConfigurado = false;
   let tempoRestanteSegundos = 600;
   let intervaloTimer = null;
+  let intervaloCooldownBotao = null;
   let quizFinalizado = false;
+  const tempoCooldownMilissegundos = 10 * 60 * 1000;
+  let idUsuarioLogado = "";
+  let chaveResultadoQuiz = "";
+  let chaveCooldownQuiz = "";
 
   const acertosPorCategoria = {
     paranormal: 0,
@@ -436,12 +444,167 @@ const listaDeQuestoes = montarQuestoesIntercaladas(examCategories);
     const imagemReigen = document.getElementById('reigen');
     configurarSelecaoOpcoes();
     configurarAtalhoEnter();
+    configurarChavesStorageQuiz();
     document.getElementById('resultadoFinal').style.display = "none";
     document.getElementById('jogo').style.display = "none";
     atualizarTempoQuiz();
     if (imagemReigen) {
       imagemReigen.style.display = "none";
     }
+
+    restaurarResultadoFinalSalvo();
+  }
+
+  function configurarChavesStorageQuiz() {
+    idUsuarioLogado = sessionStorage.ID_USUARIO;
+
+    if (!idUsuarioLogado) {
+      idUsuarioLogado = "anonimo";
+    }
+
+    chaveResultadoQuiz = `quizResultado_${idUsuarioLogado}`;
+    chaveCooldownQuiz = `quizCooldownAte_${idUsuarioLogado}`;
+  }
+
+  function salvarResultadoFinalNoStorage() {
+    const percentual = Math.round((pontuacaoFinal / quantidadeDeQuestoes) * 100);
+
+    const dadosResultado = {
+      pontuacaoFinal: pontuacaoFinal,
+      quantidadeDeQuestoes: quantidadeDeQuestoes,
+      percentual: percentual,
+      mensagemFinal: document.getElementById('msgFinal').innerHTML,
+      classeMensagemFinal: document.getElementById('msgFinal').className,
+      acertosPorCategoria: {
+        paranormal: acertosPorCategoria.paranormal,
+        investigacao: acertosPorCategoria.investigacao,
+        contencao: acertosPorCategoria.contencao,
+        estrategia: acertosPorCategoria.estrategia
+      }
+    };
+
+    localStorage.setItem(chaveResultadoQuiz, JSON.stringify(dadosResultado));
+  }
+
+  function recuperarResultadoFinalDoStorage() {
+    const resultadoSalvoTexto = localStorage.getItem(chaveResultadoQuiz);
+
+    if (!resultadoSalvoTexto) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(resultadoSalvoTexto);
+    } catch (erro) {
+      localStorage.removeItem(chaveResultadoQuiz);
+      return null;
+    }
+  }
+
+  function salvarCooldownNoStorage() {
+    const cooldownAte = Date.now() + tempoCooldownMilissegundos;
+    localStorage.setItem(chaveCooldownQuiz, String(cooldownAte));
+  }
+
+  function recuperarCooldownDoStorage() {
+    const cooldownTexto = localStorage.getItem(chaveCooldownQuiz);
+
+    if (!cooldownTexto) {
+      return 0;
+    }
+
+    const cooldownNumero = Number(cooldownTexto);
+
+    if (Number.isNaN(cooldownNumero)) {
+      localStorage.removeItem(chaveCooldownQuiz);
+      return 0;
+    }
+
+    return cooldownNumero;
+  }
+
+  function atualizarEstadoBotaoTentarNovamente() {
+    const botaoTentarNovamente = document.getElementById('btnTentarNovamente');
+    const cooldownAte = recuperarCooldownDoStorage();
+    const agora = Date.now();
+
+    if (agora < cooldownAte) {
+      const tempoRestanteSegundosCooldown = Math.ceil((cooldownAte - agora) / 1000);
+      botaoTentarNovamente.disabled = true;
+      botaoTentarNovamente.innerHTML = `Tentar novamente (${formatarTempo(tempoRestanteSegundosCooldown)})`;
+      return;
+    }
+
+    botaoTentarNovamente.disabled = false;
+    botaoTentarNovamente.innerHTML = 'Tentar novamente';
+    localStorage.removeItem(chaveCooldownQuiz);
+  }
+
+  function pararTimerCooldownBotao() {
+    if (intervaloCooldownBotao) {
+      clearInterval(intervaloCooldownBotao);
+      intervaloCooldownBotao = null;
+    }
+  }
+
+  function iniciarTimerCooldownBotao() {
+    pararTimerCooldownBotao();
+    atualizarEstadoBotaoTentarNovamente();
+
+    intervaloCooldownBotao = setInterval(function () {
+      atualizarEstadoBotaoTentarNovamente();
+
+      if (!document.getElementById('btnTentarNovamente').disabled) {
+        pararTimerCooldownBotao();
+      }
+    }, 1000);
+  }
+
+  function restaurarResultadoFinalSalvo() {
+    const resultadoSalvo = recuperarResultadoFinalDoStorage();
+
+    if (!resultadoSalvo) {
+      return;
+    }
+
+    const imagemReigen = document.getElementById('reigen');
+
+    if (resultadoSalvo.acertosPorCategoria) {
+      acertosPorCategoria.paranormal = resultadoSalvo.acertosPorCategoria.paranormal;
+      acertosPorCategoria.investigacao = resultadoSalvo.acertosPorCategoria.investigacao;
+      acertosPorCategoria.contencao = resultadoSalvo.acertosPorCategoria.contencao;
+      acertosPorCategoria.estrategia = resultadoSalvo.acertosPorCategoria.estrategia;
+    }
+
+    if (resultadoSalvo.pontuacaoFinal || resultadoSalvo.pontuacaoFinal === 0) {
+      pontuacaoFinal = resultadoSalvo.pontuacaoFinal;
+    }
+
+    document.getElementById('msgFinal').innerHTML = resultadoSalvo.mensagemFinal;
+    document.getElementById('msgFinal').className = resultadoSalvo.classeMensagemFinal;
+
+    document.getElementById('spanPontuacaoFinal').innerHTML = `${resultadoSalvo.pontuacaoFinal} / ${resultadoSalvo.quantidadeDeQuestoes}`;
+    document.getElementById('spanPercentualFinal').innerHTML = `${resultadoSalvo.percentual}%`;
+
+    document.getElementById('acerto_paranormal').innerHTML = `${acertosPorCategoria.paranormal}/5`;
+    document.getElementById('acerto_investigacao').innerHTML = `${acertosPorCategoria.investigacao}/5`;
+    document.getElementById('acerto_contencao').innerHTML = `${acertosPorCategoria.contencao}/5`;
+    document.getElementById('acerto_estrategia').innerHTML = `${acertosPorCategoria.estrategia}/5`;
+
+    document.getElementById('btnIniciarQuiz').style.display = "none";
+    document.querySelector('.infos-quiz').style.display = "none";
+    document.querySelector('.top-container').style.display = "none";
+    document.getElementById('jogo').style.display = 'none';
+    if (imagemReigen) {
+      imagemReigen.style.display = 'none';
+    }
+    document.getElementById('resultadoFinal').style.display = 'flex';
+
+    quizFinalizado = true;
+    btnProx.disabled = true;
+
+    renderizarGraficoRadar();
+    iniciarTimerCooldownBotao();
   }
 
   function formatarTempo(totalSegundos) {
@@ -502,11 +665,6 @@ const listaDeQuestoes = montarQuestoesIntercaladas(examCategories);
 
       event.preventDefault();
 
-      if (!btnSubmeter.disabled) {
-        submeter();
-        return;
-      }
-
       if (!btnProx.disabled) {
         avancar();
       }
@@ -535,8 +693,7 @@ const listaDeQuestoes = montarQuestoesIntercaladas(examCategories);
 
     preencherHTMLcomQuestaoAtual(0);
 
-    btnSubmeter.disabled = false;
-    btnProx.disabled = true;
+    btnProx.disabled = false;
     btnTentarNovamente.disabled = true;
   }
 
@@ -553,7 +710,7 @@ const listaDeQuestoes = montarQuestoesIntercaladas(examCategories);
     barra.value = index + 1;
   }
 
-  function submeter() {
+  function avancar() {
     const options = document.getElementsByName("option"); // recupera alternativas no html
 
     let hasChecked = false;
@@ -567,12 +724,17 @@ const listaDeQuestoes = montarQuestoesIntercaladas(examCategories);
     if (!hasChecked) {
       alert("Não há alternativas escolhidas. Escolha uma opção.");
     } else {
-      btnSubmeter.disabled = true;
-      btnProx.disabled = false;
-
-      habilitarAlternativas(false);
-
       checarResposta();
+
+      if (numeroDaQuestaoAtual >= quantidadeDeQuestoes - 1) {
+        finalizarJogo();
+        return;
+      }
+
+      desmarcarRadioButtons();
+      limparCoresBackgroundOpcoes();
+
+      preencherHTMLcomQuestaoAtual(numeroDaQuestaoAtual + 1);
     }
 
   }
@@ -638,22 +800,14 @@ const listaDeQuestoes = montarQuestoesIntercaladas(examCategories);
 
   }
 
-  function avancar() {
-    if (numeroDaQuestaoAtual >= quantidadeDeQuestoes - 1) {
-      finalizarJogo();
+  function tentarNovamente() {
+    if (document.getElementById('btnTentarNovamente').disabled) {
       return;
     }
 
-    btnProx.disabled = true;
-    btnSubmeter.disabled = false;
-
-    desmarcarRadioButtons();
-    limparCoresBackgroundOpcoes();
-
-    preencherHTMLcomQuestaoAtual(numeroDaQuestaoAtual + 1);
-  }
-
-  function tentarNovamente() {
+    pararTimerCooldownBotao();
+    localStorage.removeItem(chaveResultadoQuiz);
+    localStorage.removeItem(chaveCooldownQuiz);
     window.location.reload();
   }
 
@@ -662,38 +816,21 @@ const listaDeQuestoes = montarQuestoesIntercaladas(examCategories);
     const respostaQuestaoAtual = String(questaoAtual.correctAnswer);
     const options = document.getElementsByName("option");
 
-    let alternativaCorreta = null;
     let alternativaEscolhida = null;
 
     options.forEach((option) => {
-      if (option.value === respostaQuestaoAtual) {
-        alternativaCorreta = option;
-      }
-
       if (option.checked) {
         alternativaEscolhida = option;
       }
     });
 
-    if (!alternativaCorreta || !alternativaEscolhida) {
+    if (!alternativaEscolhida) {
       return;
     }
 
-    const cardCorreto = alternativaCorreta.closest('.choice');
-
     if (alternativaEscolhida.value === respostaQuestaoAtual) {
-      cardCorreto.classList.remove('quiz-option-selected');
-      cardCorreto.classList.add('quiz-option-correct');
-
       pontuacaoFinal++;
       acertosPorCategoria[questaoAtual.category]++;
-    } else {
-      const cardErrado = alternativaEscolhida.closest('.choice');
-
-      cardErrado.classList.remove('quiz-option-selected');
-      cardErrado.classList.add('quiz-option-wrong');
-      cardCorreto.classList.remove('quiz-option-selected');
-      cardCorreto.classList.add('quiz-option-correct');
     }
   }
 
@@ -761,10 +898,11 @@ const listaDeQuestoes = montarQuestoesIntercaladas(examCategories);
     document.getElementById('resultadoFinal').style.display = 'flex';
 
     btnProx.disabled = true;
-    btnSubmeter.disabled = true;
-    btnTentarNovamente.disabled = false;
 
     renderizarGraficoRadar();
+    salvarResultadoFinalNoStorage();
+    salvarCooldownNoStorage();
+    iniciarTimerCooldownBotao();
   }
 
   function renderizarGraficoRadar() {

@@ -620,6 +620,14 @@ O agente não possui autorização para realizar operações de commit.
 
 Antes de implementar qualquer alteração, siga as tecnologias, a arquitetura, as convenções e as restrições descritas neste documento.
 
+### Registro diário de conversa
+
+- Criar ou atualizar o arquivo `chats/AAAA-MM-DD.md` somente quando o desenvolvedor solicitar de forma explícita.
+- Na ausência de solicitação explícita, não criar e não atualizar registros de chat para evitar gasto desnecessário de tokens.
+- Quando houver solicitação explícita, registrar no arquivo o andamento da demanda conforme combinado com o desenvolvedor.
+- Padrão obrigatório dos registros: para cada item da conversa, incluir **Prompt do desenvolvedor**, **Resumo da resposta do agente** e **Ação executada** (com os arquivos alterados, quando houver).
+- Aplicar esse padrão em todos os arquivos de registro diário no formato `chats/AAAA-MM-DD.md`.
+
 **Na ausência de aprovação explícita, o agente deve limitar sua atuação à análise, explicação e elaboração de propostas, sem modificar qualquer arquivo do projeto.**
 
 Caso alguma informação esteja ausente, analise o código existente e siga os padrões já adotados no projeto.

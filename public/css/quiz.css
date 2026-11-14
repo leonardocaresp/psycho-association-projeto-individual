@@ -62,6 +62,7 @@ main .quiz-content {
   width: 100%;
   flex-direction: row;
   column-gap: 0px;
+  flex: 1;
 }
 
 .jogo-container {
@@ -214,6 +215,10 @@ main .quiz-content {
   min-height: 52px;
 }
 
+.buttons-container div button:only-child {
+  flex: 1;
+}
+
 .quiz-content button {
     flex: 1;
     box-shadow: 3px 3px var(--azul-escuro);
@@ -257,8 +262,9 @@ main .quiz-content {
 .resultado-final {
   display: flex;
   flex-direction: column;
-  row-gap: 24px;
+  row-gap: 16px;
   width: 100%;
+  flex: 1;
   background-color: transparent;
   border: none;
   padding: 0;
@@ -294,17 +300,50 @@ main .quiz-content {
   column-gap: 24px;
 }
 
+.resultado-layout {
+  display: flex;
+  column-gap: 24px;
+  align-items: stretch;
+  flex: 1;
+}
+
+.resultado-left-column {
+  display: flex;
+  flex-direction: column;
+  row-gap: 16px;
+  flex: 1;
+  height: 100%;
+}
+
+.resultado-right-column {
+  display: flex;
+  flex: 1.4;
+  height: 100%;
+}
+
+.resultado-right-column .chart {
+  flex: 1;
+}
+
+.resultado-right-column .chart .bottom {
+  flex: 1;
+}
+
 .resultado-final .kpi {
   flex: 1;
   border: solid 2px var(--azul-escuro);
   clip-path: polygon(0% 0%, 90% 0%, 100% 20%, 100% 100%, 0% 100%);
 }
 
+.resultado-left-column .chart {
+  flex: 1;
+}
+
 .resultado-final .kpi .top {
   background-color: var(--azul-escuro);
   color: white;
-  padding: 12px 12px;
-  font-size: 22px;
+  padding: 10px 10px;
+  font-size: 18px;
   font-weight: 500;
   box-sizing: border-box;
 }
@@ -314,8 +353,8 @@ main .quiz-content {
   flex-direction: column;
   justify-content: center;
   color: var(--azul-escuro);
-  padding: 12px 12px;
-  font-size: 44px;
+  padding: 10px 10px;
+  font-size: 34px;
   font-weight: 700;
   box-sizing: border-box;
   background-color: white;
@@ -323,7 +362,7 @@ main .quiz-content {
 
 .resultado-final .kpi .bottom span {
   color: var(--rosa-choque);
-  font-size: 44px;
+  font-size: 34px;
 }
 
 .resultado-charts-row {
@@ -345,8 +384,8 @@ main .quiz-content {
 .resultado-final .chart .top {
   background-color: var(--azul-escuro);
   color: white;
-  padding: 12px 12px;
-  font-size: 22px;
+  padding: 10px 10px;
+  font-size: 18px;
   font-weight: 500;
   box-sizing: border-box;
 }
@@ -357,8 +396,8 @@ main .quiz-content {
   justify-content: space-around;
   background-color: white;
   flex: 1;
-  row-gap: 16px;
-  padding: 16px;
+  row-gap: 12px;
+  padding: 12px;
 }
 
 .resultado-categorias {
@@ -380,8 +419,13 @@ main .quiz-content {
 
 .radar-container {
   width: 100%;
-  height: 360px;
+  height: 280px;
   position: relative;
+}
+
+.resultado-right-column .radar-container {
+  height: 100%;
+  min-height: 280px;
 }
 
 .btn-resultado {
