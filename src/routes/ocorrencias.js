@@ -12,7 +12,7 @@ router.post("/publicar/:idUsuario", function (req, res) {
 });
 
 router.put("/editar/:idOcorrencia", function (req, res) {
-    ocorrenciaController.editar(req, res);
+    ocorrenciaController.editar(req, res);  
 });
 
 router.delete("/deletar/:idOcorrencia", function (req, res) {

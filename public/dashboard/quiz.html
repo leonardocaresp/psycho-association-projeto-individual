@@ -76,8 +76,8 @@
                   primeiro exame para entrar no ranking.</span></div>
             </div>
             <div class="kpi">
-              <div class="top">ACERTO NA ÚLTIMA TENTATIVA</div>
-              <div class="bottom"><strong id="ultimoPercentualQuiz">—</strong><span>Percentual da última
+              <div class="top">PORCENTAGEM DE ACERTO</div>
+              <div class="bottom"><strong id="melhorPercentualQuiz">—</strong><span>Percentual da melhor
                   tentativa</span></div>
             </div>
             <div class="kpi">
@@ -114,7 +114,6 @@
           <button id="btnIniciarQuiz" onclick="iniciarQuiz()" class="start btn-resultado">REALIZAR EXAME
             ADMISSIONAL</button>
         </section>
-        <!-- <img src="../assets/imgs/arataka-reigen-quiz.png" id="reigen"> -->
         <div id="jogo" class="jogo-container">
           <div class="timer-quiz">
             <span id="spanTempoQuiz">10:00</span>
@@ -126,6 +125,8 @@
               questões.</span>
             <progress id="barra" class="progress-bar" value="1" max="20"></progress>
             <div id="perguntaDaQuestaoAtual" class="question">
+              <span id="spanTituloCasoAtual" class="case-title"></span>
+              <span id="spanDescricaoCasoAtual" class="case-description"></span>
               <span id="spanQuestaoExibida"></span>
             </div>
           </div>
@@ -214,229 +215,251 @@
 
 </html>
 <script>
-  const examCategories = {
-    paranormal: [
-      {
-        question: "Qual é a principal característica de uma manifestação espiritual?",
-        alternatives: [
-          "A presença de alterações ou fenômenos inexplicáveis associados a uma entidade.",
-          "A ocorrência de fenômenos exclusivamente naturais.",
-          "A existência obrigatória de objetos amaldiçoados.",
-          "A presença de atividades sísmicas."
-        ],
-        correctAnswer: 0
-      },
-      {
-        question: "O que caracteriza um objeto assombrado?",
-        alternatives: [
-          "Um objeto que possui grande valor histórico.",
-          "Um objeto associado a manifestações ou atividades paranormais.",
-          "Um objeto que apresenta defeitos de fabricação.",
-          "Um objeto que foi abandonado por seu proprietário."
-        ],
-        correctAnswer: 1
-      },
-      {
-        question: "O que é uma possessão espiritual?",
-        alternatives: [
-          "Quando uma entidade influencia ou assume o controle de um indivíduo.",
-          "Quando uma pessoa apresenta habilidades físicas incomuns.",
-          "Quando um espírito aparece em fotografias.",
-          "Quando um objeto muda de localização sozinho."
-        ],
-        correctAnswer: 0
-      },
-      {
-        question: "Qual situação pode indicar a presença de uma maldição?",
-        alternatives: [
-          "Uma sequência de acontecimentos sem relação com o ambiente.",
-          "A ocorrência de eventos anormais associados a uma pessoa ou local.",
-          "A deterioração natural de um imóvel antigo.",
-          "A presença de animais em uma residência."
-        ],
-        correctAnswer: 1
-      },
-      {
-        question: "Por que é importante classificar o nível de ameaça de uma entidade?",
-        alternatives: [
-          "Para determinar seu valor comercial.",
-          "Para identificar sua idade aproximada.",
-          "Para avaliar os riscos e definir os procedimentos adequados.",
-          "Para descobrir sua localização original."
-        ],
-        correctAnswer: 2
+  const examCases = [
+    {
+      title: "Caso 001 — O Apartamento 404",
+      description: "Um morador afirma que seu apartamento está sendo invadido todas as noites. O detalhe curioso? Todas as manhãs, seus móveis estão organizados de uma maneira diferente e uma voz desconhecida reclama da decoração. O morador já tentou resolver o problema deixando uma avaliação negativa no Google, sem sucesso.",
+      questions: {
+        paranormal: {
+          question: "O morador relata que a voz responde quando ele conversa sozinho, mas nunca aparece fisicamente. Que tipo de manifestação pode estar ocorrendo?",
+          alternatives: [
+            "Uma manifestação espiritual com comunicação auditiva.",
+            "Uma possessão completa do morador.",
+            "Uma maldição que afeta exclusivamente móveis.",
+            "Um fenômeno de teletransporte."
+          ],
+          correctAnswer: 0
+        },
+        investigacao: {
+          question: "Você chega ao apartamento e percebe que todos os móveis foram movidos durante a madrugada. Qual seria a melhor forma de começar a investigação?",
+          alternatives: [
+            "Perguntar ao espírito se ele pode parar de fazer bagunça.",
+            "Instalar câmeras e registrar os horários em que os móveis são movimentados.",
+            "Mudar todos os móveis de lugar para confundir a entidade.",
+            "Concluir que o morador está inventando tudo."
+          ],
+          correctAnswer: 1
+        },
+        contencao: {
+          question: "Durante a investigação, a voz começa a gritar e os móveis passam a se movimentar violentamente. O que você deve fazer?",
+          alternatives: [
+            "Tentar segurar os móveis com as próprias mãos.",
+            "Provocar a entidade para descobrir seus limites.",
+            "Retirar as pessoas do local e iniciar o protocolo de isolamento.",
+            "Continuar gravando, afinal, o vídeo pode viralizar."
+          ],
+          correctAnswer: 2
+        },
+        estrategia: {
+          question: "Após algumas horas, você descobre que a entidade só se manifesta quando alguém altera a posição de um antigo quadro. Como sua equipe deve proceder?",
+          alternatives: [
+            "Retirar o quadro imediatamente e encerrar o caso.",
+            "Ignorar a descoberta e continuar procurando outros fenômenos.",
+            "Registrar a descoberta, comunicar a equipe e planejar uma abordagem segura para o objeto.",
+            "Deixar o quadro com o morador e desejar boa sorte."
+          ],
+          correctAnswer: 2
+        }
       }
-    ],
-
-    investigacao: [
-      {
-        question: "Durante uma ocorrência, moradores relatam ouvir vozes durante a madrugada. Qual deve ser a primeira atitude do agente?",
-        alternatives: [
-          "Concluir imediatamente que existe um espírito.",
-          "Investigar os relatos e buscar evidências que confirmem o fenômeno.",
-          "Recomendar que os moradores abandonem o imóvel.",
-          "Ignorar os relatos por não apresentarem provas."
-        ],
-        correctAnswer: 1
-      },
-      {
-        question: "Dois moradores apresentam versões diferentes sobre uma manifestação paranormal. O que o investigador deve fazer?",
-        alternatives: [
-          "Considerar apenas o relato mais assustador.",
-          "Descartar os dois relatos.",
-          "Comparar as informações e buscar evidências independentes.",
-          "Escolher a versão apresentada primeiro."
-        ],
-        correctAnswer: 2
-      },
-      {
-        question: "Durante uma investigação, o agente encontra marcas incomuns em uma parede. Qual é a melhor conduta?",
-        alternatives: [
-          "Remover as marcas imediatamente.",
-          "Fotografar, registrar e analisar as evidências.",
-          "Concluir que foram produzidas por uma entidade.",
-          "Ignorar as marcas e continuar a investigação."
-        ],
-        correctAnswer: 1
-      },
-      {
-        question: "Qual é a utilidade de identificar padrões em ocorrências paranormais?",
-        alternatives: [
-          "Relacionar eventos e identificar possíveis causas em comum.",
-          "Evitar a necessidade de registrar evidências.",
-          "Determinar automaticamente a identidade da entidade.",
-          "Eliminar a possibilidade de novas ocorrências."
-        ],
-        correctAnswer: 0
-      },
-      {
-        question: "Uma residência apresenta quedas frequentes de temperatura sempre no mesmo cômodo. O que o investigador deve considerar?",
-        alternatives: [
-          "Que a presença de um espírito está confirmada.",
-          "Que o fenômeno deve ser ignorado.",
-          "Que é necessário investigar possíveis causas ambientais e paranormais.",
-          "Que todos os cômodos devem apresentar a mesma temperatura."
-        ],
-        correctAnswer: 2
+    },
+    {
+      title: "Caso 002 — O Funcionário do Mês",
+      description: "Uma pequena loja de conveniência está enfrentando um problema incomum: todas as noites, os produtos são reorganizados e o caixa registra vendas que ninguém realizou. O gerente afirma que existe um funcionário invisível trabalhando no turno da madrugada. Curiosamente, ele nunca falta e aparentemente não recebe salário.",
+      questions: {
+        paranormal: {
+          question: "Durante a madrugada, uma lata de refrigerante flutua até o balcão e uma voz diz 'próximo!'. Qual fenômeno melhor descreve essa manifestação?",
+          alternatives: [
+            "Uma manifestação psicocinética, envolvendo movimentação de objetos sem contato físico aparente.",
+            "Uma possessão espiritual do refrigerante.",
+            "Uma maldição que transforma produtos em funcionários.",
+            "Uma manifestação exclusivamente visual."
+          ],
+          correctAnswer: 0
+        },
+        investigacao: {
+          question: "O gerente apresenta registros de vendas realizadas enquanto a loja estava vazia. Qual evidência seria mais útil para cruzar com os relatos?",
+          alternatives: [
+            "A opinião dos clientes sobre o atendimento.",
+            "As gravações das câmeras e os registros do sistema de caixa.",
+            "A quantidade de produtos vencidos.",
+            "A escala de funcionários do turno da manhã, sem analisar outros dados."
+          ],
+          correctAnswer: 1
+        },
+        contencao: {
+          question: "Você percebe que a entidade está movimentando objetos cada vez mais pesados. Qual seria a melhor medida preventiva?",
+          alternatives: [
+            "Deixar os objetos mais pesados próximos dos clientes.",
+            "Tentar negociar oferecendo um aumento salarial.",
+            "Isolar a área de movimentação e retirar pessoas que possam ser atingidas.",
+            "Desligar todas as luzes e esperar que ela vá embora."
+          ],
+          correctAnswer: 2
+        },
+        estrategia: {
+          question: "Sua equipe descobre que a atividade paranormal começa sempre após o fechamento da loja. Qual seria a melhor estratégia?",
+          alternatives: [
+            "Realizar uma observação controlada no horário das manifestações, com a equipe preparada.",
+            "Fechar a loja permanentemente sem investigar.",
+            "Mandar apenas um agente disfarçado de cliente.",
+            "Esperar que a entidade peça demissão."
+          ],
+          correctAnswer: 0
+        }
       }
-    ],
-
-    contencao: [
-      {
-        question: "Qual é o principal objetivo de um procedimento de contenção?",
-        alternatives: [
-          "Eliminar qualquer evidência da ocorrência.",
-          "Impedir ou limitar a manifestação e seus possíveis danos.",
-          "Atrair outras entidades para o local.",
-          "Aumentar a atividade paranormal."
-        ],
-        correctAnswer: 1
-      },
-      {
-        question: "Uma entidade apresenta comportamento hostil durante uma investigação. Qual deve ser a prioridade da equipe?",
-        alternatives: [
-          "Tentar estabelecer contato físico com a entidade.",
-          "Continuar a investigação sem alterações.",
-          "Garantir a segurança das pessoas e seguir o protocolo de contenção.",
-          "Separar os agentes para investigar mais rapidamente."
-        ],
-        correctAnswer: 2
-      },
-      {
-        question: "Por que uma área afetada por atividade paranormal pode precisar ser isolada?",
-        alternatives: [
-          "Para evitar a circulação de pessoas e reduzir possíveis riscos.",
-          "Para aumentar a concentração de energia espiritual.",
-          "Para impedir que outros agentes tenham acesso aos relatórios.",
-          "Para garantir que a entidade permaneça no local."
-        ],
-        correctAnswer: 0
-      },
-      {
-        question: "Um agente percebe uma alteração intensa em sua própria energia espiritual. Qual atitude é mais adequada?",
-        alternatives: [
-          "Ignorar a alteração e continuar trabalhando.",
-          "Tentar liberar toda a energia de uma vez.",
-          "Comunicar a equipe e seguir os procedimentos de segurança.",
-          "Abandonar os equipamentos no local."
-        ],
-        correctAnswer: 2
-      },
-      {
-        question: "Antes de iniciar a contenção de uma entidade desconhecida, o que deve ser feito?",
-        alternatives: [
-          "Atacar imediatamente para evitar uma reação.",
-          "Avaliar o nível de ameaça e as características da manifestação.",
-          "Desligar todos os equipamentos de monitoramento.",
-          "Permitir que civis se aproximem para observar."
-        ],
-        correctAnswer: 1
+    },
+    {
+      title: "Caso 003 — A Boneca Não Pisca",
+      description: "Um museu recebeu uma antiga boneca de porcelana como doação. Desde então, os funcionários afirmam que ela muda de posição durante a noite. Um segurança pediu demissão depois de encontrar a boneca sentada em sua cadeira, usando seu crachá. O museu insiste que a peça é inofensiva, mas ninguém quer mais trabalhar no turno noturno.",
+      questions: {
+        paranormal: {
+          question: "A boneca muda de posição sozinha e parece reagir à presença dos visitantes. Qual hipótese paranormal merece ser investigada?",
+          alternatives: [
+            "Uma manifestação associada a um objeto assombrado.",
+            "Uma possessão coletiva dos visitantes.",
+            "Uma alteração climática localizada.",
+            "Uma maldição que afeta exclusivamente funcionários noturnos."
+          ],
+          correctAnswer: 0
+        },
+        investigacao: {
+          question: "Você precisa descobrir se a boneca realmente se movimenta sem intervenção humana. Qual procedimento é mais adequado?",
+          alternatives: [
+            "Perguntar aos funcionários se eles têm medo de bonecas.",
+            "Colocar a boneca em uma sala monitorada e registrar qualquer alteração de posição.",
+            "Desmontar a boneca imediatamente.",
+            "Deixar um funcionário sozinho com ela durante a madrugada."
+          ],
+          correctAnswer: 1
+        },
+        contencao: {
+          question: "Durante a análise, a boneca começa a se movimentar e tenta alcançar um funcionário. Qual é a prioridade?",
+          alternatives: [
+            "Tentar arrancar sua cabeça para interromper a manifestação.",
+            "Permitir que o funcionário tente conversar com ela.",
+            "Afastar as pessoas e aplicar o procedimento de contenção adequado ao objeto.",
+            "Colocar a boneca novamente na vitrine e fingir que nada aconteceu."
+          ],
+          correctAnswer: 2
+        },
+        estrategia: {
+          question: "A equipe descobre que a boneca só se movimenta quando alguém pronuncia o nome gravado em sua base. Como vocês devem conduzir a próxima etapa?",
+          alternatives: [
+            "Pronunciar o nome várias vezes para testar a paciência da entidade.",
+            "Divulgar o nome aos visitantes para conseguir mais relatos.",
+            "Documentar a descoberta, restringir o acesso à informação e planejar testes controlados.",
+            "Apagar o nome da base sem avaliar as consequências."
+          ],
+          correctAnswer: 2
+        }
       }
-    ],
-
-    estrategia: [
-      {
-        question: "Durante uma ocorrência, dois agentes discordam sobre como abordar uma entidade. Qual é a melhor decisão?",
-        alternatives: [
-          "Permitir que cada um execute seu próprio plano.",
-          "Escolher a estratégia mais arriscada para economizar tempo.",
-          "Discutir as opções considerando as evidências e os riscos.",
-          "Interromper a operação permanentemente."
-        ],
-        correctAnswer: 2
-      },
-      {
-        question: "Uma equipe recebe informações de que uma ocorrência pode ser mais perigosa do que o esperado. O que deve fazer?",
-        alternatives: [
-          "Ignorar as novas informações para cumprir o cronograma.",
-          "Reavaliar o planejamento e adaptar os procedimentos.",
-          "Enviar apenas um agente para verificar a situação.",
-          "Divulgar as informações para os moradores antes de confirmar os fatos."
-        ],
-        correctAnswer: 1
-      },
-      {
-        question: "Qual é a importância da comunicação durante uma operação paranormal?",
-        alternatives: [
-          "Garantir que os agentes compartilhem informações relevantes e coordenem suas ações.",
-          "Evitar que os agentes precisem seguir um planejamento.",
-          "Permitir que cada membro tome decisões sem informar os demais.",
-          "Reduzir a quantidade de registros da ocorrência."
-        ],
-        correctAnswer: 0
-      },
-      {
-        question: "Um agente percebe que seu colega está em perigo enquanto a equipe executa uma operação. O que deve fazer?",
-        alternatives: [
-          "Continuar sua tarefa independentemente da situação.",
-          "Abandonar todos os equipamentos e fugir.",
-          "Comunicar a equipe e agir conforme o protocolo de segurança.",
-          "Esperar que outro agente perceba o problema."
-        ],
-        correctAnswer: 2
-      },
-      {
-        question: "Uma equipe precisa escolher entre investigar uma nova pista ou garantir a evacuação de civis em uma área de risco. Qual deve ser a prioridade?",
-        alternatives: [
-          "Investigar a pista, pois ela pode resolver a ocorrência.",
-          "Garantir a segurança e evacuação dos civis.",
-          "Dividir a equipe igualmente sem avaliar os riscos.",
-          "Esperar que a situação se resolva sozinha."
-        ],
-        correctAnswer: 1
+    },
+    {
+      title: "Caso 004 — O Elevador do Além",
+      description: "Funcionários de um prédio comercial relatam que o elevador está parando em um andar que não existe. Ao abrir as portas, aparece um corredor completamente escuro. Um funcionário afirma ter visto seu próprio reflexo saindo do elevador antes dele. A administração pediu uma solução urgente, pois as reclamações já chegaram ao RH.",
+      questions: {
+        paranormal: {
+          question: "O elevador apresenta acesso a um corredor inexistente na estrutura do prédio. Qual fenômeno pode estar relacionado a esse acontecimento?",
+          alternatives: [
+            "Uma possível distorção espacial associada a uma manifestação paranormal.",
+            "Uma possessão espiritual do painel de controle.",
+            "Uma maldição que afeta exclusivamente botões.",
+            "Uma manifestação de combustão espontânea."
+          ],
+          correctAnswer: 0
+        },
+        investigacao: {
+          question: "Você compara a planta do edifício com os registros do elevador e encontra diferenças nos andares registrados. O que deve fazer?",
+          alternatives: [
+            "Concluir que o prédio possui um andar secreto.",
+            "Comparar os registros técnicos, horários das ocorrências e relatos dos funcionários.",
+            "Descer pelo poço do elevador para procurar o corredor.",
+            "Solicitar que todos os funcionários utilizem as escadas permanentemente."
+          ],
+          correctAnswer: 1
+        },
+        contencao: {
+          question: "Durante uma ocorrência, as portas se abrem novamente para o corredor desconhecido. Um funcionário tenta entrar. Qual é a atitude correta?",
+          alternatives: [
+            "Permitir a entrada para descobrir o que existe lá.",
+            "Entrar primeiro para demonstrar coragem.",
+            "Impedir o acesso, retirar as pessoas da área e seguir o protocolo de isolamento.",
+            "Fechar as portas e deixar o funcionário decidir."
+          ],
+          correctAnswer: 2
+        },
+        estrategia: {
+          question: "Sua equipe percebe que o fenômeno acontece sempre às 23h04. Como aproveitar essa informação?",
+          alternatives: [
+            "Organizar uma operação monitorada nesse horário, com funções e procedimentos definidos.",
+            "Enviar todos os agentes ao elevador ao mesmo tempo.",
+            "Ignorar o horário e investigar durante o expediente.",
+            "Esperar até que o elevador pare de funcionar."
+          ],
+          correctAnswer: 0
+        }
       }
-    ]
-  };
+    },
+    {
+      title: "Caso 005 — A Reunião que Nunca Acaba",
+      description: "A Psycho Association recebeu uma denúncia de uma antiga sala de reuniões onde vozes continuam discutindo mesmo depois que todos vão embora. Segundo testemunhas, a entidade repete frases como 'vamos alinhar isso na próxima reunião' e 'só mais um ajuste'. Dois funcionários afirmam que ficaram presos na sala por três horas, mesmo com a porta destrancada.",
+      questions: {
+        paranormal: {
+          question: "A sala reproduz repetidamente conversas antigas, mesmo sem a presença das pessoas envolvidas. Qual hipótese deve ser considerada?",
+          alternatives: [
+            "Uma manifestação residual, que reproduz acontecimentos ou impressões do passado.",
+            "Uma possessão simultânea de todos os funcionários.",
+            "Uma maldição que transforma reuniões em entidades.",
+            "Uma manifestação exclusivamente física."
+          ],
+          correctAnswer: 0
+        },
+        investigacao: {
+          question: "Os relatos indicam que as vozes repetem frases de uma antiga equipe. Qual seria uma boa linha de investigação?",
+          alternatives: [
+            "Investigar o histórico da sala e comparar os relatos com antigos registros e acontecimentos.",
+            "Gravar novas reuniões para tentar confundir a entidade.",
+            "Perguntar aos funcionários se eles gostam de reuniões.",
+            "Concluir que alguém deixou um rádio ligado."
+          ],
+          correctAnswer: 0
+        },
+        contencao: {
+          question: "Durante a investigação, um agente começa a ouvir as vozes e não consegue sair da sala. O que a equipe deve fazer?",
+          alternatives: [
+            "Esperar que a reunião termine.",
+            "Tentar interromper a manifestação sem avaliar os riscos.",
+            "Priorizar o resgate do agente, isolar a área e executar o protocolo de contenção.",
+            "Enviar outro agente para participar da reunião."
+          ],
+          correctAnswer: 2
+        },
+        estrategia: {
+          question: "Sua equipe descobre que a manifestação está relacionada a um antigo conflito entre funcionários. Qual abordagem parece mais adequada?",
+          alternatives: [
+            "Destruir todos os móveis da sala.",
+            "Analisar o histórico do conflito, compartilhar as descobertas e planejar uma intervenção coordenada.",
+            "Realizar uma nova reunião para tentar convencer a entidade.",
+            "Ignorar o passado e encerrar o relatório."
+          ],
+          correctAnswer: 1
+        }
+      }
+    }
+  ];
 
-  function montarQuestoesIntercaladas(categorias) {
+  function montarQuestoesDosCasos(cases) {
     const ordemCategorias = ['paranormal', 'investigacao', 'contencao', 'estrategia'];
-    const questoesIntercaladas = [];
+    const lista = [];
 
-    for (let rodada = 0; rodada < 5; rodada++) {
-      for (let i = 0; i < ordemCategorias.length; i++) {
-        const categoria = ordemCategorias[i];
-        const questao = categorias[categoria][rodada];
-        questoesIntercaladas.push({
+    for (let indiceCaso = 0; indiceCaso < cases.length; indiceCaso++) {
+      const casoAtual = cases[indiceCaso];
+      for (let indiceCategoria = 0; indiceCategoria < ordemCategorias.length; indiceCategoria++) {
+        const categoria = ordemCategorias[indiceCategoria];
+        const questao = casoAtual.questions[categoria];
+        lista.push({
+          caseTitle: casoAtual.title,
+          caseDescription: casoAtual.description,
           category: categoria,
           question: questao.question,
           alternatives: questao.alternatives,
@@ -445,10 +468,10 @@
       }
     }
 
-    return questoesIntercaladas;
+    return lista;
   }
 
-  const listaDeQuestoes = montarQuestoesIntercaladas(examCategories);
+  const listaDeQuestoes = montarQuestoesDosCasos(examCases);
 
 
   // variáveis globais    
@@ -467,98 +490,192 @@
   let chaveResultadoQuiz = "";
   let chaveCooldownQuiz = "";
   let graficoMediasQuiz = null;
+  let resumoIndividualUsuario = null;
+  let ultimaTentativaUsuario = null;
+  let rankingUsuarios = [];
+  let resumoGeralExame = null;
 
-  // Para visualizar o estado sem exames, altere apenas este valor para false.
-  const usuarioMockRealizouExame = true;
-  // Cada tentativa contém os acertos nas quatro categorias, sempre de 0 a 5.
-  const tentativasMockQuiz = [
-    [3, 4, 2, 3],
-    [4, 3, 4, 3],
-    [5, 4, 3, 4]
-  ];
-  const membrosMockQuiz = [
-    { nome: 'Shigeo Kageyama', acertos: 20, tentativas: 2 },
-    { nome: 'Ritsu Kageyama', acertos: 18, tentativas: 3 },
-    { nome: 'Teruki Hanazawa', acertos: 18, tentativas: 4 },
-    { nome: 'Tome Kurata', acertos: 15, tentativas: 2 },
-    { nome: 'Arataka Reigen', acertos: 12, tentativas: 6 }
-  ];
-  // Médias fictícias considerando todas as tentativas de todos os membros.
-  const mediasGeraisMockQuiz = [3.8, 3.2, 2.9, 3.5];
+  function obterNumeroOuZero(valor) {
+    const numero = Number(valor);
 
-  function renderizarDashboardQuiz() {
-    const membrosRanking = [];
-    for (let i = 0; i < membrosMockQuiz.length; i++) {
-      membrosRanking.push(membrosMockQuiz[i]);
+    if (Number.isNaN(numero)) {
+      return 0;
     }
 
-    const mediasIndividuais = [0, 0, 0, 0];
-    let totalAcertos = 0;
-    let melhorTentativa = 0;
-    let ultimaTentativa = 0;
-
-    if (usuarioMockRealizouExame && tentativasMockQuiz.length > 0) {
-      for (let i = 0; i < tentativasMockQuiz.length; i++) {
-        let acertosTentativa = 0;
-        for (let categoria = 0; categoria < 4; categoria++) {
-          acertosTentativa += tentativasMockQuiz[i][categoria];
-          mediasIndividuais[categoria] += tentativasMockQuiz[i][categoria];
-        }
-        totalAcertos += acertosTentativa;
-        ultimaTentativa = acertosTentativa;
-        if (acertosTentativa > melhorTentativa) {
-          melhorTentativa = acertosTentativa;
-        }
-      }
-      for (let categoria = 0; categoria < 4; categoria++) {
-        mediasIndividuais[categoria] /= tentativasMockQuiz.length;
-      }
-      document.getElementById('ultimoPercentualQuiz').innerHTML = `${Math.round(ultimaTentativa / 20 * 100)}%`;
-      document.getElementById('tentativasQuiz').innerHTML = tentativasMockQuiz.length;
-      document.getElementById('mediaPercentualQuiz').innerHTML = `${Math.round(totalAcertos / (tentativasMockQuiz.length * 20) * 100)}%`;
-      membrosRanking.push({ nome: 'Você (demonstração)', acertos: melhorTentativa, tentativas: tentativasMockQuiz.length, usuarioAtual: true });
-    }
-
-    // Ordenação simples: mais acertos primeiro; em empate, menos tentativas.
-    for (let i = 0; i < membrosRanking.length; i++) {
-      for (let j = i + 1; j < membrosRanking.length; j++) {
-        if (membrosRanking[j].acertos > membrosRanking[i].acertos ||
-          (membrosRanking[j].acertos === membrosRanking[i].acertos && membrosRanking[j].tentativas < membrosRanking[i].tentativas)) {
-          const membroTemporario = membrosRanking[i];
-          membrosRanking[i] = membrosRanking[j];
-          membrosRanking[j] = membroTemporario;
-        }
-      }
-    }
-
-    const listaRanking = document.getElementById('rankingMembrosQuiz');
-    listaRanking.innerHTML = '';
-    for (let i = 0; i < membrosRanking.length; i++) {
-      const membro = membrosRanking[i];
-      let classeUsuario = '';
-      if (membro.usuarioAtual) {
-        classeUsuario = ' exam-ranking-current';
-        document.getElementById('rankingAtualQuiz').innerHTML = `${i + 1}º`;
-        document.getElementById('descricaoRankingQuiz').innerHTML = 'Sua posição entre os membros';
-      }
-      listaRanking.innerHTML += `<div class="exam-ranking-item${classeUsuario}">
-        <span class="exam-ranking-position">${i + 1}º</span>
-        <span class="exam-ranking-name">${membro.nome}</span>
-        <div class="exam-ranking-score"><strong>${membro.acertos} / 20</strong><small>${membro.tentativas} tentativas</small></div>
-      </div>`;
-    }
-    renderizarGraficoMediasQuiz(mediasIndividuais);
+    return numero;
   }
 
-  function renderizarGraficoMediasQuiz(mediasIndividuais) {
+  function formatarPercentual(valor) {
+    const numero = Number(valor);
+
+    if (Number.isNaN(numero)) {
+      return '—';
+    }
+
+    return `${Math.round(numero)}%`;
+  }
+
+  function obterMensagemResultadoPorPercentual(percentual) {
+    if (percentual <= 30) {
+      return {
+        mensagem: 'Parece que você precisa reforçar seus estudos.',
+        classe: 'subtitle-danger'
+      };
+    }
+
+    if (percentual > 30 && percentual < 90) {
+      return {
+        mensagem: 'Bom desempenho, mas ainda dá para evoluir.',
+        classe: 'subtitle-warning'
+      };
+    }
+
+    return {
+      mensagem: 'Excelente! Você está pronto para as operações.',
+      classe: 'subtitle-success'
+    };
+  }
+
+  function buscarJsonOuNulo(url) {
+    return fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (resposta) {
+      if (resposta.status === 204) {
+        return null;
+      }
+
+      if (!resposta.ok) {
+        throw new Error('Erro ao buscar dados do exame.');
+      }
+
+      return resposta.json();
+    });
+  }
+
+  function carregarDadosDashboardExame() {
+    const idUsuario = sessionStorage.ID_USUARIO;
+
+    if (!idUsuario) {
+      renderizarDashboardQuiz();
+      atualizarDisponibilidadeUltimaTentativa();
+      return;
+    }
+
+    Promise.all([
+      buscarJsonOuNulo(`/exames/resumo-individual/${idUsuario}`),
+      buscarJsonOuNulo(`/exames/ultima-tentativa/${idUsuario}`),
+      buscarJsonOuNulo('/exames/ranking'),
+      buscarJsonOuNulo('/exames/resumo-geral')
+    ]).then(function (respostas) {
+      resumoIndividualUsuario = null;
+      ultimaTentativaUsuario = null;
+      rankingUsuarios = [];
+      resumoGeralExame = null;
+
+      if (respostas[0] && respostas[0].length > 0) {
+        resumoIndividualUsuario = respostas[0][0];
+      }
+
+      if (respostas[1] && respostas[1].length > 0) {
+        ultimaTentativaUsuario = respostas[1][0];
+      }
+
+      if (respostas[2] && respostas[2].length > 0) {
+        rankingUsuarios = respostas[2];
+      }
+
+      if (respostas[3] && respostas[3].length > 0) {
+        resumoGeralExame = respostas[3][0];
+      }
+
+      renderizarDashboardQuiz();
+      atualizarDisponibilidadeUltimaTentativa();
+    }).catch(function (erro) {
+      console.log('#ERRO ao carregar dashboard de exames:', erro);
+      renderizarDashboardQuiz();
+      atualizarDisponibilidadeUltimaTentativa();
+    });
+  }
+
+  function renderizarDashboardQuiz() {
+    const listaRanking = document.getElementById('rankingMembrosQuiz');
+    const idUsuarioAtual = String(sessionStorage.ID_USUARIO);
+    const mediasIndividuais = [0, 0, 0, 0];
+    const mediasGerais = [0, 0, 0, 0];
+    let usuarioEncontradoRanking = false;
+
+    document.getElementById('rankingAtualQuiz').innerHTML = '—';
+    document.getElementById('descricaoRankingQuiz').innerHTML = 'Realize seu primeiro exame para entrar no ranking.';
+    document.getElementById('melhorPercentualQuiz').innerHTML = '—';
+    document.getElementById('tentativasQuiz').innerHTML = '0';
+    document.getElementById('mediaPercentualQuiz').innerHTML = '—';
+
+    if (resumoIndividualUsuario) {
+      document.getElementById('tentativasQuiz').innerHTML = obterNumeroOuZero(resumoIndividualUsuario.tentativas);
+      document.getElementById('mediaPercentualQuiz').innerHTML = formatarPercentual(resumoIndividualUsuario.media_perc_acerto);
+      mediasIndividuais[0] = obterNumeroOuZero(resumoIndividualUsuario.media_acerto_paranormal);
+      mediasIndividuais[1] = obterNumeroOuZero(resumoIndividualUsuario.media_acerto_investigacao);
+      mediasIndividuais[2] = obterNumeroOuZero(resumoIndividualUsuario.media_acerto_contencao);
+      mediasIndividuais[3] = obterNumeroOuZero(resumoIndividualUsuario.media_acerto_estrategia);
+    }
+
+    if (ultimaTentativaUsuario) {
+      document.getElementById('melhorPercentualQuiz').innerHTML = formatarPercentual(ultimaTentativaUsuario.perc_acerto);
+    }
+
+    if (resumoGeralExame) {
+      mediasGerais[0] = obterNumeroOuZero(resumoGeralExame.media_acerto_paranormal);
+      mediasGerais[1] = obterNumeroOuZero(resumoGeralExame.media_acerto_investigacao);
+      mediasGerais[2] = obterNumeroOuZero(resumoGeralExame.media_acerto_contencao);
+      mediasGerais[3] = obterNumeroOuZero(resumoGeralExame.media_acerto_estrategia);
+    }
+
+    listaRanking.innerHTML = '';
+
+    if (rankingUsuarios.length === 0) {
+      listaRanking.innerHTML = '<div class="exam-ranking-item"><span class="exam-ranking-name">Nenhum dado de ranking disponível.</span></div>';
+    } else {
+      for (let i = 0; i < rankingUsuarios.length; i++) {
+        const usuarioRanking = rankingUsuarios[i];
+        let classeUsuario = '';
+        const idUsuarioRanking = String(usuarioRanking.id_usuario);
+
+        if (idUsuarioRanking === idUsuarioAtual) {
+          classeUsuario = ' exam-ranking-current';
+          usuarioEncontradoRanking = true;
+          document.getElementById('rankingAtualQuiz').innerHTML = `${usuarioRanking.ranking}º`;
+          document.getElementById('descricaoRankingQuiz').innerHTML = 'Sua posição entre os membros';
+        }
+
+        listaRanking.innerHTML += `<div class="exam-ranking-item${classeUsuario}">
+          <span class="exam-ranking-position">${usuarioRanking.ranking}º</span>
+          <span class="exam-ranking-name">${usuarioRanking.nome_usuario}</span>
+          <div class="exam-ranking-score"><strong>${usuarioRanking.acertos} / 20</strong><small>${usuarioRanking.tentativas} tentativas</small></div>
+        </div>`;
+      }
+    }
+
+    if (!usuarioEncontradoRanking) {
+      if (resumoIndividualUsuario) {
+        document.getElementById('descricaoRankingQuiz').innerHTML = 'Ranking ainda não disponível para o seu usuário.';
+      }
+    }
+
+    renderizarGraficoMediasQuiz(mediasIndividuais, mediasGerais);
+  }
+
+  function renderizarGraficoMediasQuiz(mediasIndividuais, mediasGerais) {
     const marcasMedias = {};
-    for (let i = 0; i < mediasGeraisMockQuiz.length; i++) {
+    for (let i = 0; i < mediasGerais.length; i++) {
       marcasMedias[`categoria${i}`] = {
         type: 'line',
         xMin: i - 0.32,
         xMax: i + 0.32,
-        yMin: mediasGeraisMockQuiz[i],
-        yMax: mediasGeraisMockQuiz[i],
+        yMin: mediasGerais[i],
+        yMax: mediasGerais[i],
         borderColor: '#0A0D24',
         borderWidth: 3,
         borderDash: [5, 3]
@@ -591,7 +708,7 @@
           tooltip: {
             callbacks: {
               afterLabel: function (contexto) {
-                return `Média geral: ${mediasGeraisMockQuiz[contexto.dataIndex]} / 5`;
+                return `Média geral: ${mediasGerais[contexto.dataIndex]} / 5`;
               }
             }
           }
@@ -608,20 +725,17 @@
   };
 
   function onloadEsconder() {
-    const imagemReigen = document.getElementById('reigen');
     configurarSelecaoOpcoes();
     configurarAtalhoEnter();
     configurarChavesStorageQuiz();
     document.getElementById('resultadoFinal').style.display = "none";
     document.getElementById('jogo').style.display = "none";
     atualizarTempoQuiz();
-    if (imagemReigen) {
-      imagemReigen.style.display = "none";
-    }
 
     renderizarDashboardQuiz();
     configurarSelectViewQuiz();
     exibirVisaoGeralQuiz();
+    carregarDadosDashboardExame();
   }
 
   function configurarSelectViewQuiz() {
@@ -646,12 +760,19 @@
   function atualizarDisponibilidadeUltimaTentativa() {
     const opcaoUltimaTentativa = document.getElementById('opcaoUltimaTentativaQuiz');
     const resultadoSalvo = recuperarResultadoFinalDoStorage();
+    let possuiTentativasNoBanco = false;
 
     if (!opcaoUltimaTentativa) {
       return;
     }
 
-    if (resultadoSalvo) {
+    if (resumoIndividualUsuario) {
+      if (obterNumeroOuZero(resumoIndividualUsuario.tentativas) > 0) {
+        possuiTentativasNoBanco = true;
+      }
+    }
+
+    if (resultadoSalvo || possuiTentativasNoBanco) {
       opcaoUltimaTentativa.disabled = false;
       return;
     }
@@ -683,8 +804,40 @@
     document.getElementById('acerto_estrategia').innerHTML = `${acertosPorCategoria.estrategia}/5`;
   }
 
+  function montarResultadoComDadosBanco() {
+    if (!ultimaTentativaUsuario) {
+      return null;
+    }
+
+    const percentual = obterNumeroOuZero(ultimaTentativaUsuario.perc_acerto);
+    const resumoMensagem = obterMensagemResultadoPorPercentual(percentual);
+
+    return {
+      pontuacaoFinal: obterNumeroOuZero(ultimaTentativaUsuario.acertos_totais),
+      quantidadeDeQuestoes: quantidadeDeQuestoes,
+      percentual: Math.round(percentual),
+      mensagemFinal: resumoMensagem.mensagem,
+      classeMensagemFinal: resumoMensagem.classe,
+      acertosPorCategoria: {
+        paranormal: obterNumeroOuZero(ultimaTentativaUsuario.acertos_paranormal),
+        investigacao: obterNumeroOuZero(ultimaTentativaUsuario.acertos_investigacao),
+        contencao: obterNumeroOuZero(ultimaTentativaUsuario.acertos_contencao),
+        estrategia: obterNumeroOuZero(ultimaTentativaUsuario.acertos_estrategia)
+      }
+    };
+  }
+
+  function obterResultadoParaExibir() {
+    const resultadoSalvo = recuperarResultadoFinalDoStorage();
+
+    if (resultadoSalvo) {
+      return resultadoSalvo;
+    }
+
+    return montarResultadoComDadosBanco();
+  }
+
   function exibirVisaoGeralQuiz() {
-    const imagemReigen = document.getElementById('reigen');
     document.getElementById('tituloTopoQuiz').innerHTML = 'EXAME DE APTIDÃO PARANORMAL';
     document.getElementById('subtituloTopoQuiz').innerHTML = 'Demonstre que possui os conhecimentos necessários para lidar com ocorrências paranormais.';
     document.getElementById('subtituloTopoQuiz').className = '';
@@ -692,19 +845,15 @@
 
     document.querySelector('.top-container').style.display = 'flex';
     document.getElementById('dashboardQuiz').style.display = 'flex';
+    document.getElementById('btnIniciarQuiz').style.display = 'block';
     document.getElementById('resultadoFinal').style.display = 'none';
     document.getElementById('jogo').style.display = 'none';
-
-    if (imagemReigen) {
-      imagemReigen.style.display = 'none';
-    }
 
     iniciarTimerCooldownBotao();
   }
 
   function exibirUltimaTentativaQuiz() {
-    const imagemReigen = document.getElementById('reigen');
-    const resultadoSalvo = recuperarResultadoFinalDoStorage();
+    const resultadoSalvo = obterResultadoParaExibir();
     const selectQuizView = document.getElementById('selectQuizView');
 
     if (!resultadoSalvo) {
@@ -723,12 +872,9 @@
 
     document.querySelector('.top-container').style.display = 'flex';
     document.getElementById('dashboardQuiz').style.display = 'none';
+    document.getElementById('btnIniciarQuiz').style.display = 'none';
     document.getElementById('jogo').style.display = 'none';
     document.getElementById('resultadoFinal').style.display = 'flex';
-
-    if (imagemReigen) {
-      imagemReigen.style.display = 'none';
-    }
 
     quizFinalizado = true;
     btnProx.disabled = true;
@@ -922,13 +1068,20 @@
       atualizarEstadoBotaoTentarNovamente();
       return;
     }
+
+    numeroDaQuestaoAtual = 0;
+    pontuacaoFinal = 0;
+    acertosPorCategoria.paranormal = 0;
+    acertosPorCategoria.investigacao = 0;
+    acertosPorCategoria.contencao = 0;
+    acertosPorCategoria.estrategia = 0;
+
+    desmarcarRadioButtons();
+    limparCoresBackgroundOpcoes();
+
     pararTimerCooldownBotao();
     document.getElementById('dashboardQuiz').style.display = 'none';
-    const imagemReigen = document.getElementById('reigen');
     document.getElementById('jogo').style.display = "flex";
-    if (imagemReigen) {
-      imagemReigen.style.display = "block";
-    }
     document.getElementById('resultadoFinal').style.display = "none";
     document.getElementById('btnIniciarQuiz').style.display = "none";
     document.querySelector('.top-container').style.display = "none";
@@ -951,6 +1104,8 @@
     const questaoAtual = listaDeQuestoes[index];
     numeroDaQuestaoAtual = index;
     document.getElementById("spanNumeroDaQuestaoAtual").innerHTML = Number(index) + 1;
+    document.getElementById("spanTituloCasoAtual").innerHTML = questaoAtual.caseTitle;
+    document.getElementById("spanDescricaoCasoAtual").innerHTML = questaoAtual.caseDescription;
     document.getElementById("spanQuestaoExibida").innerHTML = questaoAtual.question;
     document.getElementById("labelOpcaoUm").innerHTML = questaoAtual.alternatives[0];
     document.getElementById("labelOpcaoDois").innerHTML = questaoAtual.alternatives[1];
@@ -1057,7 +1212,33 @@
     pararTimerCooldownBotao();
     localStorage.removeItem(chaveResultadoQuiz);
     localStorage.removeItem(chaveCooldownQuiz);
-    window.location.reload();
+    atualizarDisponibilidadeUltimaTentativa();
+
+    numeroDaQuestaoAtual = 0;
+    pontuacaoFinal = 0;
+    quizFinalizado = false;
+    tempoRestanteSegundos = 600;
+
+    acertosPorCategoria.paranormal = 0;
+    acertosPorCategoria.investigacao = 0;
+    acertosPorCategoria.contencao = 0;
+    acertosPorCategoria.estrategia = 0;
+
+    document.getElementById('selectQuizView').value = 'geral';
+    document.getElementById('spanPontuacaoFinal').innerHTML = '0 / 20';
+    document.getElementById('spanPercentualFinal').innerHTML = '0%';
+    document.getElementById('acerto_paranormal').innerHTML = '0/5';
+    document.getElementById('acerto_investigacao').innerHTML = '0/5';
+    document.getElementById('acerto_contencao').innerHTML = '0/5';
+    document.getElementById('acerto_estrategia').innerHTML = '0/5';
+
+    document.getElementById('msgFinal').innerHTML = '-';
+    document.getElementById('msgFinal').classList.remove('subtitle-danger', 'subtitle-warning', 'subtitle-success');
+
+    desmarcarRadioButtons();
+    limparCoresBackgroundOpcoes();
+
+    iniciarQuiz();
   }
 
   function checarResposta() {
@@ -1138,7 +1319,6 @@
     quizFinalizado = true;
     pararTimerQuiz();
 
-    const imagemReigen = document.getElementById('reigen');
     let textoParaMensagemFinal = null;
     let classComCoresParaMensagemFinal = null;
     const porcentagemFinalDeAcertos = pontuacaoFinal / quantidadeDeQuestoes;
@@ -1170,9 +1350,13 @@
     document.getElementById('acerto_estrategia').innerHTML = `${acertosPorCategoria.estrategia}/5`;
 
     document.getElementById('jogo').style.display = 'none';
-    if (imagemReigen) {
-      imagemReigen.style.display = 'none';
-    }
+    document.querySelector('.top-container').style.display = 'flex';
+    document.getElementById('dashboardQuiz').style.display = 'none';
+    document.querySelector('#resultadoFinal .resultado-titulo').style.display = 'none';
+    document.getElementById('tituloTopoQuiz').innerHTML = 'RESULTADO FINAL';
+    document.getElementById('subtituloTopoQuiz').innerHTML = textoParaMensagemFinal;
+    document.getElementById('subtituloTopoQuiz').className = classComCoresParaMensagemFinal;
+
     document.getElementById('resultadoFinal').style.display = 'flex';
 
     btnProx.disabled = true;
