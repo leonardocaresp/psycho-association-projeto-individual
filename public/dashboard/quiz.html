@@ -59,24 +59,6 @@
           possui os conhecimentos necessários para lidar com ocorrências paranormais.</h3>
       </div>
     </div>
-    <div class="infos-quiz">
-      <span>
-        <h3>20</h3>
-        <h4>Questões</h4>
-      </span>
-      <span>
-        <h3>100</h3>
-        <h4>Pontos máximos</h4>
-      </span>
-      <span>
-        <h3>5 - 10 min</h3>
-        <h4>Duração estimada</h4>
-      </span>
-      <span>
-        <h3>Múltipla escolha</h3>
-        <h4>Formato</h4>
-      </span>
-    </div>
     <div class="bottom-container">
 
       <div id="pontuacaoEJogo" class="quiz-content">
@@ -593,7 +575,6 @@
     document.getElementById('acerto_estrategia').innerHTML = `${acertosPorCategoria.estrategia}/5`;
 
     document.getElementById('btnIniciarQuiz').style.display = "none";
-    document.querySelector('.infos-quiz').style.display = "none";
     document.querySelector('.top-container').style.display = "none";
     document.getElementById('jogo').style.display = 'none';
     if (imagemReigen) {
@@ -682,7 +663,6 @@
     }
     document.getElementById('resultadoFinal').style.display = "none";
     document.getElementById('btnIniciarQuiz').style.display = "none";
-    document.querySelector('.infos-quiz').style.display = "none";
     document.querySelector('.top-container').style.display = "none";
 
     quizFinalizado = false;

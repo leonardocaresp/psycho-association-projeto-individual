@@ -50,6 +50,18 @@ function editar(idOcorrencia, titulo, classificacao, status, local, descricao) {
     return database.executar(instrucaoSql);
 }
 
+function buscarPorId(idOcorrencia) {
+    console.log("ACESSEI O OCORRENCIA MODEL \n\n function buscarPorId():", idOcorrencia);
+    var instrucaoSql = `
+        SELECT id, fk_usuario
+        FROM ocorrencia
+        WHERE id = ${idOcorrencia};
+    `;
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 function deletar(idOcorrencia) {
     console.log("ACESSEI O OCORRENCIA MODEL \n\n function deletar():", idOcorrencia);
     var instrucaoSql = `
@@ -64,5 +76,6 @@ module.exports = {
     listar,
     publicar,
     editar,
+    buscarPorId,
     deletar
 };

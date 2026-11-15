@@ -5,6 +5,26 @@
   justify-content: space-between;
 }
 
+.dashboard-view-select {
+  display: flex;
+  align-items: flex-start;
+}
+
+.dashboard-view-select select {
+  border: solid 2px var(--azul-escuro);
+  background-color: white;
+  color: var(--azul-escuro);
+  padding: 6px 12px;
+  min-width: 180px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.dashboard-view-select select:focus {
+  outline: none;
+  border: solid 2px var(--azul-escuro);
+}
+
 .bottom-container {
   display: flex;
   flex-direction: column;

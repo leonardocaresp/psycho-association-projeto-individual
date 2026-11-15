@@ -51,6 +51,7 @@ function publicar(req, res) {
 
 function editar(req, res) {
     var idOcorrencia = req.params.idOcorrencia;
+    var idUsuario = req.body.idUsuario;
     var titulo = req.body.titulo;
     var classificacao = req.body.classificacao;
     var status = req.body.status;
@@ -59,6 +60,8 @@ function editar(req, res) {
 
     if (idOcorrencia == undefined) {
         res.status(403).send("O id da ocorrência está indefinido!");
+    } else if (idUsuario == undefined) {
+        res.status(403).send("O id do usuário está indefinido!");
     } else if (titulo == undefined) {
         res.status(400).send("O título está indefinido!");
     } else if (classificacao == undefined) {
@@ -70,13 +73,31 @@ function editar(req, res) {
     } else if (descricao == undefined) {
         res.status(400).send("A descrição está indefinida!");
     } else {
-        ocorrenciaModel.editar(idOcorrencia, titulo, classificacao, status, local, descricao)
-            .then(function (resultado) {
-                res.json(resultado);
+        ocorrenciaModel.buscarPorId(idOcorrencia)
+            .then(function (resultadoOcorrencia) {
+                if (resultadoOcorrencia.length === 0) {
+                    return res.status(404).send("Ocorrência não encontrada.");
+                }
+
+                var idCriadorOcorrencia = resultadoOcorrencia[0].fk_usuario;
+
+                if (String(idCriadorOcorrencia) !== String(idUsuario)) {
+                    return res.status(403).send("Apenas o usuário criador pode editar esta ocorrência.");
+                }
+
+                ocorrenciaModel.editar(idOcorrencia, titulo, classificacao, status, local, descricao)
+                    .then(function (resultado) {
+                        res.json(resultado);
+                    })
+                    .catch(function (erro) {
+                        console.log(erro);
+                        console.log("Houve um erro ao editar a ocorrência: ", erro.sqlMessage);
+                        res.status(500).json(erro.sqlMessage);
+                    });
             })
             .catch(function (erro) {
                 console.log(erro);
-                console.log("Houve um erro ao editar a ocorrência: ", erro.sqlMessage);
+                console.log("Houve um erro ao validar o dono da ocorrência: ", erro.sqlMessage);
                 res.status(500).json(erro.sqlMessage);
             });
     }
@@ -84,16 +105,41 @@ function editar(req, res) {
 
 function deletar(req, res) {
     var idOcorrencia = req.params.idOcorrencia;
+    var idUsuario = req.body.idUsuario;
 
-    ocorrenciaModel.deletar(idOcorrencia)
-        .then(function (resultado) {
-            res.json(resultado);
-        })
-        .catch(function (erro) {
-            console.log(erro);
-            console.log("Houve um erro ao deletar a ocorrência: ", erro.sqlMessage);
-            res.status(500).json(erro.sqlMessage);
-        });
+    if (idOcorrencia == undefined) {
+        res.status(403).send("O id da ocorrência está indefinido!");
+    } else if (idUsuario == undefined) {
+        res.status(403).send("O id do usuário está indefinido!");
+    } else {
+        ocorrenciaModel.buscarPorId(idOcorrencia)
+            .then(function (resultadoOcorrencia) {
+                if (resultadoOcorrencia.length === 0) {
+                    return res.status(404).send("Ocorrência não encontrada.");
+                }
+
+                var idCriadorOcorrencia = resultadoOcorrencia[0].fk_usuario;
+
+                if (String(idCriadorOcorrencia) !== String(idUsuario)) {
+                    return res.status(403).send("Apenas o usuário criador pode excluir esta ocorrência.");
+                }
+
+                ocorrenciaModel.deletar(idOcorrencia)
+                    .then(function (resultado) {
+                        res.json(resultado);
+                    })
+                    .catch(function (erro) {
+                        console.log(erro);
+                        console.log("Houve um erro ao deletar a ocorrência: ", erro.sqlMessage);
+                        res.status(500).json(erro.sqlMessage);
+                    });
+            })
+            .catch(function (erro) {
+                console.log(erro);
+                console.log("Houve um erro ao validar o dono da ocorrência: ", erro.sqlMessage);
+                res.status(500).json(erro.sqlMessage);
+            });
+    }
 }
 
 module.exports = {

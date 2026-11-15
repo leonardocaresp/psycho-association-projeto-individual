@@ -254,9 +254,17 @@ main .quiz-content {
     color: white;
     border: none;
     background-color: var(--roxo-claro);
-    max-width: 30%;
-    padding: 1rem;
-    font-size: 32px !important;
+    padding: 10px 22px;
+    font-size: 26px !important;
+}
+
+#btnIniciarQuiz {
+  flex: none;
+  width: auto;
+  min-width: 220px;
+  max-width: none;
+  align-self: center;
+  margin: auto;
 }
 
 .resultado-final {

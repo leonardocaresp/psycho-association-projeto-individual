@@ -167,6 +167,7 @@
   function renderizarOcorrencias(lista) {
     const container = document.getElementById('ocorrencias_container');
     container.innerHTML = '';
+    const idUsuarioLogado = String(sessionStorage.ID_USUARIO || '');
 
     if (lista.length === 0) {
       container.innerHTML = '<p class="empty-message">Nenhuma ocorrência encontrada.</p>';
@@ -177,9 +178,18 @@
       const ocorrencia = lista[i];
       const card = document.createElement('div');
       card.className = 'ocorrencia-card';
+      const ehCriador = String(ocorrencia.fk_usuario) === idUsuarioLogado;
 
       const classeTipo = obterClasseTipo(ocorrencia.classificacao);
       const classeStatus = obterClasseStatus(ocorrencia.status);
+
+      let botoesHtml = '';
+      if (ehCriador) {
+        botoesHtml = `
+          <button class="editar" onclick="abrirPopup(${ocorrencia.idOcorrencia})">EDITAR</button>
+          <button class="excluir" onclick="excluirOcorrencia(${ocorrencia.idOcorrencia})">EXCLUIR</button>
+        `;
+      }
 
       card.innerHTML = `
         <div class="left">
@@ -204,8 +214,7 @@
           </details>
         </div>
         <div class="right">
-          <button class="editar" onclick="abrirPopup(${ocorrencia.idOcorrencia})">EDITAR</button>
-          <button class="excluir" onclick="excluirOcorrencia(${ocorrencia.idOcorrencia})">EXCLUIR</button>
+          ${botoesHtml}
         </div>
       `;
 
@@ -354,7 +363,10 @@
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(corpo)
+      body: JSON.stringify({
+        ...corpo,
+        idUsuario: idUsuario
+      })
     })
       .then(function (resposta) {
         if (resposta.ok) {
@@ -380,7 +392,10 @@
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      body: JSON.stringify({
+        idUsuario: sessionStorage.ID_USUARIO
+      })
     })
       .then(function (resposta) {
         if (resposta.ok) {
