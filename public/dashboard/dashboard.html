@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 
-<body onload="apagarCarregamento(); validarSessao(); preencherNome()">
+<body onload="apagarCarregamento(); validarSessao(); iniciarDashboard()">
   <header>
     <div class="icon">
       <img src="../assets/icon/psycho-association-logo.svg">
@@ -76,8 +76,8 @@
             TOTAL DE OCORRÊNCIAS
           </div>
           <div class="bottom">
-            24
-            <span>Registros cadastrados</span>
+            <div id="kpi_total_valor">0</div>
+            <span id="kpi_total_subtitulo">Registros cadastrados</span>
           </div>
         </div>
 
@@ -86,8 +86,8 @@
             EM INVESTIGAÇÃO
           </div>
           <div class="bottom">
-            11
-            <span>45,8% do total</span>
+            <div id="kpi_investigacao_valor">0</div>
+            <span id="kpi_investigacao_subtitulo">0% do total</span>
           </div>
         </div>
 
@@ -96,8 +96,8 @@
             TAXA DE RESOLUÇÃO
           </div>
           <div class="bottom">
-            37,5%
-            <span>9 de 24 ocorrências</span>
+            <div id="kpi_resolucao_valor">0%</div>
+            <span id="kpi_resolucao_subtitulo">0 de 0 ocorrências</span>
           </div>
         </div>
 
@@ -106,8 +106,8 @@
             INCONCLUSIVAS
           </div>
           <div class="bottom">
-            4
-            <span>16,7% do total</span>
+            <div id="kpi_inconclusivas_valor">0</div>
+            <span id="kpi_inconclusivas_subtitulo">0% do total</span>
           </div>
         </div>
 
@@ -138,19 +138,19 @@
               <div class="metric">
                 <div class="orange square"></div>
                 <span>EM INVESTIGAÇÃO</span>
-                <span class="valor">11 (46%)</span>
+                <span class="valor" id="metric_investigacao">0 (0%)</span>
               </div>
               <hr>
               <div class="metric">
                 <div class="green square"></div>
                 <span>RESOLVIDOS</span>
-                <span class="valor">9 (38%)</span>
+                <span class="valor" id="metric_resolvidos">0 (0%)</span>
               </div>
               <hr>
               <div class="metric">
                 <div class="red square"></div>
                 <span>SEM EXPLICAÇÃO</span>
-                <span class="valor">4 (16%)</span>
+                <span class="valor" id="metric_sem_explicacao">0 (0%)</span>
               </div>
             </div>
 
@@ -179,113 +179,246 @@
 
 </html>
 <script>
+  let graficoClassificacao = null;
+  let graficoStatus = null;
 
+  function iniciarDashboard() {
+    preencherNome();
+    inicializarGraficos();
+
+    var selectView = document.getElementById('select_dashboard_view');
+    selectView.addEventListener('change', function () {
+      carregarDadosPainel();
+    });
+
+    carregarDadosPainel();
+  }
 
   function preencherNome() {
     var nome = sessionStorage.NOME_USUARIO;
 
-    h2_boas_vindas.innerHTML += `${nome}.`
+    if (!nome) {
+      return;
+    }
+
+    h2_boas_vindas.innerHTML += nome.toUpperCase() + '.';
   }
-  
 
-  const ctx = document.getElementById('myChart');
+  function inicializarGraficos() {
+    const ctxClassificacao = document.getElementById('myChart');
 
-  new Chart(ctx, {
-    type: 'bar',
-    plugins: [ChartDataLabels], // ativa o plugin dos números
-    data: {
-      labels: [
-        ['PODERES', 'PSÍQUICOS'],
-        'ESPÍRITOS',
-        ['LOCAIS', 'ASSOMBRADOS'],
-        'SEITAS'
-      ],
-      datasets: [{
-        data: [10, 7, 5, 2],
-        backgroundColor: ['#D250FF', '#3FE275', '#00DEAF', '#FDB123'],
-        borderWidth: 0
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false // remove os retângulos coloridos
-        },
-        datalabels: {
-          anchor: 'end', // gruda no topo da barra
-          align: 'end',  // fica para fora, acima da barra
-          color: '#0A0D22',
-          font: {
-            size: 14,
-            weight: 'bold'
-          }
-        }
+    graficoClassificacao = new Chart(ctxClassificacao, {
+      type: 'bar',
+      plugins: [ChartDataLabels],
+      data: {
+        labels: [
+          ['PODERES', 'PSÍQUICOS'],
+          'ESPÍRITOS',
+          ['LOCAIS', 'ASSOMBRADOS'],
+          'SEITAS'
+        ],
+        datasets: [{
+          data: [],
+          backgroundColor: ['#D250FF', '#3FE275', '#36F0C8', '#FDB123'],
+          borderWidth: 0
+        }]
       },
-      scales: {
-        x: { // sem a linha do eixo X
-          ticks: {
-            autoSkip: false,
-            maxRotation: 0,
-            minRotation: 0,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          datalabels: {
+            anchor: 'end',
+            align: 'end',
+            color: '#0A0D22',
             font: {
-              size: 11
+              size: 14,
+              weight: 'bold'
             }
           }
         },
-        y: { // esconde o eixo Y e as linhas horizontais
-          beginAtZero: true,
-          grace: '20%'    // folga no topo para o número caber
+        scales: {
+          x: {
+            ticks: {
+              autoSkip: false,
+              maxRotation: 0,
+              minRotation: 0,
+              font: {
+                size: 11
+              }
+            }
+          },
+          y: {
+            beginAtZero: true,
+            grace: '20%'
+          }
         }
       }
-    }
-  });
+    });
 
-  const ctx2 = document.getElementById('graficoStatus')
+    const ctxStatus = document.getElementById('graficoStatus');
 
-  new Chart(ctx2, {
-    type: 'doughnut',
-    data: {
-      labels: ['EM INVESTIGAÇÃO', 'RESOLVIDOS', 'SEM EXPLICAÇÃO'],
-      datasets: [{
-        data: [11, 9, 4],
-        backgroundColor: ['#FD7D23', '#3FE275', '#E23235'],
-        borderWidth: 0
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false }
-      }
-    }
-  });
-
-  const ctx3 = document.getElementById('graficoRegistros')
-  
-  new Chart(ctx3, {
-    type: 'line',
-    data: {
-      labels: ['Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov'],
-      datasets: [{
-        data: [11, 9, 4, 11, 9, 4],
-        borderColor: '#E22672'
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false }
+    graficoStatus = new Chart(ctxStatus, {
+      type: 'doughnut',
+      data: {
+        labels: ['EM INVESTIGAÇÃO', 'RESOLVIDOS', 'SEM EXPLICAÇÃO'],
+        datasets: [{
+          data: [],
+          backgroundColor: ['#FDB123', '#3FE275', '#E23235'],
+          borderWidth: 0
+        }]
       },
-    scales: {
-        y: {
-          beginAtZero: true  
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
         }
       }
-    }
-  });
+    });
 
+    const ctxRegistros = document.getElementById('graficoRegistros');
+
+    new Chart(ctxRegistros, {
+      type: 'line',
+      data: {
+        labels: ['Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov'],
+        datasets: [{
+          data: [],
+          borderColor: '#E22672'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+
+  function carregarDadosPainel() {
+    var selectView = document.getElementById('select_dashboard_view');
+    var tipoPainel = selectView.value;
+    var endpoint = '/painel/geral';
+
+    if (tipoPainel === 'individual') {
+      var idUsuario = sessionStorage.ID_USUARIO;
+
+      if (!idUsuario) {
+        return;
+      }
+
+      endpoint = '/painel/individual/' + idUsuario;
+    }
+
+    fetch(endpoint)
+      .then(function (resposta) {
+        if (resposta.status == 204) {
+          atualizarPainelComZero();
+          return;
+        }
+
+        if (!resposta.ok) {
+          throw 'Erro ao buscar dados do painel';
+        }
+
+        resposta.json().then(function (dados) {
+          atualizarPainel(dados);
+        });
+      })
+      .catch(function (erro) {
+        console.log('#ERRO:', erro);
+        atualizarPainelComZero();
+      });
+  }
+
+  function atualizarPainel(dados) {
+    var ocorrencias = dados.ocorrencias;
+    var percentuais = dados.percentuais;
+
+    var total = obterNumero(ocorrencias.total);
+    var emInvestigacao = obterNumero(ocorrencias.em_investigacao);
+    var resolvido = obterNumero(ocorrencias.resolvido);
+    var semExplicacao = obterNumero(ocorrencias.sem_explicacao);
+
+    var percInvestigacao = obterNumero(percentuais.em_investigacao);
+    var percResolvidos = obterNumero(percentuais.resolvidos);
+    var percSemExplicacao = obterNumero(percentuais.sem_explicacao);
+
+    document.getElementById('kpi_total_valor').innerHTML = total;
+    document.getElementById('kpi_total_subtitulo').innerHTML = 'Registros cadastrados';
+
+    document.getElementById('kpi_investigacao_valor').innerHTML = emInvestigacao;
+    document.getElementById('kpi_investigacao_subtitulo').innerHTML = formatarPercentual(percInvestigacao) + ' do total';
+
+    document.getElementById('kpi_resolucao_valor').innerHTML = formatarPercentual(percResolvidos);
+    document.getElementById('kpi_resolucao_subtitulo').innerHTML = resolvido + ' de ' + total + ' ocorrências';
+
+    document.getElementById('kpi_inconclusivas_valor').innerHTML = semExplicacao;
+    document.getElementById('kpi_inconclusivas_subtitulo').innerHTML = formatarPercentual(percSemExplicacao) + ' do total';
+
+    document.getElementById('metric_investigacao').innerHTML = emInvestigacao + ' (' + formatarPercentual(percInvestigacao) + ')';
+    document.getElementById('metric_resolvidos').innerHTML = resolvido + ' (' + formatarPercentual(percResolvidos) + ')';
+    document.getElementById('metric_sem_explicacao').innerHTML = semExplicacao + ' (' + formatarPercentual(percSemExplicacao) + ')';
+
+    graficoClassificacao.data.datasets[0].data = [
+      obterNumero(ocorrencias.poderes_psiquicos),
+      obterNumero(ocorrencias.entidades_espirituais),
+      obterNumero(ocorrencias.locais_assombrados),
+      obterNumero(ocorrencias.seitas_paranormais)
+    ];
+    graficoClassificacao.update();
+
+    graficoStatus.data.datasets[0].data = [
+      emInvestigacao,
+      resolvido,
+      semExplicacao
+    ];
+    graficoStatus.update();
+  }
+
+  function atualizarPainelComZero() {
+    atualizarPainel({
+      ocorrencias: {
+        total: 0,
+        em_investigacao: 0,
+        resolvido: 0,
+        sem_explicacao: 0,
+        poderes_psiquicos: 0,
+        entidades_espirituais: 0,
+        locais_assombrados: 0,
+        seitas_paranormais: 0
+      },
+      percentuais: {
+        em_investigacao: 0,
+        resolvidos: 0,
+        sem_explicacao: 0
+      }
+    });
+  }
+
+  function obterNumero(valor) {
+    var numero = Number(valor);
+
+    if (isNaN(numero)) {
+      return 0;
+    }
+
+    return numero;
+  }
+
+  function formatarPercentual(valor) {
+    var numero = obterNumero(valor);
+    return numero.toFixed(1).replace('.', ',') + '%';
+  }
 </script>

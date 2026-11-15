@@ -89,7 +89,9 @@
   width: 100%;
   flex-direction: column;
   row-gap: 16px;
-  overflow-y: auto;
+  overflow: visible;
+  padding-bottom: 30px;
+  box-sizing: border-box;
 }
 
 .empty-message {
@@ -165,25 +167,20 @@
   font-weight: 500;
 }
 
-.pink-bkg {
-  background-color: var(--rosa-choque);
-}
 .purple-bkg {
   background-color: var(--roxo-claro);
 }
 .yellow-bkg {
-  background-color: var(--amarelo-forte);
+  background-color: var(--roxo-claro);
   color: var(--azul-escuro) !important;
 }
 .green-bkg {
-  background-color: var(--verde-claro);
+  background-color: var(--roxo-claro);
   color: var(--azul-escuro) !important;
 }
-.pink-bkg {
-  background-color: var(--rosa-choque);
-}
-.pink-bkg {
-  background-color: var(--rosa-choque);
+.blue-bkg {
+  background-color: var(--roxo-claro);
+  color: var(--azul-escuro) !important;
 }
 
 .ocorrencia-card .left .info .status {
@@ -197,8 +194,8 @@
 }
 
 .em-andamento {
-  border-color: #e23235;
-  color: #e23235;
+  border-color: var(--amarelo-forte);
+  color: var(--amarelo-forte);
 }
 
 .resolvido {
@@ -207,8 +204,8 @@
 }
 
 .sem-explicacao {
-  border-color: var(--amarelo-forte);
-  color: var(--amarelo-forte);
+  border-color: #E23235;
+  color: #E23235;
 }
 
 .ocorrencia-card .left details summary {

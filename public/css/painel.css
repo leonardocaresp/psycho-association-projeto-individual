@@ -61,10 +61,13 @@
   flex: 1;
   color: var(--azul-escuro);
   padding: 12px 12px;
-  font-size: 50px;
-  font-weight: 600;
   box-sizing: border-box;
   background-color: white;
+}
+
+.kpi .bottom div {
+  font-size: 50px;
+  font-weight: 600;
 }
 
 .kpi .bottom span {

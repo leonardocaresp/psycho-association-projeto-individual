@@ -999,14 +999,14 @@
     if (agora < cooldownAte) {
       const tempoRestanteSegundosCooldown = Math.ceil((cooldownAte - agora) / 1000);
       botaoTentarNovamente.disabled = true;
-      botaoTentarNovamente.innerHTML = `Tentar novamente (${formatarTempo(tempoRestanteSegundosCooldown)})`;
+      botaoTentarNovamente.innerHTML = `TENTAR NOVAMENTE (${formatarTempo(tempoRestanteSegundosCooldown)})`;
       botaoIniciarQuiz.disabled = true;
       botaoIniciarQuiz.innerHTML = `REALIZAR EXAME (${formatarTempo(tempoRestanteSegundosCooldown)})`;
       return;
     }
 
     botaoTentarNovamente.disabled = false;
-    botaoTentarNovamente.innerHTML = 'Tentar novamente';
+    botaoTentarNovamente.innerHTML = 'TENTAR NOVAMENTE';
     botaoIniciarQuiz.disabled = false;
     botaoIniciarQuiz.innerHTML = 'REALIZAR EXAME';
     localStorage.removeItem(chaveCooldownQuiz);
