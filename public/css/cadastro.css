@@ -1,4 +1,4 @@
-@import url('geral.css');
+@import url('auth.css');
 
 body {
   display: flex;
@@ -16,124 +16,7 @@ body {
 }
 
 .content {
-  display: flex;
-  flex-direction: column;
-  width: 60%;
   margin-left: -5%;
-}
-
-.texts h3 {
-  color: var(--azul-claro);
-}
-
-.texts h2 {
-  color: white;
-}
-
-.content {
-  row-gap: 36px;
-}
-
-label {
-  color: var(--rosa-choque);
-}
-
-input {
-  background-color: rgba(255, 255, 255, 0.103);
-  color: white;
-  font-size: 24px;
-  border: solid 3px var(--rosa-choque);
-  padding: 0px 12px;
-  height: 56px;
-}
-
-.password-input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.password-input-wrapper input {
-  width: 100%;
-  padding-right: 52px;
-}
-
-.toggle-password {
-  position: absolute;
-  right: 12px;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  margin: 0;
-  padding: 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.toggle-password:hover {
-  transform: none;
-  filter: none;
-  box-shadow: none;
-}
-
-.toggle-password .material-icons {
-  color: var(--rosa-choque);
-  font-size: 28px;
-}
-
-.toggle-password:hover .material-icons {
-  color: var(--azul-claro);
-}
-
-input:focus {
-  outline-color: var(--azul-claro);
-}
-
-.form-container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  row-gap: 18px;
-}
-
-.form-container > button {
-    padding: 12px 12px;
-    margin-top: 24px;
-    font-size: 32px;
-    font-weight: 600;
-    color: white;
-    background-color: var(--roxo-claro);
-    box-shadow: 8px 8px white;
-    cursor: pointer;
-    border: none;
-    transition: 0.8s cubic-bezier(0.08, 0.82, 0.17, 1);
-}
-
-
-.form-container > button:hover {
-    transform: rotate(0.5deg);
-    filter: brightness(90%);
-    box-shadow: none;
-}
-
-p {
-  font-size: 24px;
-  color: var(--roxo-claro);
-  font-weight: 400;
-}
-
-p span {
-  font-size: 24px;
-  color: white;
-  font-weight: 500;
-}
-
-.input-container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
 }
 
 .right-container {
@@ -158,7 +41,7 @@ p span {
 
 .image img {
   cursor: pointer;
-  position: fixed; 
+  position: fixed;
   top: 30px;
   right: 40px;
   color: white;
@@ -196,22 +79,26 @@ p span {
   0% {
     opacity: 1;
     transform: rotate(0deg);
-  } 25% {
+  }
+
+  25% {
     transform: rotate(3deg);
-  } 50% {
+  }
+
+  50% {
     opacity: 1;
     transform: rotate(-3deg);
-  } 75% {
+  }
+
+  75% {
     opacity: 0.8;
     transform: rotate(3deg);
-  } 100% {
+  }
+
+  100% {
     transform: rotate(-3deg);
     opacity: 0;
   }
-}
-
-.error {
-  outline: 3px solid #dc143c !important;
 }
 
 .input-error-message {

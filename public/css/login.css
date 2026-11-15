@@ -1,4 +1,4 @@
-@import url('geral.css');
+@import url('auth.css');
 
 body {
   display: flex;
@@ -14,92 +14,11 @@ body {
   background-color: var(--azul-escuro);
   width: 58vw;
   clip-path: polygon(0 0%, 100% 0%, 100% 100%, calc(0% + 120px) 100%);
+  z-index: 1;
 }
 
 .content {
-  display: flex;
-  flex-direction: column;
-  width: 60%;
   margin-right: -5%;
-}
-
-.texts h3 {
-  color: var(--azul-claro);
-}
-
-.texts h2 {
-  color: white;
-}
-
-.content {
-  row-gap: 36px;
-}
-
-.form-container {
-  row-gap: 18px;
-}
-
-label {
-  color: var(--rosa-choque);
-}
-
-input {
-  background-color: rgba(255, 255, 255, 0.103);
-  color: white;
-  font-size: 24px;
-  border: solid 3px var(--rosa-choque);
-  padding: 0px 12px;
-  height: 56px;
-}
-
-.password-input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.password-input-wrapper input {
-  width: 100%;
-  padding-right: 52px;
-}
-
-.toggle-password {
-  position: absolute;
-  right: 12px;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  margin: 0;
-  padding: 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.toggle-password:hover {
-  transform: none;
-  filter: none;
-  box-shadow: none;
-}
-
-.toggle-password .material-icons {
-  color: var(--rosa-choque);
-  font-size: 28px;
-}
-
-.toggle-password:hover .material-icons {
-  color: var(--azul-claro);
-}
-
-input:focus {
-  outline-color: var(--azul-claro);
-}
-
-.form-container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
 }
 
 .login-error-message {
@@ -109,48 +28,6 @@ input:focus {
   font-size: 20px;
 }
 
-.error {
-  outline: 3px solid #dc143c !important;
-}
-
-.form-container > button {
-    padding: 12px 12px;
-    margin-top: 24px;
-    font-size: 32px;
-    font-weight: 600;
-    color: white;
-    background-color: var(--roxo-claro);
-    box-shadow: 8px 8px white;
-    cursor: pointer;
-    border: none;
-    transition: 0.8s cubic-bezier(0.08, 0.82, 0.17, 1);
-}
-
-
-.form-container > button:hover {
-    transform: rotate(0.5deg);
-    filter: brightness(90%);
-    box-shadow: none;
-}
-
-p {
-  font-size: 24px;
-  color: var(--roxo-claro);
-  font-weight: 400;
-}
-
-p span {
-  font-size: 24px;
-  color: white;
-  font-weight: 500;
-}
-
-.input-container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
 .left-container {
   background-image: url("../assets/imgs/mob-e-reigen-login.png");
   background-position: 0% 0%;
@@ -158,25 +35,23 @@ p span {
   height: 100vh;
   width: 55vw;
   position: absolute;
-  z-index: -1000;
+  z-index: 1;
   left: 0;
 }
 
-.image {
-  height: 100vh;
-  width: 55vw;
-  background-image: url("../assets/imgs/mob-e-reigen-login-sem-bkg.png");
-  background-position:  10%;
-  background-size: cover;
-  left: -6px;
-  bottom: -134px;
-  position: fixed;
-  z-index: 10000000;
-}
-
-.left-container img {
+.left-container a {
   cursor: pointer;
   position: absolute;
   top: 30px;
   left: 40px;
+  z-index: 2;
+  transition: 0.2s;
+}
+
+.left-container a:hover {
+  transform: scale(1.02);
+}
+
+.left-container a img {
+  display: block;
 }

@@ -724,6 +724,58 @@
     estrategia: 0
   };
 
+  function definirTexto(idElemento, valor) {
+    document.getElementById(idElemento).innerHTML = valor;
+  }
+
+  function resetarAcertosPorCategoria() {
+    acertosPorCategoria.paranormal = 0;
+    acertosPorCategoria.investigacao = 0;
+    acertosPorCategoria.contencao = 0;
+    acertosPorCategoria.estrategia = 0;
+  }
+
+  function atualizarCamposResultado() {
+    definirTexto('spanPontuacaoFinal', `${pontuacaoFinal} / ${quantidadeDeQuestoes}`);
+    definirTexto('acerto_paranormal', `${acertosPorCategoria.paranormal}/5`);
+    definirTexto('acerto_investigacao', `${acertosPorCategoria.investigacao}/5`);
+    definirTexto('acerto_contencao', `${acertosPorCategoria.contencao}/5`);
+    definirTexto('acerto_estrategia', `${acertosPorCategoria.estrategia}/5`);
+  }
+
+  function limparMensagemResultado() {
+    definirTexto('msgFinal', '-');
+    document.getElementById('msgFinal').classList.remove('subtitle-danger', 'subtitle-warning', 'subtitle-success');
+  }
+
+  function exibirTela(modo) {
+    if (modo === 'geral') {
+      document.querySelector('.top-container').style.display = 'flex';
+      document.getElementById('dashboardQuiz').style.display = 'flex';
+      document.getElementById('btnIniciarQuiz').style.display = 'block';
+      document.getElementById('resultadoFinal').style.display = 'none';
+      document.getElementById('jogo').style.display = 'none';
+      return;
+    }
+
+    if (modo === 'jogo') {
+      document.querySelector('.top-container').style.display = 'none';
+      document.getElementById('dashboardQuiz').style.display = 'none';
+      document.getElementById('btnIniciarQuiz').style.display = 'none';
+      document.getElementById('resultadoFinal').style.display = 'none';
+      document.getElementById('jogo').style.display = 'flex';
+      return;
+    }
+
+    if (modo === 'resultado') {
+      document.querySelector('.top-container').style.display = 'flex';
+      document.getElementById('dashboardQuiz').style.display = 'none';
+      document.getElementById('btnIniciarQuiz').style.display = 'none';
+      document.getElementById('jogo').style.display = 'none';
+      document.getElementById('resultadoFinal').style.display = 'flex';
+    }
+  }
+
   function onloadEsconder() {
     configurarSelecaoOpcoes();
     configurarAtalhoEnter();
@@ -792,16 +844,11 @@
       pontuacaoFinal = resultadoSalvo.pontuacaoFinal;
     }
 
-    document.getElementById('msgFinal').innerHTML = resultadoSalvo.mensagemFinal;
+    definirTexto('msgFinal', resultadoSalvo.mensagemFinal);
     document.getElementById('msgFinal').className = resultadoSalvo.classeMensagemFinal;
 
-    document.getElementById('spanPontuacaoFinal').innerHTML = `${resultadoSalvo.pontuacaoFinal} / ${resultadoSalvo.quantidadeDeQuestoes}`;
-    document.getElementById('spanPercentualFinal').innerHTML = `${resultadoSalvo.percentual}%`;
-
-    document.getElementById('acerto_paranormal').innerHTML = `${acertosPorCategoria.paranormal}/5`;
-    document.getElementById('acerto_investigacao').innerHTML = `${acertosPorCategoria.investigacao}/5`;
-    document.getElementById('acerto_contencao').innerHTML = `${acertosPorCategoria.contencao}/5`;
-    document.getElementById('acerto_estrategia').innerHTML = `${acertosPorCategoria.estrategia}/5`;
+    definirTexto('spanPercentualFinal', `${resultadoSalvo.percentual}%`);
+    atualizarCamposResultado();
   }
 
   function montarResultadoComDadosBanco() {
@@ -838,16 +885,12 @@
   }
 
   function exibirVisaoGeralQuiz() {
-    document.getElementById('tituloTopoQuiz').innerHTML = 'EXAME DE APTIDÃO PARANORMAL';
-    document.getElementById('subtituloTopoQuiz').innerHTML = 'Demonstre que possui os conhecimentos necessários para lidar com ocorrências paranormais.';
+    definirTexto('tituloTopoQuiz', 'EXAME DE APTIDÃO PARANORMAL');
+    definirTexto('subtituloTopoQuiz', 'Demonstre que possui os conhecimentos necessários para lidar com ocorrências paranormais.');
     document.getElementById('subtituloTopoQuiz').className = '';
     document.querySelector('#resultadoFinal .resultado-titulo').style.display = 'block';
 
-    document.querySelector('.top-container').style.display = 'flex';
-    document.getElementById('dashboardQuiz').style.display = 'flex';
-    document.getElementById('btnIniciarQuiz').style.display = 'block';
-    document.getElementById('resultadoFinal').style.display = 'none';
-    document.getElementById('jogo').style.display = 'none';
+    exibirTela('geral');
 
     iniciarTimerCooldownBotao();
   }
@@ -865,16 +908,12 @@
     }
 
     preencherResultadoFinalComDados(resultadoSalvo);
-    document.getElementById('tituloTopoQuiz').innerHTML = 'RESULTADO FINAL';
-    document.getElementById('subtituloTopoQuiz').innerHTML = document.getElementById('msgFinal').innerHTML;
+    definirTexto('tituloTopoQuiz', 'RESULTADO FINAL');
+    definirTexto('subtituloTopoQuiz', document.getElementById('msgFinal').innerHTML);
     document.getElementById('subtituloTopoQuiz').className = document.getElementById('msgFinal').className;
     document.querySelector('#resultadoFinal .resultado-titulo').style.display = 'none';
 
-    document.querySelector('.top-container').style.display = 'flex';
-    document.getElementById('dashboardQuiz').style.display = 'none';
-    document.getElementById('btnIniciarQuiz').style.display = 'none';
-    document.getElementById('jogo').style.display = 'none';
-    document.getElementById('resultadoFinal').style.display = 'flex';
+    exibirTela('resultado');
 
     quizFinalizado = true;
     btnProx.disabled = true;
@@ -962,14 +1001,14 @@
       botaoTentarNovamente.disabled = true;
       botaoTentarNovamente.innerHTML = `Tentar novamente (${formatarTempo(tempoRestanteSegundosCooldown)})`;
       botaoIniciarQuiz.disabled = true;
-      botaoIniciarQuiz.innerHTML = `REALIZAR EXAME ADMISSIONAL (${formatarTempo(tempoRestanteSegundosCooldown)})`;
+      botaoIniciarQuiz.innerHTML = `REALIZAR EXAME (${formatarTempo(tempoRestanteSegundosCooldown)})`;
       return;
     }
 
     botaoTentarNovamente.disabled = false;
     botaoTentarNovamente.innerHTML = 'Tentar novamente';
     botaoIniciarQuiz.disabled = false;
-    botaoIniciarQuiz.innerHTML = 'REALIZAR EXAME ADMISSIONAL';
+    botaoIniciarQuiz.innerHTML = 'REALIZAR EXAME';
     localStorage.removeItem(chaveCooldownQuiz);
   }
 
@@ -991,10 +1030,6 @@
         pararTimerCooldownBotao();
       }
     }, 1000);
-  }
-
-  function restaurarResultadoFinalSalvo() {
-    exibirUltimaTentativaQuiz();
   }
 
   function formatarTempo(totalSegundos) {
@@ -1071,20 +1106,13 @@
 
     numeroDaQuestaoAtual = 0;
     pontuacaoFinal = 0;
-    acertosPorCategoria.paranormal = 0;
-    acertosPorCategoria.investigacao = 0;
-    acertosPorCategoria.contencao = 0;
-    acertosPorCategoria.estrategia = 0;
+    resetarAcertosPorCategoria();
 
     desmarcarRadioButtons();
     limparCoresBackgroundOpcoes();
 
     pararTimerCooldownBotao();
-    document.getElementById('dashboardQuiz').style.display = 'none';
-    document.getElementById('jogo').style.display = "flex";
-    document.getElementById('resultadoFinal').style.display = "none";
-    document.getElementById('btnIniciarQuiz').style.display = "none";
-    document.querySelector('.top-container').style.display = "none";
+    exibirTela('jogo');
 
     quizFinalizado = false;
 
@@ -1103,14 +1131,14 @@
     habilitarAlternativas(true);
     const questaoAtual = listaDeQuestoes[index];
     numeroDaQuestaoAtual = index;
-    document.getElementById("spanNumeroDaQuestaoAtual").innerHTML = Number(index) + 1;
-    document.getElementById("spanTituloCasoAtual").innerHTML = questaoAtual.caseTitle;
-    document.getElementById("spanDescricaoCasoAtual").innerHTML = questaoAtual.caseDescription;
-    document.getElementById("spanQuestaoExibida").innerHTML = questaoAtual.question;
-    document.getElementById("labelOpcaoUm").innerHTML = questaoAtual.alternatives[0];
-    document.getElementById("labelOpcaoDois").innerHTML = questaoAtual.alternatives[1];
-    document.getElementById("labelOpcaoTres").innerHTML = questaoAtual.alternatives[2];
-    document.getElementById("labelOpcaoQuatro").innerHTML = questaoAtual.alternatives[3];
+    definirTexto('spanNumeroDaQuestaoAtual', Number(index) + 1);
+    definirTexto('spanTituloCasoAtual', questaoAtual.caseTitle);
+    definirTexto('spanDescricaoCasoAtual', questaoAtual.caseDescription);
+    definirTexto('spanQuestaoExibida', questaoAtual.question);
+    definirTexto('labelOpcaoUm', questaoAtual.alternatives[0]);
+    definirTexto('labelOpcaoDois', questaoAtual.alternatives[1]);
+    definirTexto('labelOpcaoTres', questaoAtual.alternatives[2]);
+    definirTexto('labelOpcaoQuatro', questaoAtual.alternatives[3]);
     barra.value = index + 1;
   }
 
@@ -1219,21 +1247,12 @@
     quizFinalizado = false;
     tempoRestanteSegundos = 600;
 
-    acertosPorCategoria.paranormal = 0;
-    acertosPorCategoria.investigacao = 0;
-    acertosPorCategoria.contencao = 0;
-    acertosPorCategoria.estrategia = 0;
+    resetarAcertosPorCategoria();
 
     document.getElementById('selectQuizView').value = 'geral';
-    document.getElementById('spanPontuacaoFinal').innerHTML = '0 / 20';
-    document.getElementById('spanPercentualFinal').innerHTML = '0%';
-    document.getElementById('acerto_paranormal').innerHTML = '0/5';
-    document.getElementById('acerto_investigacao').innerHTML = '0/5';
-    document.getElementById('acerto_contencao').innerHTML = '0/5';
-    document.getElementById('acerto_estrategia').innerHTML = '0/5';
-
-    document.getElementById('msgFinal').innerHTML = '-';
-    document.getElementById('msgFinal').classList.remove('subtitle-danger', 'subtitle-warning', 'subtitle-success');
+    atualizarCamposResultado();
+    definirTexto('spanPercentualFinal', '0%');
+    limparMensagemResultado();
 
     desmarcarRadioButtons();
     limparCoresBackgroundOpcoes();
@@ -1338,26 +1357,17 @@
 
     const percentual = Math.round((porcentagemFinalDeAcertos) * 100);
 
-    document.getElementById('msgFinal').innerHTML = textoParaMensagemFinal;
+    definirTexto('msgFinal', textoParaMensagemFinal);
     document.getElementById('msgFinal').classList.remove('subtitle-danger', 'subtitle-warning', 'subtitle-success');
     document.getElementById('msgFinal').classList.add(classComCoresParaMensagemFinal);
-    document.getElementById('spanPontuacaoFinal').innerHTML = `${pontuacaoFinal} / ${quantidadeDeQuestoes}`;
-    document.getElementById('spanPercentualFinal').innerHTML = `${percentual}%`;
+    atualizarCamposResultado();
+    definirTexto('spanPercentualFinal', `${percentual}%`);
 
-    document.getElementById('acerto_paranormal').innerHTML = `${acertosPorCategoria.paranormal}/5`;
-    document.getElementById('acerto_investigacao').innerHTML = `${acertosPorCategoria.investigacao}/5`;
-    document.getElementById('acerto_contencao').innerHTML = `${acertosPorCategoria.contencao}/5`;
-    document.getElementById('acerto_estrategia').innerHTML = `${acertosPorCategoria.estrategia}/5`;
-
-    document.getElementById('jogo').style.display = 'none';
-    document.querySelector('.top-container').style.display = 'flex';
-    document.getElementById('dashboardQuiz').style.display = 'none';
+    exibirTela('resultado');
     document.querySelector('#resultadoFinal .resultado-titulo').style.display = 'none';
-    document.getElementById('tituloTopoQuiz').innerHTML = 'RESULTADO FINAL';
-    document.getElementById('subtituloTopoQuiz').innerHTML = textoParaMensagemFinal;
+    definirTexto('tituloTopoQuiz', 'RESULTADO FINAL');
+    definirTexto('subtituloTopoQuiz', textoParaMensagemFinal);
     document.getElementById('subtituloTopoQuiz').className = classComCoresParaMensagemFinal;
-
-    document.getElementById('resultadoFinal').style.display = 'flex';
 
     btnProx.disabled = true;
 
