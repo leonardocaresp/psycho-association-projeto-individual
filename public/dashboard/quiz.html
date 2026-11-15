@@ -14,6 +14,7 @@
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
 </head>
 
 <body onload="apagarCarregamento(); onloadEsconder();  validarSessao();">
@@ -40,8 +41,8 @@
         <div class="nav-button" onclick="window.location = 'paranormais.html'">
           <span>ARQUIVO DE INDIVÍDUOS</span>
           <span><i class="material-icons"">group</i></span>
-    </div>
-    <div class=" nav-button selected">
+       </div>
+       <div class=" nav-button selected">
               <span>EXAME DE APTIDÃO</span>
               <span><i class="material-icons">quiz</i></span>
         </div>
@@ -54,15 +55,65 @@
   <main>
     <div class="top-container">
       <div>
-        <h2>EXAME DE APTIDÃO PARANORMAL</h2>
-        <h3>Antes de assumir suas responsabilidades como membro da Psycho Association, você precisa demonstrar que
-          possui os conhecimentos necessários para lidar com ocorrências paranormais.</h3>
+        <h2 id="tituloTopoQuiz">EXAME DE APTIDÃO PARANORMAL</h2>
+        <h3 id="subtituloTopoQuiz">Demonstre que possui os conhecimentos necessários para lidar com ocorrências paranormais.</h3>
+      </div>
+      <div class="dashboard-view-select">
+        <select id="selectQuizView" name="quizView" aria-label="Selecionar visualização do exame">
+          <option value="geral">Geral</option>
+          <option id="opcaoUltimaTentativaQuiz" value="ultima_tentativa">Última tentativa</option>
+        </select>
       </div>
     </div>
     <div class="bottom-container">
 
       <div id="pontuacaoEJogo" class="quiz-content">
-        <button id="btnIniciarQuiz" onclick="iniciarQuiz()" class="start">INICIAR TESTE</button>
+        <section id="dashboardQuiz" class="exam-dashboard">
+          <div class="exam-kpi-row">
+            <div class="kpi">
+              <div class="top">SEU RANKING ATUAL</div>
+              <div class="bottom"><strong id="rankingAtualQuiz">—</strong><span id="descricaoRankingQuiz">Realize seu
+                  primeiro exame para entrar no ranking.</span></div>
+            </div>
+            <div class="kpi">
+              <div class="top">ACERTO NA ÚLTIMA TENTATIVA</div>
+              <div class="bottom"><strong id="ultimoPercentualQuiz">—</strong><span>Percentual da última
+                  tentativa</span></div>
+            </div>
+            <div class="kpi">
+              <div class="top">TENTATIVAS REALIZADAS</div>
+              <div class="bottom"><strong id="tentativasQuiz">0</strong><span>Exames finalizados por você</span></div>
+            </div>
+            <div class="kpi">
+              <div class="top">MÉDIA DE ACERTOS</div>
+              <div class="bottom"><strong id="mediaPercentualQuiz">—</strong><span>Percentual de todas as
+                  tentativas</span></div>
+            </div>
+          </div>
+
+          <div class="exam-charts-row">
+            <div class="chart exam-category-chart">
+              <div class="top">MÉDIA POR CATEGORIA</div>
+              <div class="bottom">
+                <div class="exam-chart-legend">
+                  <span><i class="exam-bar-key"></i>Sua média</span>
+                  <span><i class="exam-anchor-key"></i>Média geral</span>
+                </div>
+                <div class="exam-chart-canvas"><canvas id="graficoMediasQuiz"
+                    aria-label="Média individual e geral de acertos por categoria" role="img"></canvas></div>
+              </div>
+            </div>
+            <div class="chart exam-ranking-chart">
+              <div class="top">RANKING DOS MEMBROS</div>
+              <div class="bottom">
+                <div class="exam-ranking-heading"><span>POSIÇÃO / MEMBRO</span><span>ACERTOS</span></div>
+                <div id="rankingMembrosQuiz" class="exam-ranking-list"></div>
+              </div>
+            </div>
+          </div>
+          <button id="btnIniciarQuiz" onclick="iniciarQuiz()" class="start btn-resultado">REALIZAR EXAME
+            ADMISSIONAL</button>
+        </section>
         <!-- <img src="../assets/imgs/arataka-reigen-quiz.png" id="reigen"> -->
         <div id="jogo" class="jogo-container">
           <div class="timer-quiz">
@@ -415,6 +466,139 @@
   let idUsuarioLogado = "";
   let chaveResultadoQuiz = "";
   let chaveCooldownQuiz = "";
+  let graficoMediasQuiz = null;
+
+  // Para visualizar o estado sem exames, altere apenas este valor para false.
+  const usuarioMockRealizouExame = true;
+  // Cada tentativa contém os acertos nas quatro categorias, sempre de 0 a 5.
+  const tentativasMockQuiz = [
+    [3, 4, 2, 3],
+    [4, 3, 4, 3],
+    [5, 4, 3, 4]
+  ];
+  const membrosMockQuiz = [
+    { nome: 'Shigeo Kageyama', acertos: 20, tentativas: 2 },
+    { nome: 'Ritsu Kageyama', acertos: 18, tentativas: 3 },
+    { nome: 'Teruki Hanazawa', acertos: 18, tentativas: 4 },
+    { nome: 'Tome Kurata', acertos: 15, tentativas: 2 },
+    { nome: 'Arataka Reigen', acertos: 12, tentativas: 6 }
+  ];
+  // Médias fictícias considerando todas as tentativas de todos os membros.
+  const mediasGeraisMockQuiz = [3.8, 3.2, 2.9, 3.5];
+
+  function renderizarDashboardQuiz() {
+    const membrosRanking = [];
+    for (let i = 0; i < membrosMockQuiz.length; i++) {
+      membrosRanking.push(membrosMockQuiz[i]);
+    }
+
+    const mediasIndividuais = [0, 0, 0, 0];
+    let totalAcertos = 0;
+    let melhorTentativa = 0;
+    let ultimaTentativa = 0;
+
+    if (usuarioMockRealizouExame && tentativasMockQuiz.length > 0) {
+      for (let i = 0; i < tentativasMockQuiz.length; i++) {
+        let acertosTentativa = 0;
+        for (let categoria = 0; categoria < 4; categoria++) {
+          acertosTentativa += tentativasMockQuiz[i][categoria];
+          mediasIndividuais[categoria] += tentativasMockQuiz[i][categoria];
+        }
+        totalAcertos += acertosTentativa;
+        ultimaTentativa = acertosTentativa;
+        if (acertosTentativa > melhorTentativa) {
+          melhorTentativa = acertosTentativa;
+        }
+      }
+      for (let categoria = 0; categoria < 4; categoria++) {
+        mediasIndividuais[categoria] /= tentativasMockQuiz.length;
+      }
+      document.getElementById('ultimoPercentualQuiz').innerHTML = `${Math.round(ultimaTentativa / 20 * 100)}%`;
+      document.getElementById('tentativasQuiz').innerHTML = tentativasMockQuiz.length;
+      document.getElementById('mediaPercentualQuiz').innerHTML = `${Math.round(totalAcertos / (tentativasMockQuiz.length * 20) * 100)}%`;
+      membrosRanking.push({ nome: 'Você (demonstração)', acertos: melhorTentativa, tentativas: tentativasMockQuiz.length, usuarioAtual: true });
+    }
+
+    // Ordenação simples: mais acertos primeiro; em empate, menos tentativas.
+    for (let i = 0; i < membrosRanking.length; i++) {
+      for (let j = i + 1; j < membrosRanking.length; j++) {
+        if (membrosRanking[j].acertos > membrosRanking[i].acertos ||
+          (membrosRanking[j].acertos === membrosRanking[i].acertos && membrosRanking[j].tentativas < membrosRanking[i].tentativas)) {
+          const membroTemporario = membrosRanking[i];
+          membrosRanking[i] = membrosRanking[j];
+          membrosRanking[j] = membroTemporario;
+        }
+      }
+    }
+
+    const listaRanking = document.getElementById('rankingMembrosQuiz');
+    listaRanking.innerHTML = '';
+    for (let i = 0; i < membrosRanking.length; i++) {
+      const membro = membrosRanking[i];
+      let classeUsuario = '';
+      if (membro.usuarioAtual) {
+        classeUsuario = ' exam-ranking-current';
+        document.getElementById('rankingAtualQuiz').innerHTML = `${i + 1}º`;
+        document.getElementById('descricaoRankingQuiz').innerHTML = 'Sua posição entre os membros';
+      }
+      listaRanking.innerHTML += `<div class="exam-ranking-item${classeUsuario}">
+        <span class="exam-ranking-position">${i + 1}º</span>
+        <span class="exam-ranking-name">${membro.nome}</span>
+        <div class="exam-ranking-score"><strong>${membro.acertos} / 20</strong><small>${membro.tentativas} tentativas</small></div>
+      </div>`;
+    }
+    renderizarGraficoMediasQuiz(mediasIndividuais);
+  }
+
+  function renderizarGraficoMediasQuiz(mediasIndividuais) {
+    const marcasMedias = {};
+    for (let i = 0; i < mediasGeraisMockQuiz.length; i++) {
+      marcasMedias[`categoria${i}`] = {
+        type: 'line',
+        xMin: i - 0.32,
+        xMax: i + 0.32,
+        yMin: mediasGeraisMockQuiz[i],
+        yMax: mediasGeraisMockQuiz[i],
+        borderColor: '#0A0D24',
+        borderWidth: 3,
+        borderDash: [5, 3]
+      };
+    }
+    if (graficoMediasQuiz) {
+      graficoMediasQuiz.destroy();
+    }
+    graficoMediasQuiz = new Chart(document.getElementById('graficoMediasQuiz'), {
+      type: 'bar',
+      data: {
+        labels: ['Paranormal', 'Investigação', 'Contenção', 'Estratégia'],
+        datasets: [{
+          label: 'Sua média de acertos',
+          data: mediasIndividuais,
+          backgroundColor: ['#D250FF', '#3FE275', '#36F0C8', '#FDB123'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { ticks: { color: '#0A0D24', maxRotation: 0, minRotation: 0, font: { size: 11 } } },
+          y: { min: 0, max: 5, ticks: { stepSize: 1, color: '#0A0D24' } }
+        },
+        plugins: {
+          legend: { display: false },
+          annotation: { annotations: marcasMedias },
+          tooltip: {
+            callbacks: {
+              afterLabel: function (contexto) {
+                return `Média geral: ${mediasGeraisMockQuiz[contexto.dataIndex]} / 5`;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
 
   const acertosPorCategoria = {
     paranormal: 0,
@@ -435,7 +619,122 @@
       imagemReigen.style.display = "none";
     }
 
-    restaurarResultadoFinalSalvo();
+    renderizarDashboardQuiz();
+    configurarSelectViewQuiz();
+    exibirVisaoGeralQuiz();
+  }
+
+  function configurarSelectViewQuiz() {
+    const selectQuizView = document.getElementById('selectQuizView');
+
+    if (!selectQuizView) {
+      return;
+    }
+
+    atualizarDisponibilidadeUltimaTentativa();
+    selectQuizView.value = 'geral';
+
+    selectQuizView.addEventListener('change', function () {
+      if (selectQuizView.value === 'ultima_tentativa') {
+        exibirUltimaTentativaQuiz();
+      } else {
+        exibirVisaoGeralQuiz();
+      }
+    });
+  }
+
+  function atualizarDisponibilidadeUltimaTentativa() {
+    const opcaoUltimaTentativa = document.getElementById('opcaoUltimaTentativaQuiz');
+    const resultadoSalvo = recuperarResultadoFinalDoStorage();
+
+    if (!opcaoUltimaTentativa) {
+      return;
+    }
+
+    if (resultadoSalvo) {
+      opcaoUltimaTentativa.disabled = false;
+      return;
+    }
+
+    opcaoUltimaTentativa.disabled = true;
+  }
+
+  function preencherResultadoFinalComDados(resultadoSalvo) {
+    if (resultadoSalvo.acertosPorCategoria) {
+      acertosPorCategoria.paranormal = resultadoSalvo.acertosPorCategoria.paranormal;
+      acertosPorCategoria.investigacao = resultadoSalvo.acertosPorCategoria.investigacao;
+      acertosPorCategoria.contencao = resultadoSalvo.acertosPorCategoria.contencao;
+      acertosPorCategoria.estrategia = resultadoSalvo.acertosPorCategoria.estrategia;
+    }
+
+    if (resultadoSalvo.pontuacaoFinal || resultadoSalvo.pontuacaoFinal === 0) {
+      pontuacaoFinal = resultadoSalvo.pontuacaoFinal;
+    }
+
+    document.getElementById('msgFinal').innerHTML = resultadoSalvo.mensagemFinal;
+    document.getElementById('msgFinal').className = resultadoSalvo.classeMensagemFinal;
+
+    document.getElementById('spanPontuacaoFinal').innerHTML = `${resultadoSalvo.pontuacaoFinal} / ${resultadoSalvo.quantidadeDeQuestoes}`;
+    document.getElementById('spanPercentualFinal').innerHTML = `${resultadoSalvo.percentual}%`;
+
+    document.getElementById('acerto_paranormal').innerHTML = `${acertosPorCategoria.paranormal}/5`;
+    document.getElementById('acerto_investigacao').innerHTML = `${acertosPorCategoria.investigacao}/5`;
+    document.getElementById('acerto_contencao').innerHTML = `${acertosPorCategoria.contencao}/5`;
+    document.getElementById('acerto_estrategia').innerHTML = `${acertosPorCategoria.estrategia}/5`;
+  }
+
+  function exibirVisaoGeralQuiz() {
+    const imagemReigen = document.getElementById('reigen');
+    document.getElementById('tituloTopoQuiz').innerHTML = 'EXAME DE APTIDÃO PARANORMAL';
+    document.getElementById('subtituloTopoQuiz').innerHTML = 'Demonstre que possui os conhecimentos necessários para lidar com ocorrências paranormais.';
+    document.getElementById('subtituloTopoQuiz').className = '';
+    document.querySelector('#resultadoFinal .resultado-titulo').style.display = 'block';
+
+    document.querySelector('.top-container').style.display = 'flex';
+    document.getElementById('dashboardQuiz').style.display = 'flex';
+    document.getElementById('resultadoFinal').style.display = 'none';
+    document.getElementById('jogo').style.display = 'none';
+
+    if (imagemReigen) {
+      imagemReigen.style.display = 'none';
+    }
+
+    iniciarTimerCooldownBotao();
+  }
+
+  function exibirUltimaTentativaQuiz() {
+    const imagemReigen = document.getElementById('reigen');
+    const resultadoSalvo = recuperarResultadoFinalDoStorage();
+    const selectQuizView = document.getElementById('selectQuizView');
+
+    if (!resultadoSalvo) {
+      if (selectQuizView) {
+        selectQuizView.value = 'geral';
+      }
+      exibirVisaoGeralQuiz();
+      return;
+    }
+
+    preencherResultadoFinalComDados(resultadoSalvo);
+    document.getElementById('tituloTopoQuiz').innerHTML = 'RESULTADO FINAL';
+    document.getElementById('subtituloTopoQuiz').innerHTML = document.getElementById('msgFinal').innerHTML;
+    document.getElementById('subtituloTopoQuiz').className = document.getElementById('msgFinal').className;
+    document.querySelector('#resultadoFinal .resultado-titulo').style.display = 'none';
+
+    document.querySelector('.top-container').style.display = 'flex';
+    document.getElementById('dashboardQuiz').style.display = 'none';
+    document.getElementById('jogo').style.display = 'none';
+    document.getElementById('resultadoFinal').style.display = 'flex';
+
+    if (imagemReigen) {
+      imagemReigen.style.display = 'none';
+    }
+
+    quizFinalizado = true;
+    btnProx.disabled = true;
+
+    renderizarGraficoRadar();
+    iniciarTimerCooldownBotao();
   }
 
   function configurarChavesStorageQuiz() {
@@ -508,6 +807,7 @@
 
   function atualizarEstadoBotaoTentarNovamente() {
     const botaoTentarNovamente = document.getElementById('btnTentarNovamente');
+    const botaoIniciarQuiz = document.getElementById('btnIniciarQuiz');
     const cooldownAte = recuperarCooldownDoStorage();
     const agora = Date.now();
 
@@ -515,11 +815,15 @@
       const tempoRestanteSegundosCooldown = Math.ceil((cooldownAte - agora) / 1000);
       botaoTentarNovamente.disabled = true;
       botaoTentarNovamente.innerHTML = `Tentar novamente (${formatarTempo(tempoRestanteSegundosCooldown)})`;
+      botaoIniciarQuiz.disabled = true;
+      botaoIniciarQuiz.innerHTML = `REALIZAR EXAME ADMISSIONAL (${formatarTempo(tempoRestanteSegundosCooldown)})`;
       return;
     }
 
     botaoTentarNovamente.disabled = false;
     botaoTentarNovamente.innerHTML = 'Tentar novamente';
+    botaoIniciarQuiz.disabled = false;
+    botaoIniciarQuiz.innerHTML = 'REALIZAR EXAME ADMISSIONAL';
     localStorage.removeItem(chaveCooldownQuiz);
   }
 
@@ -544,49 +848,7 @@
   }
 
   function restaurarResultadoFinalSalvo() {
-    const resultadoSalvo = recuperarResultadoFinalDoStorage();
-
-    if (!resultadoSalvo) {
-      return;
-    }
-
-    const imagemReigen = document.getElementById('reigen');
-
-    if (resultadoSalvo.acertosPorCategoria) {
-      acertosPorCategoria.paranormal = resultadoSalvo.acertosPorCategoria.paranormal;
-      acertosPorCategoria.investigacao = resultadoSalvo.acertosPorCategoria.investigacao;
-      acertosPorCategoria.contencao = resultadoSalvo.acertosPorCategoria.contencao;
-      acertosPorCategoria.estrategia = resultadoSalvo.acertosPorCategoria.estrategia;
-    }
-
-    if (resultadoSalvo.pontuacaoFinal || resultadoSalvo.pontuacaoFinal === 0) {
-      pontuacaoFinal = resultadoSalvo.pontuacaoFinal;
-    }
-
-    document.getElementById('msgFinal').innerHTML = resultadoSalvo.mensagemFinal;
-    document.getElementById('msgFinal').className = resultadoSalvo.classeMensagemFinal;
-
-    document.getElementById('spanPontuacaoFinal').innerHTML = `${resultadoSalvo.pontuacaoFinal} / ${resultadoSalvo.quantidadeDeQuestoes}`;
-    document.getElementById('spanPercentualFinal').innerHTML = `${resultadoSalvo.percentual}%`;
-
-    document.getElementById('acerto_paranormal').innerHTML = `${acertosPorCategoria.paranormal}/5`;
-    document.getElementById('acerto_investigacao').innerHTML = `${acertosPorCategoria.investigacao}/5`;
-    document.getElementById('acerto_contencao').innerHTML = `${acertosPorCategoria.contencao}/5`;
-    document.getElementById('acerto_estrategia').innerHTML = `${acertosPorCategoria.estrategia}/5`;
-
-    document.getElementById('btnIniciarQuiz').style.display = "none";
-    document.querySelector('.top-container').style.display = "none";
-    document.getElementById('jogo').style.display = 'none';
-    if (imagemReigen) {
-      imagemReigen.style.display = 'none';
-    }
-    document.getElementById('resultadoFinal').style.display = 'flex';
-
-    quizFinalizado = true;
-    btnProx.disabled = true;
-
-    renderizarGraficoRadar();
-    iniciarTimerCooldownBotao();
+    exibirUltimaTentativaQuiz();
   }
 
   function formatarTempo(totalSegundos) {
@@ -656,6 +918,12 @@
   }
 
   function iniciarQuiz() {
+    if (Date.now() < recuperarCooldownDoStorage()) {
+      atualizarEstadoBotaoTentarNovamente();
+      return;
+    }
+    pararTimerCooldownBotao();
+    document.getElementById('dashboardQuiz').style.display = 'none';
     const imagemReigen = document.getElementById('reigen');
     document.getElementById('jogo').style.display = "flex";
     if (imagemReigen) {
@@ -835,37 +1103,35 @@
 
   function enviar() {
     fetch("/exames/enviar", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          // crie um atributo que recebe o valor recuperado aqui
-          // Agora vá para o arquivo routes/usuario.js
-          idUsuarioServer: sessionStorage.ID_USUARIO,
-          paranormalServer: acertosPorCategoria.paranormal,
-          investigacaoServer: acertosPorCategoria.investigacao,
-          contencaoServer: acertosPorCategoria.contencao,
-          estrategiaServer: acertosPorCategoria.estrategia
-        }),
-      })
-        .then(function (resposta) {
-          console.log("resposta: ", resposta);
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        idUsuarioServer: sessionStorage.ID_USUARIO,
+        paranormalServer: acertosPorCategoria.paranormal,
+        investigacaoServer: acertosPorCategoria.investigacao,
+        contencaoServer: acertosPorCategoria.contencao,
+        estrategiaServer: acertosPorCategoria.estrategia
+      }),
+    })
+      .then(function (resposta) {
+        console.log("resposta: ", resposta);
 
-          if (resposta.ok) {
-              console.log('Dados enviados ao BD com sucesso!')
-          } else {
-            throw "Houve um erro ao tentar enviar os dados!";
-          }
-        })
-        .catch(function (resposta) {
-          console.log(`#ERRO: ${resposta}`);
-        });
+        if (resposta.ok) {
+          console.log('Dados enviados ao BD com sucesso!')
+        } else {
+          throw "Houve um erro ao tentar enviar os dados!";
+        }
+      })
+      .catch(function (resposta) {
+        console.log(`#ERRO: ${resposta}`);
+      });
   }
 
   function finalizarJogo() {
     if (quizFinalizado) {
-      
+
       return;
     }
 
@@ -913,6 +1179,8 @@
 
     renderizarGraficoRadar();
     salvarResultadoFinalNoStorage();
+    atualizarDisponibilidadeUltimaTentativa();
+    document.getElementById('selectQuizView').value = 'ultima_tentativa';
     salvarCooldownNoStorage();
     iniciarTimerCooldownBotao();
     console.log('Jogo finalizado!!!')

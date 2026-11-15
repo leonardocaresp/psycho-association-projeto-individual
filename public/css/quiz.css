@@ -20,6 +20,38 @@
     --new-white: #E8E8E8;
 }
 
+main {
+  height: auto;
+  min-height: 100vh;
+}
+
+.top-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.dashboard-view-select {
+  display: flex;
+  align-items: flex-start;
+}
+
+.dashboard-view-select select {
+  border: solid 2px var(--azul-escuro);
+  background-color: white;
+  color: var(--azul-escuro);
+  padding: 6px 12px;
+  min-width: 220px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.dashboard-view-select select:focus {
+  outline: none;
+  border: solid 2px var(--azul-escuro);
+}
+
 .bottom-container {
   display: flex;
   width: auto;
@@ -259,12 +291,203 @@ main .quiz-content {
 }
 
 #btnIniciarQuiz {
+  box-sizing: border-box;
   flex: none;
-  width: auto;
+  width: 100%;
   min-width: 220px;
   max-width: none;
   align-self: center;
-  margin: auto;
+  margin: 0;
+}
+
+/* Dashboard inicial: mesmas cores, recortes e medidas do painel de controle. */
+.exam-dashboard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  gap: 24px;
+}
+
+.exam-kpi-row {
+  display: flex;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.exam-dashboard .kpi {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-width: 0;
+  border: solid 2px var(--azul-escuro);
+  clip-path: polygon(0% 0%, 90% 0%, 100% 20%, 100% 100%, 0% 100%);
+}
+
+.exam-dashboard .top {
+  background-color: var(--azul-escuro);
+  color: white;
+  padding: 12px;
+  font-size: 24px;
+  font-weight: 500;
+  box-sizing: border-box;
+}
+
+.exam-dashboard .kpi .top {
+  display: flex;
+  align-items: center;
+  padding-right: 24px;
+}
+
+.exam-dashboard .kpi .bottom {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 12px;
+  background-color: white;
+  color: var(--azul-escuro);
+}
+
+.exam-dashboard .kpi strong {
+  font-size: 50px;
+  font-weight: 600;
+}
+
+.exam-dashboard .kpi .bottom span {
+  font-size: 16px;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.exam-charts-row {
+  display: flex;
+  gap: 24px;
+  align-items: stretch;
+  flex: 1;
+}
+
+.exam-dashboard .chart {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: solid 2px var(--azul-escuro);
+  clip-path: polygon(0% 0%, 90% 0%, 100% 5%, 100% 100%, 0% 100%);
+}
+
+.exam-category-chart {
+  flex: 2 1 0;
+}
+
+.exam-ranking-chart {
+  flex: 3 1 0;
+}
+
+.exam-dashboard .chart .bottom {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 24px;
+  padding: 24px;
+  background-color: white;
+  color: var(--azul-escuro);
+}
+
+.exam-dashboard p {
+  font-size: 14px;
+  color: var(--azul-escuro);
+  opacity: 0.8;
+}
+
+.exam-chart-legend,
+.exam-chart-legend span {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.exam-chart-legend {
+  column-gap: 20px;
+}
+
+.exam-bar-key {
+  width: 14px;
+  height: 14px;
+  background-color: var(--roxo-claro);
+}
+
+.exam-anchor-key {
+  width: 24px;
+  border-top: dashed 3px var(--azul-escuro);
+}
+
+.exam-chart-canvas {
+  position: relative;
+  flex: 1;
+  min-height: 260px;
+  min-width: 0;
+}
+
+.exam-chart-canvas canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.exam-ranking-heading {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.exam-ranking-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.exam-ranking-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  border-bottom: solid 1px rgba(10, 13, 36, 0.2);
+}
+
+.exam-ranking-position {
+  min-width: 32px;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--rosa-choque);
+}
+
+.exam-ranking-name {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 18px;
+}
+
+.exam-ranking-score {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.exam-ranking-score strong {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.exam-ranking-score small {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.exam-ranking-current {
+  background-color: rgba(54, 240, 200, 0.16);
+  border-left: solid 3px var(--azul-claro);
 }
 
 .resultado-final {

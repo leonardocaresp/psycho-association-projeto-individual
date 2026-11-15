@@ -5,6 +5,10 @@ function limparSessao() {
 }
 
 function validarSessao() {
+    if (window.location.port !== "3333") {
+        return;
+    }
+
     var email = sessionStorage.EMAIL_USUARIO;
     var nome = sessionStorage.NOME_USUARIO;
 
