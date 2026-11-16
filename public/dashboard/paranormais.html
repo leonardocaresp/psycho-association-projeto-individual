@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 
-<body onload="apagarCarregamento();  validarSessao();">
+<body onload="apagarCarregamento(); validarSessao(); inicializarParanormais();">
   <header>
     <div class="icon">
       <img src="../assets/icon/psycho-association-logo.svg">
@@ -58,9 +58,9 @@
         <h3>Consulte os registros de indivíduos conhecidos pela organização. Humanos, paranormais e entidades espirituais. Todos devidamente documentados.</h3>
       </div>
       <div>
-        <button class="left-button"><img src="../assets/icon/left-arrow.svg"></button>
-        <span>1/2</span>
-        <button class="right-button"><img src="../assets/icon/right-arrow.svg"></button>
+        <button class="left-button" onclick="voltarPaginaParanormais()"><img src="../assets/icon/left-arrow.svg"></button>
+        <span id="span_paginacao_paranormais"></span>
+        <button class="right-button" onclick="avancarPaginaParanormais()"><img src="../assets/icon/right-arrow.svg"></button>
       </div>
     </div>
     <div class="bottom-container">
@@ -140,5 +140,56 @@
 
 </html>
 <script>
-  
+  let cardsParanormais = [];
+  let paginaAtualParanormais = 1;
+  let totalPaginasParanormais = 1;
+  const cardsPorPagina = 3;
+
+  function inicializarParanormais() {
+    cardsParanormais = document.querySelectorAll('.paranormal-card');
+
+    if (cardsParanormais.length === 0) {
+      totalPaginasParanormais = 1;
+      renderizarPaginaParanormais();
+      return;
+    }
+
+    totalPaginasParanormais = Math.ceil(cardsParanormais.length / cardsPorPagina);
+    paginaAtualParanormais = 1;
+
+    renderizarPaginaParanormais();
+  }
+
+  function renderizarPaginaParanormais() {
+    const indiceInicial = (paginaAtualParanormais - 1) * cardsPorPagina;
+    const indiceFinal = indiceInicial + cardsPorPagina;
+
+    for (let i = 0; i < cardsParanormais.length; i++) {
+      const cardAtual = cardsParanormais[i];
+      const estaNaPaginaAtual = i >= indiceInicial && i < indiceFinal;
+
+      if (estaNaPaginaAtual) {
+        cardAtual.style.display = 'flex';
+      } else {
+        cardAtual.style.display = 'none';
+      }
+    }
+
+    const spanPaginacao = document.getElementById('span_paginacao_paranormais');
+    spanPaginacao.innerText = `${paginaAtualParanormais}/${totalPaginasParanormais}`;
+  }
+
+  function avancarPaginaParanormais() {
+    if (paginaAtualParanormais < totalPaginasParanormais) {
+      paginaAtualParanormais = paginaAtualParanormais + 1;
+      renderizarPaginaParanormais();
+    }
+  }
+
+  function voltarPaginaParanormais() {
+    if (paginaAtualParanormais > 1) {
+      paginaAtualParanormais = paginaAtualParanormais - 1;
+      renderizarPaginaParanormais();
+    }
+  }
 </script>

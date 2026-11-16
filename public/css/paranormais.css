@@ -61,7 +61,7 @@ main .paranormal-card {
 .paranormal-card .character-name {
   text-align: center;
   background-color: var(--azul-escuro);
-  color: white;
+  color: var(--roxo-claro);
   font-weight: 600;
   font-size: 24px;
   padding: 6px 0px;

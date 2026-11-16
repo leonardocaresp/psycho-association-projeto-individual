@@ -91,7 +91,7 @@ header ul .login {
 section {
     display: flex;
     justify-content: center;
-    height: 900px;
+    height: 100vh;
     width: 100%;
 }
 

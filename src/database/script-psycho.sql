@@ -127,5 +127,51 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 
 SELECT * FROM ocorrencia;
 
+CREATE VIEW vw_ocorrencias_geral AS
+SELECT COUNT(CASE WHEN classificacao = 'Poderes psíquicos' THEN 1 END) poderes_psiquicos,
+COUNT(CASE WHEN classificacao = 'Entidades espirituais' THEN 1 END) entidades_espirituais,
+COUNT(CASE WHEN classificacao = 'Locais assombrados' THEN 1 END) locais_assombrados,
+COUNT(CASE WHEN classificacao = 'Seitas paranormais' THEN 1 END) seitas_paranormais,
+COUNT(CASE WHEN status = 'Em investigação' THEN 1 END) em_investigacao,
+COUNT(CASE WHEN status = 'Resolvido' THEN 1 END) resolvido,
+COUNT(CASE WHEN status = 'Sem explicação' THEN 1 END) sem_explicacao,
+COUNT(id) total
+FROM ocorrencia;
+
+SELECT * FROM vw_ocorrencias_geral;
+
+CREATE VIEW vw_perc_status_geral AS
+SELECT ROUND(resolvido / total * 100, 2) resolvidos, 
+ROUND(em_investigacao / total * 100, 2) em_investigacao, 
+ROUND(sem_explicacao / total * 100, 2) sem_explicacao  
+FROM vw_ocorrencias_geral;
+
+SELECT * FROM vw_perc_status_geral;
+
+CREATE VIEW vw_ocorrencias_individual AS
+SELECT usuario.id id_usuario, usuario.nome nome_usuario,
+COUNT(CASE WHEN classificacao = 'Poderes psíquicos' THEN 1 END) poderes_psiquicos,
+COUNT(CASE WHEN classificacao = 'Entidades espirituais' THEN 1 END) entidades_espirituais,
+COUNT(CASE WHEN classificacao = 'Locais assombrados' THEN 1 END) locais_assombrados,
+COUNT(CASE WHEN classificacao = 'Seitas paranormais' THEN 1 END) seitas_paranormais,
+COUNT(CASE WHEN status = 'Em investigação' THEN 1 END) em_investigacao,
+COUNT(CASE WHEN status = 'Resolvido' THEN 1 END) resolvido,
+COUNT(CASE WHEN status = 'Sem explicação' THEN 1 END) sem_explicacao,
+COUNT(ocorrencia.id) total
+FROM ocorrencia JOIN usuario
+ON ocorrencia.fk_usuario = usuario.id
+GROUP BY usuario.id;
+
+SELECT * FROM vw_ocorrencias_individual;
+
+CREATE VIEW vw_perc_status_individual AS
+SELECT id_usuario, nome_usuario, ROUND(resolvido / total * 100, 2) resolvidos, 
+ROUND(em_investigacao / total * 100, 2) em_investigacao, 
+ROUND(sem_explicacao / total * 100, 2) sem_explicacao  
+FROM vw_ocorrencias_individual;
+
+SELECT * FROM vw_perc_status_individual;
+
+SELECT * FROM usuario;
 
 

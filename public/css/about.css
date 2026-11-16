@@ -81,8 +81,8 @@ main {
   flex-direction: column;
   row-gap: 36px;
   margin-top: 110px;
+  height: 100vh;
   padding-bottom: 60px;
-  background-color: var(--rosa-choque);
   padding-top: 32px;
 }
 

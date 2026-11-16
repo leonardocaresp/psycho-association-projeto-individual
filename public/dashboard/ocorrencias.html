@@ -151,17 +151,45 @@
     const classificacaoSelecionada = selectClassificacaoFiltro.value;
     const statusSelecionado = selectStatusFiltro.value;
 
-    const listaFiltrada = ocorrencias.filter(function (ocorrencia) {
-      const textoCompleto = normalizarTexto(`${ocorrencia.titulo} ${ocorrencia.local} ${ocorrencia.descricao} ${ocorrencia.nomeUsuario}`);
+    const listaFiltrada = [];
 
-      const passouBusca = textoCompleto.includes(textoBusca);
-      const passouClassificacao = classificacaoSelecionada === '' || ocorrencia.classificacao === classificacaoSelecionada;
-      const passouStatus = statusSelecionado === '' || normalizarTexto(ocorrencia.status).includes(normalizarTexto(statusSelecionado));
+    for (let i = 0; i < ocorrencias.length; i++) {
+      const ocorrenciaAtual = ocorrencias[i];
 
-      return passouBusca && passouClassificacao && passouStatus;
-    });
+      const passouBusca = passaBusca(ocorrenciaAtual, textoBusca);
+      const passouClassificacao = passaClassificacao(ocorrenciaAtual, classificacaoSelecionada);
+      const passouStatus = passaStatus(ocorrenciaAtual, statusSelecionado);
+
+      if (passouBusca && passouClassificacao && passouStatus) {
+        listaFiltrada.push(ocorrenciaAtual);
+      }
+    }
 
     renderizarOcorrencias(listaFiltrada);
+  }
+
+  function passaBusca(ocorrencia, textoBusca) {
+    const textoCompleto = normalizarTexto(`${ocorrencia.titulo} ${ocorrencia.local} ${ocorrencia.descricao} ${ocorrencia.nomeUsuario}`);
+    return textoCompleto.includes(textoBusca);
+  }
+
+  function passaClassificacao(ocorrencia, classificacaoSelecionada) {
+    if (classificacaoSelecionada === '') {
+      return true;
+    }
+
+    return ocorrencia.classificacao === classificacaoSelecionada;
+  }
+
+  function passaStatus(ocorrencia, statusSelecionado) {
+    if (statusSelecionado === '') {
+      return true;
+    }
+
+    const statusOcorrenciaNormalizado = normalizarTexto(ocorrencia.status);
+    const statusSelecionadoNormalizado = normalizarTexto(statusSelecionado);
+
+    return statusOcorrenciaNormalizado.includes(statusSelecionadoNormalizado);
   }
 
   function renderizarOcorrencias(lista) {
