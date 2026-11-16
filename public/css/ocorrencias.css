@@ -76,10 +76,6 @@
   border: solid 2px var(--azul-escuro);
 }
 
-.ocorrencias-filterselect:has(option[disabled]:checked) {
-  color: #999;
-}
-
 .ocorrencias-filter select option:not([disabled]) {
   color: var(--azul-escuro);
 }
