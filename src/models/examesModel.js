@@ -2,20 +2,20 @@ var database = require("../database/config")
 
 
 function enviar(idUsuario,
-        paranormal,
-        investigacao,
-        contencao,
-        estrategia) {
+        poderesPsiquicos,
+        espiritos,
+        organizacoes,
+        personagens) {
     console.log("ACESSEI O EXAMES MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function enviar():", idUsuario,
-        paranormal,
-        investigacao,
-        contencao,
-        estrategia);
+        poderesPsiquicos,
+        espiritos,
+        organizacoes,
+        personagens);
     
     // Insira exatamente a query do banco aqui, lembrando da nomenclatura exata nos valores
     //  e na ordem de inserção dos dados.
     var instrucaoSql = `
-        INSERT INTO resultado_exame (fk_usuario, paranormal, investigacao, contencao, estrategia) VALUES ('${idUsuario}', '${paranormal}', '${investigacao}', '${contencao}', '${estrategia}');
+        INSERT INTO resultado_exame (fk_usuario, poderes_psiquicos, espiritos, organizacoes, personagens) VALUES ('${idUsuario}', '${poderesPsiquicos}', '${espiritos}', '${organizacoes}', '${personagens}');
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);

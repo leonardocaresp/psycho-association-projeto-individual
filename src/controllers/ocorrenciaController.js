@@ -1,5 +1,16 @@
 var ocorrenciaModel = require("../models/ocorrenciaModel");
 
+function classificacaoValida(classificacao) {
+    var classificacoesPermitidas = [
+        "poderes-psiquicos",
+        "espiritos-possessoes",
+        "organizacoes-psiquicas",
+        "fenomenos-anomalos"
+    ];
+
+    return classificacoesPermitidas.includes(classificacao);
+}
+
 function listar(req, res) {
     ocorrenciaModel.listar()
         .then(function (resultado) {
@@ -36,6 +47,8 @@ function publicar(req, res) {
         res.status(400).send("A descrição está indefinida!");
     } else if (idUsuario == undefined) {
         res.status(403).send("O id do usuário está indefinido!");
+    } else if (!classificacaoValida(classificacao)) {
+        res.status(400).send("Classificação inválida!");
     } else {
         ocorrenciaModel.publicar(titulo, classificacao, status, local, descricao, idUsuario)
             .then(function (resultado) {
@@ -72,6 +85,8 @@ function editar(req, res) {
         res.status(400).send("O local está indefinido!");
     } else if (descricao == undefined) {
         res.status(400).send("A descrição está indefinida!");
+    } else if (!classificacaoValida(classificacao)) {
+        res.status(400).send("Classificação inválida!");
     } else {
         ocorrenciaModel.buscarPorId(idOcorrencia)
             .then(function (resultadoOcorrencia) {

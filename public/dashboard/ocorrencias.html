@@ -70,10 +70,10 @@
         </div>
         <select id="select_filter_classificacao" name="classificacao">
           <option value="">Todas classificações</option>
-          <option value="Poderes psíquicos">Poderes psíquicos</option>
-          <option value="Entidades espirituais">Entidades espirituais</option>
-          <option value="Locais assombrados">Locais assombrados</option>
-          <option value="Seitas paranormais">Seitas paranormais</option>
+          <option value="poderes-psiquicos">Poderes Psíquicos</option>
+          <option value="espiritos-possessoes">Espíritos e Possessões</option>
+          <option value="organizacoes-psiquicas">Organizações Psíquicas</option>
+          <option value="fenomenos-anomalos">Fenômenos Anômalos</option>
         </select>
         <select name="status" id="select_filter_status">
           <option value="">Todos status</option>
@@ -93,10 +93,22 @@
 </html>
 <script>
   const opcoesClassificacao = [
-    'Poderes psíquicos',
-    'Entidades espirituais',
-    'Locais assombrados',
-    'Seitas paranormais'
+    {
+      id: 'poderes-psiquicos',
+      nome: 'Poderes Psíquicos'
+    },
+    {
+      id: 'espiritos-possessoes',
+      nome: 'Espíritos e Possessões'
+    },
+    {
+      id: 'organizacoes-psiquicas',
+      nome: 'Organizações Psíquicas'
+    },
+    {
+      id: 'fenomenos-anomalos',
+      nome: 'Fenômenos Anômalos'
+    }
   ];
 
   const opcoesStatus = [
@@ -178,7 +190,7 @@
       return true;
     }
 
-    return ocorrencia.classificacao === classificacaoSelecionada;
+    return normalizarClassificacaoId(ocorrencia.classificacao) === classificacaoSelecionada;
   }
 
   function passaStatus(ocorrencia, statusSelecionado) {
@@ -210,6 +222,7 @@
 
       const classeTipo = obterClasseTipo(ocorrencia.classificacao);
       const classeStatus = obterClasseStatus(ocorrencia.status);
+      const classificacaoExibicao = obterNomeClassificacao(ocorrencia.classificacao);
 
       let botoesHtml = '';
       if (ehCriador) {
@@ -229,7 +242,7 @@
 
           <div class="info">
             <div class="type ${classeTipo}">
-              ${escapeHtml(ocorrencia.classificacao).toUpperCase()}
+              ${escapeHtml(classificacaoExibicao).toUpperCase()}
             </div>
             <div class="status ${classeStatus}">
               ${escapeHtml(ocorrencia.status).toUpperCase()}
@@ -288,7 +301,7 @@
 
     if (editando && ocorrenciaAtual) {
       valorTitulo = escapeHtml(ocorrenciaAtual.titulo);
-      valorClassificacao = ocorrenciaAtual.classificacao;
+      valorClassificacao = normalizarClassificacaoId(ocorrenciaAtual.classificacao);
       valorStatus = ocorrenciaAtual.status;
       valorLocal = escapeHtml(ocorrenciaAtual.local);
       valorDescricao = escapeHtml(ocorrenciaAtual.descricao);
@@ -448,31 +461,100 @@
 
     for (let i = 0; i < opcoes.length; i++) {
       const opcao = opcoes[i];
+      let valorOpcao = '';
+      let nomeOpcao = '';
+
+      if (typeof opcao === 'string') {
+        valorOpcao = opcao;
+        nomeOpcao = opcao;
+      } else {
+        valorOpcao = opcao.id;
+        nomeOpcao = opcao.nome;
+      }
+
       let selecionado = '';
-      if (valorSelecionado === opcao) {
+      if (valorSelecionado === valorOpcao) {
         selecionado = 'selected';
       }
 
-      opcoesHtml += `<option value="${opcao}" ${selecionado}>${opcao}</option>`;
+      opcoesHtml += `<option value="${valorOpcao}" ${selecionado}>${nomeOpcao}</option>`;
     }
 
     return opcoesHtml;
   }
 
   function obterClasseTipo(classificacao) {
-    if (classificacao === 'Entidades espirituais') {
+    const classificacaoId = normalizarClassificacaoId(classificacao);
+
+    if (classificacaoId === 'espiritos-possessoes') {
       return 'green-bkg';
     }
 
-    if (classificacao === 'Locais assombrados') {
+    if (classificacaoId === 'organizacoes-psiquicas') {
       return 'blue-bkg';
     }
 
-    if (classificacao === 'Seitas paranormais') {
+    if (classificacaoId === 'fenomenos-anomalos') {
       return 'yellow-bkg';
     }
 
     return 'purple-bkg';
+  }
+
+  function obterNomeClassificacao(classificacao) {
+    const classificacaoId = normalizarClassificacaoId(classificacao);
+
+    if (classificacaoId === 'poderes-psiquicos') {
+      return 'Poderes Psíquicos';
+    }
+
+    if (classificacaoId === 'espiritos-possessoes') {
+      return 'Espíritos e Possessões';
+    }
+
+    if (classificacaoId === 'organizacoes-psiquicas') {
+      return 'Organizações Psíquicas';
+    }
+
+    if (classificacaoId === 'fenomenos-anomalos') {
+      return 'Fenômenos Anômalos';
+    }
+
+    return classificacao;
+  }
+
+  function normalizarClassificacaoId(classificacao) {
+    const classificacaoNormalizada = normalizarTexto(classificacao);
+
+    if (classificacaoNormalizada === 'poderes psiquicos') {
+      return 'poderes-psiquicos';
+    }
+
+    if (classificacaoNormalizada === 'entidades espirituais') {
+      return 'espiritos-possessoes';
+    }
+
+    if (classificacaoNormalizada === 'locais assombrados') {
+      return 'fenomenos-anomalos';
+    }
+
+    if (classificacaoNormalizada === 'seitas paranormais') {
+      return 'organizacoes-psiquicas';
+    }
+
+    if (classificacaoNormalizada === 'espiritos e possessoes') {
+      return 'espiritos-possessoes';
+    }
+
+    if (classificacaoNormalizada === 'organizacoes psiquicas') {
+      return 'organizacoes-psiquicas';
+    }
+
+    if (classificacaoNormalizada === 'fenomenos anomalos') {
+      return 'fenomenos-anomalos';
+    }
+
+    return classificacao;
   }
 
   function obterClasseStatus(status) {

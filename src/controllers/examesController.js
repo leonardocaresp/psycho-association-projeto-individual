@@ -2,13 +2,13 @@ var examesModel = require("../models/examesModel");
 
 function enviar(req, res) {
   var idUsuario = req.body.idUsuarioServer;
-  var paranormal = req.body.paranormalServer;
-  var investigacao = req.body.investigacaoServer;
-  var contencao = req.body.contencaoServer;
-  var estrategia = req.body.estrategiaServer;
+  var poderesPsiquicos = req.body.poderesPsiquicosServer;
+  var espiritos = req.body.espiritosServer;
+  var organizacoes = req.body.organizacoesServer;
+  var personagens = req.body.personagensServer;
 
   examesModel
-    .enviar(idUsuario, paranormal, investigacao, contencao, estrategia)
+    .enviar(idUsuario, poderesPsiquicos, espiritos, organizacoes, personagens)
     .then(function (resultado) {
       res.json(resultado);
     })

@@ -288,7 +288,7 @@ p {
     display: flex;
     flex-direction: column;
     position: relative;
-    height: 200px;
+    height: 220px;
     /* border: solid 5px var(--azul-escuro); */
     transition: 0.8s cubic-bezier(0.08, 0.82, 0.17, 1);
     
@@ -313,7 +313,7 @@ p {
   position: absolute;
   inset: 4px;
   background-color: var(--azul-claro);
-  clip-path: polygon(0% 0%, 90% 0%, 100% 21%, 100% 100%, 0% 100%);
+  clip-path: polygon(0% 0%, 90% 0%, 100% 17%, 100% 100%, 0% 100%);
   z-index: -1;
 }
 
@@ -322,7 +322,7 @@ p {
   position: absolute;
   inset: 4px;
   background-color: var(--verde-claro);
-  clip-path: polygon(0% 0%, 90% 0%, 100% 21%, 100% 100%, 0% 100%);
+  clip-path: polygon(0% 0%, 90% 0%, 100% 17%, 100% 100%, 0% 100%);
   z-index: -1;
 }
 
@@ -331,7 +331,7 @@ p {
   position: absolute;
   inset: 4px;
   background-color: var(--amarelo-forte);
-  clip-path: polygon(0% 0%, 90% 0%, 100% 21%, 100% 100%, 0% 100%);
+  clip-path: polygon(0% 0%, 90% 0%, 100% 17%, 100% 100%, 0% 100%);
   z-index: -1;
 }
 
@@ -340,12 +340,12 @@ p {
   position: absolute;
   inset: 4px;
   background-color: var(--roxo-claro);
-  clip-path: polygon(0% 0%, 90% 0%, 100% 21%, 100% 100%, 0% 100%);
+  clip-path: polygon(0% 0%, 90% 0%, 100% 17%, 100% 100%, 0% 100%);
   z-index: -1;
 }
 
 .universe-cards .card .card-top-cyan, .card-top-green, .card-top-purple, .card-top-yellow h3 {
-    font-size: 36px;
+    font-size: 28px;
     font-weight: 600;
     color: white;
 }
@@ -353,6 +353,7 @@ p {
 .universe-cards .card .card-bottom {
     margin-top: -1px;
     padding: 0px 24px;
+    padding-bottom: 24px;
     background-color: white;
     border: solid 5px var(--azul-escuro);
     border-top: none;

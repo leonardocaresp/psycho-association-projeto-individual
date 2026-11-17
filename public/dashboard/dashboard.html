@@ -213,9 +213,9 @@
       data: {
         labels: [
           ['PODERES', 'PSÍQUICOS'],
-          'ESPÍRITOS',
-          ['LOCAIS', 'ASSOMBRADOS'],
-          'SEITAS'
+          ['ESPÍRITOS E', 'POSSESSÕES'],
+          ['ORGANIZAÇÕES', 'PSÍQUICAS'],
+          ['FENÔMENOS', 'ANÔMALOS']
         ],
         datasets: [{
           data: [],
@@ -372,10 +372,10 @@
     document.getElementById('metric_sem_explicacao').innerHTML = semExplicacao + ' (' + formatarPercentual(percSemExplicacao) + ')';
 
     graficoClassificacao.data.datasets[0].data = [
-      obterNumero(ocorrencias.poderes_psiquicos),
-      obterNumero(ocorrencias.entidades_espirituais),
-      obterNumero(ocorrencias.locais_assombrados),
-      obterNumero(ocorrencias.seitas_paranormais)
+      obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'poderes_psiquicos', 'poderes_psiquicos')),
+      obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'espiritos_possessoes', 'entidades_espirituais')),
+      obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'organizacoes_psiquicas', 'seitas_paranormais')),
+      obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'fenomenos_anomalos', 'locais_assombrados'))
     ];
     graficoClassificacao.update();
 
@@ -389,16 +389,16 @@
 
   function atualizarPainelComZero() {
     atualizarPainel({
-      ocorrencias: {
-        total: 0,
-        em_investigacao: 0,
-        resolvido: 0,
-        sem_explicacao: 0,
-        poderes_psiquicos: 0,
-        entidades_espirituais: 0,
-        locais_assombrados: 0,
-        seitas_paranormais: 0
-      },
+        ocorrencias: {
+          total: 0,
+          em_investigacao: 0,
+          resolvido: 0,
+          sem_explicacao: 0,
+          poderes_psiquicos: 0,
+          espiritos_possessoes: 0,
+          organizacoes_psiquicas: 0,
+          fenomenos_anomalos: 0
+        },
       percentuais: {
         em_investigacao: 0,
         resolvidos: 0,
@@ -420,5 +420,13 @@
   function formatarPercentual(valor) {
     var numero = obterNumero(valor);
     return numero.toFixed(1).replace('.', ',') + '%';
+  }
+
+  function obterValorCategoriaOcorrencia(ocorrencias, chaveNova, chaveAntiga) {
+    if (ocorrencias[chaveNova] !== undefined && ocorrencias[chaveNova] !== null) {
+      return ocorrencias[chaveNova];
+    }
+
+    return ocorrencias[chaveAntiga];
   }
 </script>
