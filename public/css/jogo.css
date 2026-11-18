@@ -1,0 +1,76 @@
+@import url('sistema.css');
+
+.top-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.bottom-container {
+  display: flex;
+  flex-direction: column;
+  width: auto;
+  flex: 1;
+  min-height: 0;
+  row-gap: 24px;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.spirit-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.spirit-info img {
+    height: fit-content;
+    width: fit-content;
+    animation-name: float;
+    animation-direction: alternate;
+    animation-duration: 2s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@keyframes float {
+    0% {
+        transform: rotate(0deg) translate(0px, 0px);
+    } 25% {
+        transform: rotate(2deg) translate(15px, 15px);
+    } 50% {
+        transform: rotate(-4deg) translate(-20px, -8px);
+    } 75% {
+        transform: rotate(3deg) translate(-20px, 16px);
+    } 100% {
+        transform: rotate(0deg) translate(0px, 0px);
+    }
+}
+
+.keys-order {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.key {
+    font-size: 36px;
+    border: solid 2px var(--azul-escuro);
+    padding: 0px 1rem;
+    opacity: 0.5;
+}
+
+.key-right {
+    opacity: 1;
+    background-color: var(--azul-claro);
+    color: white;
+}

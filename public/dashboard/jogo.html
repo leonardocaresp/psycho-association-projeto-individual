@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PsychoAssociation | Relatórios</title>
+  <link rel="stylesheet" href="../css/jogo.css">
+  <script src="../js/funcoes.js"></script>
+  <script src="../js/sessao.js"></script>
+
+
+  <link rel="icon" type="image/x-icon" href="../assets/icon/psycho-association-logo.svg">
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+
+<body onload="apagarCarregamento(); validarSessao();">
+  <header>
+    <div class="icon">
+      <img src="../assets/icon/psycho-association-logo.svg">
+    </div>
+    <div class="user-info">
+      <span class="user-name" id="b_usuario"></span>
+      <span class="user-email" id="e_usuario"></span>
+    </div>
+  </header>
+  <nav>
+    <button class="close-nav" onclick="fecharNav()">
+      < </button>
+        <div class="nav-button" onclick="window.location = 'dashboard.html'">
+          <span>PAINEL DE CONTROLE</span>
+          <span><i class="material-icons">dashboard</i></span>
+        </div>
+        <div class="nav-button">
+          <span>OCORRÊNCIAS</span>
+          <span><i class="material-icons">view_comfy</i></span>
+        </div>
+        <div class="nav-button" onclick="window.location = 'paranormais.html'">
+          <span>ARQUIVO DE INDIVÍDUOS</span>
+          <span><i class="material-icons"">group</i></span>
+    </div>
+    <div class=" nav-button" onclick="window.location = 'quiz.html'">
+              <span>EXAME DE APTIDÃO</span>
+              <span><i class="material-icons">quiz</i></span>
+        </div>
+        <div class="nav-button selected">
+          <span>EXTERMÍNIO</span>
+          <span><i class="material-icons">view_comfy</i></span>
+        </div>
+
+        <button class="disconnect" onclick="limparSessao()">
+          DESCONECTAR
+        </button>
+  </nav>
+
+  <main>
+
+    <div class="top-container">
+      <div>
+        <h2>EXORCISE OS ESPÍRITOS</h2>
+        <h3>Vá até o local de uma ocorrência e resolva o problema.</h3>
+      </div>
+    </div>
+
+
+    <div class="bottom-container">
+      <div id="div_contador_espiritos">0</div>
+
+    </div>
+
+
+  </main>
+</body>
+
+</html>
+<script>
+
+  teclarAtaques()
+  
+  let espiritosPreDefinidos = [
+    {
+      vida: 50,
+      imagem: '../assets/imgs/covinhas.png',
+      timer: 10,
+      teclas: ['WASD', 'ksdf', 'fska', 'kcsa']
+    },
+    {
+      vida: 100,
+      imagem: '../assets/imgs/teruki-hanazawa.png',
+      timer: 15,
+      teclas: ['WASD', 'ksdf', 'fska', 'kcsa']
+    }
+  ]
+
+  let qtdEspiritosRestantes = 0
+  let espiritosSelecionados = []
+  let arrayTeclas = []
+  let teclasAtuais = ''
+  let contadorTeclas = 0
+  let teclasDigitadas = ''
+  let contadorEspiritos = 0
+
+  function selecionandoEspiritos() {
+
+    let qtdEspiritos = (Math.round(Math.random() * 10) + 1);
+    qtdEspiritosRestantes = qtdEspiritos
+
+    console.log(qtdEspiritos)
+
+
+    for (let i = 0; i < qtdEspiritos; i++) {
+      let numeroAleatorio = Math.round(Math.random() * (espiritosPreDefinidos.length - 1))
+      let espiritoSelecionado = espiritosPreDefinidos[numeroAleatorio]
+
+      espiritosSelecionados.push(espiritoSelecionado)
+    }
+
+  }
+
+  function carregarTeclas() {
+    for (let i = 0; i < teclasAtuais.length; i++) {
+      let teclaAtual = teclasAtuais[i].toUpperCase()
+
+      div_keys.innerHTML += `<div class="key" id="key-${i + 1}">${teclaAtual}</div>`
+    }
+  }
+
+  function carregarEspirito() {
+
+    let containerInferior = document.querySelector('.bottom-container')
+
+    let vidaEspirito = espiritosSelecionados[contadorEspiritos].vida
+    let imagemEspirito = espiritosSelecionados[contadorEspiritos].imagem
+
+    containerInferior.innerHTML += `<div class="card">
+        <div class="spirit-info">
+          <span>Espírito ${contadorEspiritos + 1}</span>
+          <progress max="${vidaEspirito}" value="${vidaEspirito}" id="vida_espirito"></progress>
+          <img src="${imagemEspirito}">
+        </div>
+        <div class="keys-order" id="div_keys">
+
+        </div>
+      </div>`
+
+    arrayTeclas = espiritosSelecionados[contadorEspiritos].teclas
+    teclasAtuais = arrayTeclas[contadorTeclas]
+    console.log('Sequencia de combos do espirito: ' + arrayTeclas)
+    console.log('Combo de teclas atual: ' + teclasAtuais)
+    contadorEspiritos++
+
+    recarregarEspiritosRestantes()
+    carregarTeclas()
+  }
+
+  function teclarAtaques() {
+
+    document.addEventListener("keyup", (tecla) => {
+
+      teclasDigitadas += (tecla.key).toUpperCase()
+      console.log('Teclas digitadas: ' + teclasDigitadas)
+
+      let divsTeclas = document.querySelectorAll('.key')
+
+      console.log(divsTeclas)
+
+      for (let i = 0; i < teclasDigitadas.length; i++) {
+        let teclaDaDiv = divsTeclas[i].innerHTML
+
+        if (vida_espirito.value > 0) {
+
+            console.log('teclaDaDiv: ' + teclaDaDiv)
+            console.log('teclasDigitadas: ' + teclasDigitadas)
+            console.log('teclasAtuais: ' + teclasAtuais)
+
+          if (teclasDigitadas[i] == teclaDaDiv) {
+          console.log(divsTeclas[i].classList.contains('key-right'))
+            
+            if (!divsTeclas[i].classList.contains('key-right')) {
+              console.log('ENTREI NESSE IF AQUIR')
+              divsTeclas[i].classList.add('key-right')
+            }
+
+
+          } else {
+
+            for (let i = 0; i < divsTeclas.length; i++) {
+              divsTeclas[i].classList.remove('key-right')
+            }
+
+            teclasDigitadas = ''
+            break;
+          }
+
+          //se eu terminei o combo
+          if (teclasDigitadas == teclasAtuais.toUpperCase()) {
+
+            vida_espirito.value -= 25
+            contadorTeclas++
+            teclasAtuais = arrayTeclas[contadorTeclas]
+            div_keys.innerHTML = ''
+            teclasDigitadas = ''
+
+            if (vida_espirito.value > 0) {
+
+              carregarTeclas()
+            
+              //se o espirito morreu
+            } else {
+              setTimeout(() => {
+                document.querySelector('.card').remove()
+                contadorTeclas = 0
+                qtdEspiritosRestantes--
+
+                //se ainda tiver espiritos para derrotar
+                if (qtdEspiritosRestantes > 0) {
+                  carregarEspirito()
+                } else {
+                  recarregarEspiritosRestantes()
+                  console.log('Você derrotou todos os espíritos!')
+                  qtdEspiritosRestantes = 0
+                  espiritosSelecionados = []
+                  arrayTeclas = []
+                  teclasAtuais = ''
+                  contadorTeclas = 0
+                  teclasDigitadas = ''
+                  contadorEspiritos = 0
+                }
+
+              }, 1000)
+            }
+
+          }
+        }
+
+      }
+    })
+  }
+
+  function recarregarEspiritosRestantes() {
+    div_contador_espiritos.innerHTML = `Espíritos restantes: ${qtdEspiritosRestantes}`
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  selecionandoEspiritos()
+  carregarEspirito()
+
+
+
+
+</script>
