@@ -144,6 +144,33 @@ function fecharNav() {
     <button class="disconnect" onclick="limparSessao()">
       DESCONECTAR
     </button>`
+    } else if (window.location.href == `${window.location.origin}/public/dashboard/jogo.html` || window.location.href == `${window.location.origin}/dashboard/jogo.html`) {
+      nav.innerHTML = `<button class="close-nav" onclick="fecharNav()">
+      < </button>
+        <div class="nav-button" onclick="window.location = 'dashboard.html'">
+          <span>PAINEL DE CONTROLE</span>
+          <span><i class="material-icons">dashboard</i></span>
+        </div>
+        <div class="nav-button" onclick="window.location = 'ocorrencias.html'">
+          <span>OCORRÊNCIAS</span>
+          <span><i class="material-icons">view_comfy</i></span>
+        </div>
+        <div class="nav-button" onclick="window.location = 'paranormais.html'">
+          <span>ARQUIVO DE INDIVÍDUOS</span>
+          <span><i class="material-icons"">group</i></span>
+    </div>
+    <div class=" nav-button" onclick="window.location = 'quiz.html'">
+              <span>EXAME DE APTIDÃO</span>
+              <span><i class="material-icons">quiz</i></span>
+        </div>
+        <div class="nav-button selected">
+          <span>EXORCISMO</span>
+          <span><i class="material-icons">view_comfy</i></span>
+        </div>
+
+        <button class="disconnect" onclick="limparSessao()">
+          DESCONECTAR
+        </button>`
     }
 
     navAberta = true;

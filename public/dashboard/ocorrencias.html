@@ -139,19 +139,24 @@
     fetch('/ocorrencias/listar')
       .then(function (resposta) {
         if (resposta.status == 204) {
-          ocorrencias = [];
-          renderizarOcorrencias([]);
-          return;
+          return null;
         }
 
         if (!resposta.ok) {
           throw 'Erro ao listar ocorrências';
         }
 
-        resposta.json().then(function (dados) {
-          ocorrencias = dados;
-          aplicarFiltros();
-        });
+        return resposta.json();
+      })
+      .then(function (dados) {
+        if (dados === null) {
+          ocorrencias = [];
+          renderizarOcorrencias([]);
+          return;
+        }
+
+        ocorrencias = dados;
+        aplicarFiltros();
       })
       .catch(function (erro) {
         console.log('#ERRO:', erro);
@@ -271,9 +276,12 @@
 
     let ocorrenciaAtual = null;
     if (editando) {
-      ocorrenciaAtual = ocorrencias.find(function (item) {
-        return item.idOcorrencia === idOcorrencia;
-      });
+      for (let i = 0; i < ocorrencias.length; i++) {
+        if (ocorrencias[i].idOcorrencia === idOcorrencia) {
+          ocorrenciaAtual = ocorrencias[i];
+          break;
+        }
+      }
 
       if (!ocorrenciaAtual) {
         alert('Ocorrência não encontrada. Atualize a página e tente novamente.');
@@ -410,12 +418,15 @@
       })
     })
       .then(function (resposta) {
-        if (resposta.ok) {
-          fecharPopup();
-          listarOcorrencias();
-        } else {
+        if (!resposta.ok) {
           throw 'Erro ao salvar ocorrência';
         }
+
+        return null;
+      })
+      .then(function () {
+        fecharPopup();
+        listarOcorrencias();
       })
       .catch(function (erro) {
         console.log('#ERRO:', erro);
@@ -439,11 +450,14 @@
       })
     })
       .then(function (resposta) {
-        if (resposta.ok) {
-          listarOcorrencias();
-        } else {
+        if (!resposta.ok) {
           throw 'Erro ao excluir ocorrência';
         }
+
+        return null;
+      })
+      .then(function () {
+        listarOcorrencias();
       })
       .catch(function (erro) {
         console.log('#ERRO:', erro);
@@ -530,18 +544,6 @@
       return 'poderes-psiquicos';
     }
 
-    if (classificacaoNormalizada === 'entidades espirituais') {
-      return 'espiritos-possessoes';
-    }
-
-    if (classificacaoNormalizada === 'locais assombrados') {
-      return 'fenomenos-anomalos';
-    }
-
-    if (classificacaoNormalizada === 'seitas paranormais') {
-      return 'organizacoes-psiquicas';
-    }
-
     if (classificacaoNormalizada === 'espiritos e possessoes') {
       return 'espiritos-possessoes';
     }
@@ -574,18 +576,30 @@
   function normalizarTexto(texto) {
     return (texto || '')
       .toString()
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
+      .toLowerCase();
   }
 
   function escapeHtml(texto) {
-    return (texto || '')
-      .toString()
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
+    const textoSeguro = (texto || '').toString();
+
+    return textoSeguro.replace(/[&<>"']/g, function (caractere) {
+      if (caractere === '&') {
+        return '&amp;';
+      }
+
+      if (caractere === '<') {
+        return '&lt;';
+      }
+
+      if (caractere === '>') {
+        return '&gt;';
+      }
+
+      if (caractere === '"') {
+        return '&quot;';
+      }
+
+      return '&#039;';
+    });
   }
 </script>

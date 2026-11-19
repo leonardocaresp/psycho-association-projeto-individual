@@ -32,7 +32,7 @@
           <span>PAINEL DE CONTROLE</span>
           <span><i class="material-icons">dashboard</i></span>
         </div>
-        <div class="nav-button">
+        <div class="nav-button" onclick="window.location = 'ocorrencias.html'">
           <span>OCORRÊNCIAS</span>
           <span><i class="material-icons">view_comfy</i></span>
         </div>
@@ -45,7 +45,7 @@
               <span><i class="material-icons">quiz</i></span>
         </div>
         <div class="nav-button selected">
-          <span>EXTERMÍNIO</span>
+          <span>EXORCISMO</span>
           <span><i class="material-icons">view_comfy</i></span>
         </div>
 
@@ -76,20 +76,118 @@
 </html>
 <script>
 
+  function teclarAtaques() {
+    document.addEventListener("keyup", mecanicaTeclar)
+  }
+
+  const mecanicaTeclar = (event) => {
+
+      teclasDigitadas += (event.key).toUpperCase()
+      console.log('Teclas digitadas: ' + teclasDigitadas)
+
+      let divsTeclas = document.querySelectorAll('.key')
+
+      console.log(divsTeclas)
+
+      for (let i = 0; i < teclasDigitadas.length; i++) {
+        let teclaDaDiv = divsTeclas[i].innerHTML
+
+        //acertei a tecla
+        if (vida_espirito.value > 0) {
+
+            console.log('teclaDaDiv: ' + teclaDaDiv)
+            console.log('teclasDigitadas: ' + teclasDigitadas)
+            console.log('teclasAtuais: ' + teclasAtuais)
+
+          if (teclasDigitadas[i] == teclaDaDiv) {
+          console.log(divsTeclas[i].classList.contains('key-right'))
+            
+            if (!divsTeclas[i].classList.contains('key-right')) {
+              console.log('ENTREI NESSE IF AQUIR')
+              divsTeclas[i].classList.add('key-right')
+            }
+
+            //errei a tecla
+          } else {
+
+            for (let i = 0; i < divsTeclas.length; i++) {
+              divsTeclas[i].classList.remove('key-right')
+            }
+
+            teclasDigitadas = ''
+            break;
+          }
+
+          //se eu terminei o combo e dei um hit
+          if (teclasDigitadas == teclasAtuais.toUpperCase()) {
+
+            const body = document.querySelector('body')
+            body.classList.add('tremida-elemento')
+
+            vida_espirito.value -= 25
+            contadorTeclas++
+            teclasAtuais = arrayTeclas[contadorTeclas]
+            div_keys.innerHTML = ''
+            teclasDigitadas = ''
+
+            setTimeout(() => {
+              body.classList.remove('tremida-elemento')
+            }, 1000)
+
+            if (vida_espirito.value > 0) {
+
+              carregarTeclas()
+            
+              //se o espirito morreu
+            } else {
+              setTimeout(() => {
+                
+                document.querySelector('.card').remove()
+                contadorTeclas = 0
+                qtdEspiritosRestantes--
+
+
+                
+
+                //se ainda tiver espiritos para derrotar
+                if (qtdEspiritosRestantes > 0) {
+                  carregarEspirito()
+                } else {
+                  recarregarEspiritosRestantes()
+                  console.log('Você derrotou todos os espíritos!')
+                  qtdEspiritosRestantes = 0
+                  espiritosSelecionados = []
+                  arrayTeclas = []
+                  teclasAtuais = ''
+                  contadorTeclas = 0
+                  teclasDigitadas = ''
+                  contadorEspiritos = 0
+                  document.removeEventListener('keyup', mecanicaTeclar)
+                }
+
+              }, 1000)
+            }
+
+          }
+        }
+
+      }
+    }
+
   teclarAtaques()
   
   let espiritosPreDefinidos = [
     {
       vida: 50,
-      imagem: '../assets/imgs/covinhas.png',
+      imagem: '../assets/imgs/spirit-2.png',
       timer: 10,
       teclas: ['WASD', 'ksdf', 'fska', 'kcsa']
     },
     {
       vida: 100,
-      imagem: '../assets/imgs/teruki-hanazawa.png',
+      imagem: '../assets/imgs/spirit-1.png',
       timer: 15,
-      teclas: ['WASD', 'ksdf', 'fska', 'kcsa']
+      teclas: ['WAASSSD', 'SDSAW', 'SDSSSSA', 'AWDS']
     }
   ]
 
@@ -122,7 +220,7 @@
     for (let i = 0; i < teclasAtuais.length; i++) {
       let teclaAtual = teclasAtuais[i].toUpperCase()
 
-      div_keys.innerHTML += `<div class="key" id="key-${i + 1}">${teclaAtual}</div>`
+      div_keys.innerHTML += `<div class="key" id="key_${i + 1}">${teclaAtual}</div>`
     }
   }
 
@@ -132,11 +230,13 @@
 
     let vidaEspirito = espiritosSelecionados[contadorEspiritos].vida
     let imagemEspirito = espiritosSelecionados[contadorEspiritos].imagem
+    let tempoEspirito = espiritosSelecionados[contadorEspiritos].timer
 
     containerInferior.innerHTML += `<div class="card">
+        <div id="timer">Você têm: ${tempoEspirito}s<div>
         <div class="spirit-info">
           <span>Espírito ${contadorEspiritos + 1}</span>
-          <progress max="${vidaEspirito}" value="${vidaEspirito}" id="vida_espirito"></progress>
+          <div class="barra-vida"><progress max="${vidaEspirito}" value="${vidaEspirito}" id="vida_espirito"></progress> </div>
           <img src="${imagemEspirito}">
         </div>
         <div class="keys-order" id="div_keys">
@@ -154,89 +254,7 @@
     carregarTeclas()
   }
 
-  function teclarAtaques() {
-
-    document.addEventListener("keyup", (tecla) => {
-
-      teclasDigitadas += (tecla.key).toUpperCase()
-      console.log('Teclas digitadas: ' + teclasDigitadas)
-
-      let divsTeclas = document.querySelectorAll('.key')
-
-      console.log(divsTeclas)
-
-      for (let i = 0; i < teclasDigitadas.length; i++) {
-        let teclaDaDiv = divsTeclas[i].innerHTML
-
-        if (vida_espirito.value > 0) {
-
-            console.log('teclaDaDiv: ' + teclaDaDiv)
-            console.log('teclasDigitadas: ' + teclasDigitadas)
-            console.log('teclasAtuais: ' + teclasAtuais)
-
-          if (teclasDigitadas[i] == teclaDaDiv) {
-          console.log(divsTeclas[i].classList.contains('key-right'))
-            
-            if (!divsTeclas[i].classList.contains('key-right')) {
-              console.log('ENTREI NESSE IF AQUIR')
-              divsTeclas[i].classList.add('key-right')
-            }
-
-
-          } else {
-
-            for (let i = 0; i < divsTeclas.length; i++) {
-              divsTeclas[i].classList.remove('key-right')
-            }
-
-            teclasDigitadas = ''
-            break;
-          }
-
-          //se eu terminei o combo
-          if (teclasDigitadas == teclasAtuais.toUpperCase()) {
-
-            vida_espirito.value -= 25
-            contadorTeclas++
-            teclasAtuais = arrayTeclas[contadorTeclas]
-            div_keys.innerHTML = ''
-            teclasDigitadas = ''
-
-            if (vida_espirito.value > 0) {
-
-              carregarTeclas()
-            
-              //se o espirito morreu
-            } else {
-              setTimeout(() => {
-                document.querySelector('.card').remove()
-                contadorTeclas = 0
-                qtdEspiritosRestantes--
-
-                //se ainda tiver espiritos para derrotar
-                if (qtdEspiritosRestantes > 0) {
-                  carregarEspirito()
-                } else {
-                  recarregarEspiritosRestantes()
-                  console.log('Você derrotou todos os espíritos!')
-                  qtdEspiritosRestantes = 0
-                  espiritosSelecionados = []
-                  arrayTeclas = []
-                  teclasAtuais = ''
-                  contadorTeclas = 0
-                  teclasDigitadas = ''
-                  contadorEspiritos = 0
-                }
-
-              }, 1000)
-            }
-
-          }
-        }
-
-      }
-    })
-  }
+  
 
   function recarregarEspiritosRestantes() {
     div_contador_espiritos.innerHTML = `Espíritos restantes: ${qtdEspiritosRestantes}`

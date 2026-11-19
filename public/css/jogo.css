@@ -17,7 +17,7 @@
 }
 
 .card {
-    width: 300px;
+    min-width: 300px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -33,13 +33,16 @@
 }
 
 .spirit-info img {
-    height: fit-content;
-    width: fit-content;
-    animation-name: float;
+    margin-top: 36px;
+    height: 300px;
+    width: 300px;
+    border: solid 2px var(--azul-claro);
+    box-shadow: 0px 0px 10px var(--rosa-choque);
+    /* animation-name: float;
     animation-direction: alternate;
     animation-duration: 2s;
     animation-timing-function: linear;
-    animation-iteration-count: infinite;
+    animation-iteration-count: infinite; */
 }
 
 @keyframes float {
@@ -57,9 +60,40 @@
 }
 
 .keys-order {
+    margin-top: 36px;
     display: flex;
-    justify-content: space-between;
     width: 100%;
+    column-gap: 24px;
+}
+
+.barra-vida {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+         overflow: hidden;
+  border-radius: 16px;
+  width: 100%;
+}
+
+progress {
+  appearance: none;
+  width: 300px;
+  overflow: hidden;
+  border-radius: 16px;
+  height: 20px;
+  background-color: #e0e0e058; 
+}
+
+progress::-webkit-progress-value {
+  background-color: var(--rosa-choque);
+  border-radius: 10px;
+  transition: 0.3s ease;
+}
+
+
+progress::-moz-progress-bar {
+  background-color: white;
+  border-radius: 10px;
 }
 
 .key {
@@ -74,3 +108,15 @@
     background-color: var(--azul-claro);
     color: white;
 }
+
+@keyframes tremida {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); } /* Move para a esquerda */
+  50% { transform: translateX(5px); }  /* Move para a direita */
+  75% { transform: translateX(-5px); } /* Move para a esquerda */
+  100% { transform: translateX(0); }   /* Retorna ao centro */
+}
+
+.tremida-elemento {
+  animation: tremida 0.4s ease-in-out;
+}   

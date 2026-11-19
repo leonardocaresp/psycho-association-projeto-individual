@@ -121,7 +121,7 @@
           </div>
           <div class="bottom">
             <div class="chart-canvas">
-              <canvas id="myChart"></canvas>
+              <canvas id="my_chart"></canvas>
             </div>
           </div>
         </div>
@@ -132,7 +132,7 @@
           </div>
           <div class="bottom">
             <div class="chart-canvas">
-              <canvas id="graficoStatus"></canvas>
+              <canvas id="grafico_status"></canvas>
             </div>
             <div class="status-metrics">
               <div class="metric">
@@ -164,7 +164,7 @@
           </div>
           <div class="bottom">
             <div class="chart-canvas">
-              <canvas id="graficoRegistros"></canvas>
+              <canvas id="grafico_registros"></canvas>
             </div>
           </div>
         </div>
@@ -205,7 +205,7 @@
   }
 
   function inicializarGraficos() {
-    const ctxClassificacao = document.getElementById('myChart');
+    const ctxClassificacao = document.getElementById('my_chart');
 
     graficoClassificacao = new Chart(ctxClassificacao, {
       type: 'bar',
@@ -259,7 +259,7 @@
       }
     });
 
-    const ctxStatus = document.getElementById('graficoStatus');
+    const ctxStatus = document.getElementById('grafico_status');
 
     graficoStatus = new Chart(ctxStatus, {
       type: 'doughnut',
@@ -280,7 +280,7 @@
       }
     });
 
-    const ctxRegistros = document.getElementById('graficoRegistros');
+    const ctxRegistros = document.getElementById('grafico_registros');
 
     new Chart(ctxRegistros, {
       type: 'line',
@@ -324,17 +324,22 @@
     fetch(endpoint)
       .then(function (resposta) {
         if (resposta.status == 204) {
-          atualizarPainelComZero();
-          return;
+          return null;
         }
 
         if (!resposta.ok) {
           throw 'Erro ao buscar dados do painel';
         }
 
-        resposta.json().then(function (dados) {
-          atualizarPainel(dados);
-        });
+        return resposta.json();
+      })
+      .then(function (dados) {
+        if (dados === null) {
+          atualizarPainelComZero();
+          return;
+        }
+
+        atualizarPainel(dados);
       })
       .catch(function (erro) {
         console.log('#ERRO:', erro);
@@ -430,3 +435,4 @@
     return ocorrencias[chaveAntiga];
   }
 </script>
+
