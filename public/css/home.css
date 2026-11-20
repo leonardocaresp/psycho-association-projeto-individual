@@ -160,9 +160,9 @@ p {
 
 .main-image .img-1 {
     position: absolute;
-    top: -60px;
-    left: -100px;
-    width: 750px;
+    top: -96px;
+    left: -140px;
+    width: 800px;
     z-index: 1010;
 }
 
