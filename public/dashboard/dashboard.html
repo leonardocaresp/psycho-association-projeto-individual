@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 
-<body onload="apagarCarregamento(); validarSessao(); iniciarDashboard()">
+<body>
   <header>
     <div class="icon">
       <img src="../assets/icon/psycho-association-logo.svg">
@@ -179,260 +179,443 @@
 
 </html>
 <script>
-  let graficoClassificacao = null;
-  let graficoStatus = null;
+    let proximaAtualizacao;
+    let graficoClassificacao = null;
+    let graficoStatus = null;
+    let graficoRegistros = null;
 
-  function iniciarDashboard() {
-    preencherNome();
-    inicializarGraficos();
+    const validarSessaoBase = window.validarSessao;
+    window.validarSessao = async function () {
+        if (typeof validarSessaoBase === 'function') {
+            validarSessaoBase();
+        }
 
-    var selectView = document.getElementById('select_dashboard_view');
-    selectView.addEventListener('change', function () {
-      carregarDadosPainel();
-    });
+        if (sessionStorage.EMAIL_USUARIO && sessionStorage.NOME_USUARIO) {
+            return true;
+        }
 
-    carregarDadosPainel();
-  }
+        return false;
+    };
 
-  function preencherNome() {
-    var nome = sessionStorage.NOME_USUARIO;
+    window.onload = async function () {
+        apagarCarregamento();
+        if (await validarSessao()) exibirPainelDoUsuario();
+    };
 
-    if (!nome) {
-      return;
+    function exibirPainelDoUsuario() {
+        // var visoesPainel = JSON.parse(sessionStorage.VISOES_PAINEL);
+        // visoesPainel.forEach(item => {
+        //     btnPainel.innerHTML += `...`
+        //     graficos.innerHTML += `...`
+        //     obterDadosGrafico(item.id)
+        // });
+
+        var selectView = select_dashboard_view;
+        selectView.addEventListener('change', function () {
+            exibirPainel(1);
+        });
+
+        exibirPainel(1);
     }
 
-    h2_boas_vindas.innerHTML += nome.toUpperCase() + '.';
-  }
+    function alterarTituloPainel(idPainel) {
+        // var tituloPainel = document.getElementById(`tituloPainel${idPainel}`)
+        // var descricao = JSON.parse(sessionStorage.VISOES_PAINEL).find(item => item.id == idPainel).descricao;
+        // tituloPainel.innerHTML = "Últimos dados do <span style='color: #e6005a'>" + descricao + "</span>"
 
-  function inicializarGraficos() {
-    const ctxClassificacao = document.getElementById('my_chart');
+        var nome = sessionStorage.NOME_USUARIO;
+        if (nome) {
+            h2_boas_vindas.innerHTML = 'BEM-VINDO DE VOLTA, ' + nome.toUpperCase() + '.';
+        }
+    }
 
-    graficoClassificacao = new Chart(ctxClassificacao, {
-      type: 'bar',
-      plugins: [ChartDataLabels],
-      data: {
-        labels: [
-          ['PODERES', 'PSÍQUICOS'],
-          ['ESPÍRITOS E', 'POSSESSÕES'],
-          ['ORGANIZAÇÕES', 'PSÍQUICAS'],
-          ['FENÔMENOS', 'ANÔMALOS']
-        ],
-        datasets: [{
-          data: [],
-          backgroundColor: ['#D250FF', '#3FE275', '#36F0C8', '#FDB123'],
-          borderWidth: 0
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
-          },
-          datalabels: {
-            anchor: 'end',
-            align: 'end',
-            color: '#0A0D22',
-            font: {
-              size: 14,
-              weight: 'bold'
+    function exibirPainel(idPainel) {
+        // let todasAsVisoesPainel = JSON.parse(sessionStorage.VISOES_PAINEL);
+        // for (i = 0; i < todasAsVisoesPainel.length; i++) {
+        //     // exibindo - ou não - o gráfico
+        //     if (todasAsVisoesPainel[i].id != idPainel) {
+        //         let elementoAtual = document.getElementById(`grafico${todasAsVisoesPainel[i].id}`)
+        //         ...
+        //     }
+        // }
+        // let graficoExibir = document.getElementById(`grafico${idPainel}`)
+        // let btnExibir = document.getElementById(`btnPainel${idPainel}`)
+
+        obterDadosGrafico(idPainel);
+    }
+
+    // O gráfico é construído com três funções:
+    // 1. obterDadosGrafico -> Traz dados do Banco de Dados para montar o gráfico da primeira vez
+    // 2. plotarGrafico -> Monta o gráfico com os dados trazidos e exibe em tela
+    // 3. atualizarGrafico -> Atualiza o gráfico, trazendo novamente dados do Banco
+
+    // Esta função *obterDadosGrafico* busca os últimos dados inseridos em tabela de medidas.
+    // para, quando carregar o gráfico da primeira vez, já trazer com vários dados.
+    // A função *obterDadosGrafico* também invoca a função *plotarGrafico*
+
+    //     Se quiser alterar a busca, ajuste as regras de negócio em src/controllers
+    //     Para ajustar o "select", ajuste o comando sql em src/models
+    function obterDadosGrafico(idPainel) {
+
+        alterarTituloPainel(idPainel)
+
+        if (proximaAtualizacao != undefined) {
+            clearTimeout(proximaAtualizacao);
+        }
+
+        var endpoint = '/painel/geral';
+        var selectView = select_dashboard_view;
+
+        if (selectView.value === 'individual') {
+            endpoint = '/painel/individual/' + sessionStorage.ID_USUARIO;
+        } else {
+            endpoint = '/painel/geral';
+        }
+
+        fetch(endpoint, { cache: 'no-store' }).then(function (response) {
+            if (response.ok) {
+                response.json().then(function (resposta) {
+                    console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+
+                    plotarGrafico(resposta, idPainel);
+
+                });
+            } else if (response.status == 204) {
+                plotarGrafico(null, idPainel);
+            } else {
+                console.error('Nenhum dado encontrado ou erro na API');
             }
-          }
-        },
-        scales: {
-          x: {
-            ticks: {
-              autoSkip: false,
-              maxRotation: 0,
-              minRotation: 0,
-              font: {
-                size: 11
-              }
+        })
+            .catch(function (error) {
+                console.error(`Erro na obtenção dos dados p/ gráfico: ${error.message}`);
+            });
+    }
+
+    // Esta função *plotarGrafico* usa os dados capturados na função anterior para criar o gráfico
+    // Configura o gráfico (cores, tipo, etc), materializa-o na página e, 
+    // A função *plotarGrafico* também invoca a função *atualizarGrafico*
+    function plotarGrafico(resposta, idPainel) {
+
+        console.log('iniciando plotagem do gráfico...');
+
+        // Criando estrutura para plotar gráfico - labels
+        let labels = [];
+
+        // Criando estrutura para plotar gráfico - dados
+        let dados = {
+            labels: labels,
+            datasets: [
+            {
+                label: 'Ocorrências por categoria',
+                data: [],
+                fill: false,
+                borderColor: 'rgb(199, 52, 52)',
+                tension: 0.1
+            }]
+        };
+
+        console.log('----------------------------------------------')
+        console.log('Estes dados foram recebidos pela funcao "obterDadosGrafico" e passados para "plotarGrafico":')
+        console.log(resposta)
+
+        var ocorrencias = {
+            total: 0,
+            em_investigacao: 0,
+            resolvido: 0,
+            sem_explicacao: 0,
+            poderes_psiquicos: 0,
+            espiritos_possessoes: 0,
+            organizacoes_psiquicas: 0,
+            fenomenos_anomalos: 0
+        };
+
+        var percentuais = {
+            em_investigacao: 0,
+            resolvidos: 0,
+            sem_explicacao: 0
+        };
+
+        if (resposta) {
+            ocorrencias = resposta.ocorrencias;
+            percentuais = resposta.percentuais;
+        }
+
+        // Inserindo valores recebidos em estrutura para plotar o gráfico
+        labels.push('Poderes Psíquicos');
+        labels.push('Espíritos e Possessões');
+        labels.push('Organizações Psíquicas');
+        labels.push('Fenômenos Anômalos');
+
+        dados.datasets[0].data.push(obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'poderes_psiquicos', 'poderes_psiquicos')));
+        dados.datasets[0].data.push(obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'espiritos_possessoes', 'entidades_espirituais')));
+        dados.datasets[0].data.push(obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'organizacoes_psiquicas', 'seitas_paranormais')));
+        dados.datasets[0].data.push(obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'fenomenos_anomalos', 'locais_assombrados')));
+
+        console.log('----------------------------------------------')
+        console.log('O gráfico será plotado com os respectivos valores:')
+        console.log('Labels:')
+        console.log(labels)
+        console.log('Dados:')
+        console.log(dados.datasets)
+        console.log('----------------------------------------------')
+
+        atualizarKpis(ocorrencias, percentuais);
+
+        if (graficoClassificacao) {
+            graficoClassificacao.destroy();
+        }
+
+        // Criando estrutura para plotar gráfico - config
+        const config = {
+            type: 'bar',
+            plugins: [ChartDataLabels],
+            data: {
+                labels: [
+                    ['PODERES', 'PSÍQUICOS'],
+                    ['ESPÍRITOS E', 'POSSESSÕES'],
+                    ['ORGANIZAÇÕES', 'PSÍQUICAS'],
+                    ['FENÔMENOS', 'ANÔMALOS']
+                ],
+                datasets: [{
+                    data: dados.datasets[0].data,
+                    backgroundColor: ['#D250FF', '#3FE275', '#36F0C8', '#FDB123'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'end',
+                        color: '#0A0D22',
+                        font: { size: 14, weight: 'bold' }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            autoSkip: false,
+                            maxRotation: 0,
+                            minRotation: 0,
+                            font: { size: 11 }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grace: '20%'
+                    }
+                }
             }
-          },
-          y: {
-            beginAtZero: true,
-            grace: '20%'
-          }
+        };
+
+        // Adicionando gráfico criado em div na tela
+        let myChart = {
+            classificacao: new Chart(
+                my_chart,
+                config
+            )
+        };
+
+        graficoClassificacao = myChart.classificacao;
+
+        if (graficoStatus) {
+            graficoStatus.destroy();
         }
-      }
-    });
 
-    const ctxStatus = document.getElementById('grafico_status');
+        myChart.status = new Chart(grafico_status, {
+            type: 'doughnut',
+            data: {
+                labels: ['EM INVESTIGAÇÃO', 'RESOLVIDOS', 'SEM EXPLICAÇÃO'],
+                datasets: [{
+                    data: [
+                        obterNumero(ocorrencias.em_investigacao),
+                        obterNumero(ocorrencias.resolvido),
+                        obterNumero(ocorrencias.sem_explicacao)
+                    ],
+                    backgroundColor: ['#FDB123', '#3FE275', '#E23235'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
 
-    graficoStatus = new Chart(ctxStatus, {
-      type: 'doughnut',
-      data: {
-        labels: ['EM INVESTIGAÇÃO', 'RESOLVIDOS', 'SEM EXPLICAÇÃO'],
-        datasets: [{
-          data: [],
-          backgroundColor: ['#FDB123', '#3FE275', '#E23235'],
-          borderWidth: 0
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false }
+        graficoStatus = myChart.status;
+
+        if (graficoRegistros) {
+            graficoRegistros.destroy();
         }
-      }
-    });
 
-    const ctxRegistros = document.getElementById('grafico_registros');
+        myChart.registros = new Chart(grafico_registros, {
+            type: 'line',
+            data: {
+                labels: ['Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov'],
+                datasets: [{
+                    data: [
+                        obterNumero(ocorrencias.total),
+                        obterNumero(ocorrencias.total),
+                        obterNumero(ocorrencias.total),
+                        obterNumero(ocorrencias.total),
+                        obterNumero(ocorrencias.total),
+                        obterNumero(ocorrencias.total)
+                    ],
+                    borderColor: '#E22672'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
 
-    new Chart(ctxRegistros, {
-      type: 'line',
-      data: {
-        labels: ['Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov'],
-        datasets: [{
-          data: [],
-          borderColor: '#E22672'
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false }
-        },
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
-  }
+        graficoRegistros = myChart.registros;
 
-  function carregarDadosPainel() {
-    var selectView = document.getElementById('select_dashboard_view');
-    var tipoPainel = selectView.value;
-    var endpoint = '/painel/geral';
-
-    if (tipoPainel === 'individual') {
-      var idUsuario = sessionStorage.ID_USUARIO;
-
-      if (!idUsuario) {
-        return;
-      }
-
-      endpoint = '/painel/individual/' + idUsuario;
+        setTimeout(() => atualizarGrafico(idPainel, dados, myChart), 2000);
     }
 
-    fetch(endpoint)
-      .then(function (resposta) {
-        if (resposta.status == 204) {
-          return null;
+
+    // Esta função *atualizarGrafico* atualiza o gráfico que foi renderizado na página,
+    // buscando a última medida inserida em tabela contendo as capturas, 
+
+    //     Se quiser alterar a busca, ajuste as regras de negócio em src/controllers
+    //     Para ajustar o "select", ajuste o comando sql em src/models
+    function atualizarGrafico(idPainel, dados, myChart) {
+
+
+
+        var endpoint = '/painel/geral';
+        var selectView = select_dashboard_view;
+
+        if (selectView.value === 'individual') {
+            endpoint = '/painel/individual/' + sessionStorage.ID_USUARIO;
+        } else {
+            endpoint = '/painel/geral';
         }
 
-        if (!resposta.ok) {
-          throw 'Erro ao buscar dados do painel';
-        }
+        fetch(endpoint, { cache: 'no-store' }).then(function (response) {
+            if (response.ok) {
+                response.json().then(function (novoRegistro) {
 
-        return resposta.json();
-      })
-      .then(function (dados) {
-        if (dados === null) {
-          atualizarPainelComZero();
-          return;
-        }
+                    // obterdados(idPainel);
+                    // alertar(novoRegistro, idPainel);
+                    console.log(`Dados recebidos: ${JSON.stringify(novoRegistro)}`);
+                    console.log(`Dados atuais do gráfico:`);
+                    console.log(dados);
 
-        atualizarPainel(dados);
-      })
-      .catch(function (erro) {
-        console.log('#ERRO:', erro);
-        atualizarPainelComZero();
-      });
-  }
+                    // let avisoPainel = document.getElementById(`avisoPainel${idPainel}`)
+                    // avisoPainel.innerHTML = ""
 
-  function atualizarPainel(dados) {
-    var ocorrencias = dados.ocorrencias;
-    var percentuais = dados.percentuais;
+                    var ocorrencias = novoRegistro.ocorrencias;
+                    var percentuais = novoRegistro.percentuais;
 
-    var total = obterNumero(ocorrencias.total);
-    var emInvestigacao = obterNumero(ocorrencias.em_investigacao);
-    var resolvido = obterNumero(ocorrencias.resolvido);
-    var semExplicacao = obterNumero(ocorrencias.sem_explicacao);
+                    atualizarKpis(ocorrencias, percentuais);
 
-    var percInvestigacao = obterNumero(percentuais.em_investigacao);
-    var percResolvidos = obterNumero(percentuais.resolvidos);
-    var percSemExplicacao = obterNumero(percentuais.sem_explicacao);
+                    myChart.classificacao.data.datasets[0].data = [
+                        obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'poderes_psiquicos', 'poderes_psiquicos')),
+                        obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'espiritos_possessoes', 'entidades_espirituais')),
+                        obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'organizacoes_psiquicas', 'seitas_paranormais')),
+                        obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'fenomenos_anomalos', 'locais_assombrados'))
+                    ];
+                    myChart.classificacao.update();
 
-    document.getElementById('kpi_total_valor').innerHTML = total;
-    document.getElementById('kpi_total_subtitulo').innerHTML = 'Registros cadastrados';
+                    myChart.status.data.datasets[0].data = [
+                        obterNumero(ocorrencias.em_investigacao),
+                        obterNumero(ocorrencias.resolvido),
+                        obterNumero(ocorrencias.sem_explicacao)
+                    ];
+                    myChart.status.update();
 
-    document.getElementById('kpi_investigacao_valor').innerHTML = emInvestigacao;
-    document.getElementById('kpi_investigacao_subtitulo').innerHTML = formatarPercentual(percInvestigacao) + ' do total';
+                    myChart.registros.data.datasets[0].data = [
+                        obterNumero(ocorrencias.total),
+                        obterNumero(ocorrencias.total),
+                        obterNumero(ocorrencias.total),
+                        obterNumero(ocorrencias.total),
+                        obterNumero(ocorrencias.total),
+                        obterNumero(ocorrencias.total)
+                    ];
+                    myChart.registros.update();
 
-    document.getElementById('kpi_resolucao_valor').innerHTML = formatarPercentual(percResolvidos);
-    document.getElementById('kpi_resolucao_subtitulo').innerHTML = resolvido + ' de ' + total + ' ocorrências';
+                    // Altere aqui o valor em ms se quiser que o gráfico atualize mais rápido ou mais devagar
+                    proximaAtualizacao = setTimeout(() => atualizarGrafico(idPainel, dados, myChart), 2000);
+                });
+            } else {
+                console.error('Nenhum dado encontrado ou erro na API');
+                // Altere aqui o valor em ms se quiser que o gráfico atualize mais rápido ou mais devagar
+                proximaAtualizacao = setTimeout(() => atualizarGrafico(idPainel, dados, myChart), 2000);
+            }
+        })
+            .catch(function (error) {
+                console.error(`Erro na obtenção dos dados p/ gráfico: ${error.message}`);
+            });
 
-    document.getElementById('kpi_inconclusivas_valor').innerHTML = semExplicacao;
-    document.getElementById('kpi_inconclusivas_subtitulo').innerHTML = formatarPercentual(percSemExplicacao) + ' do total';
-
-    document.getElementById('metric_investigacao').innerHTML = emInvestigacao + ' (' + formatarPercentual(percInvestigacao) + ')';
-    document.getElementById('metric_resolvidos').innerHTML = resolvido + ' (' + formatarPercentual(percResolvidos) + ')';
-    document.getElementById('metric_sem_explicacao').innerHTML = semExplicacao + ' (' + formatarPercentual(percSemExplicacao) + ')';
-
-    graficoClassificacao.data.datasets[0].data = [
-      obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'poderes_psiquicos', 'poderes_psiquicos')),
-      obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'espiritos_possessoes', 'entidades_espirituais')),
-      obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'organizacoes_psiquicas', 'seitas_paranormais')),
-      obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'fenomenos_anomalos', 'locais_assombrados'))
-    ];
-    graficoClassificacao.update();
-
-    graficoStatus.data.datasets[0].data = [
-      emInvestigacao,
-      resolvido,
-      semExplicacao
-    ];
-    graficoStatus.update();
-  }
-
-  function atualizarPainelComZero() {
-    atualizarPainel({
-        ocorrencias: {
-          total: 0,
-          em_investigacao: 0,
-          resolvido: 0,
-          sem_explicacao: 0,
-          poderes_psiquicos: 0,
-          espiritos_possessoes: 0,
-          organizacoes_psiquicas: 0,
-          fenomenos_anomalos: 0
-        },
-      percentuais: {
-        em_investigacao: 0,
-        resolvidos: 0,
-        sem_explicacao: 0
-      }
-    });
-  }
-
-  function obterNumero(valor) {
-    var numero = Number(valor);
-
-    if (isNaN(numero)) {
-      return 0;
     }
 
-    return numero;
-  }
+    function atualizarKpis(ocorrencias, percentuais) {
+        var total = obterNumero(ocorrencias.total);
+        var emInvestigacao = obterNumero(ocorrencias.em_investigacao);
+        var resolvido = obterNumero(ocorrencias.resolvido);
+        var semExplicacao = obterNumero(ocorrencias.sem_explicacao);
 
-  function formatarPercentual(valor) {
-    var numero = obterNumero(valor);
-    return numero.toFixed(1).replace('.', ',') + '%';
-  }
+        var percInvestigacao = obterNumero(percentuais.em_investigacao);
+        var percResolvidos = obterNumero(percentuais.resolvidos);
+        var percSemExplicacao = obterNumero(percentuais.sem_explicacao);
 
-  function obterValorCategoriaOcorrencia(ocorrencias, chaveNova, chaveAntiga) {
-    if (ocorrencias[chaveNova] !== undefined && ocorrencias[chaveNova] !== null) {
-      return ocorrencias[chaveNova];
+        kpi_total_valor.innerHTML = total;
+        kpi_total_subtitulo.innerHTML = 'Registros cadastrados';
+
+        kpi_investigacao_valor.innerHTML = emInvestigacao;
+        kpi_investigacao_subtitulo.innerHTML = formatarPercentual(percInvestigacao) + ' do total';
+
+        kpi_resolucao_valor.innerHTML = formatarPercentual(percResolvidos);
+        kpi_resolucao_subtitulo.innerHTML = resolvido + ' de ' + total + ' ocorrências';
+
+        kpi_inconclusivas_valor.innerHTML = semExplicacao;
+        kpi_inconclusivas_subtitulo.innerHTML = formatarPercentual(percSemExplicacao) + ' do total';
+
+        metric_investigacao.innerHTML = emInvestigacao + ' (' + formatarPercentual(percInvestigacao) + ')';
+        metric_resolvidos.innerHTML = resolvido + ' (' + formatarPercentual(percResolvidos) + ')';
+        metric_sem_explicacao.innerHTML = semExplicacao + ' (' + formatarPercentual(percSemExplicacao) + ')';
     }
 
-    return ocorrencias[chaveAntiga];
-  }
+    function obterNumero(valor) {
+        var numero = Number(valor);
+
+        if (isNaN(numero)) {
+            return 0;
+        }
+
+        return numero;
+    }
+
+    function formatarPercentual(valor) {
+        var numero = obterNumero(valor);
+        return numero.toFixed(1).replace('.', ',') + '%';
+    }
+
+    function obterValorCategoriaOcorrencia(ocorrencias, chaveNova, chaveAntiga) {
+        if (ocorrencias[chaveNova] !== undefined && ocorrencias[chaveNova] !== null) {
+            return ocorrencias[chaveNova];
+        }
+
+        return ocorrencias[chaveAntiga];
+    }
 </script>
+
+
 

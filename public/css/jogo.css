@@ -101,12 +101,23 @@ progress::-moz-progress-bar {
     border: solid 2px var(--azul-escuro);
     padding: 0px 1rem;
     opacity: 0.5;
+    transition: 0.2s;
 }
 
 .key-right {
     opacity: 1;
     background-color: var(--azul-claro);
     color: white;
+    animation-name: diminui;
+    animation-duration: 0.2s;
+}
+
+@keyframes diminui {
+    0% {
+        transform: scale(1.1);
+    } 100% {
+        transform: scale(1);
+    }
 }
 
 @keyframes tremida {

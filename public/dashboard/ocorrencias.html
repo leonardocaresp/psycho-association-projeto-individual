@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -124,9 +124,9 @@
   let selectStatusFiltro = null;
 
   function inicializarOcorrencias() {
-    inputBusca = document.getElementById('ipt_search_ocorrencia');
-    selectClassificacaoFiltro = document.getElementById('select_filter_classificacao');
-    selectStatusFiltro = document.getElementById('select_filter_status');
+    inputBusca = ipt_search_ocorrencia;
+    selectClassificacaoFiltro = select_filter_classificacao;
+    selectStatusFiltro = select_filter_status;
 
     inputBusca.addEventListener('input', aplicarFiltros);
     selectClassificacaoFiltro.addEventListener('change', aplicarFiltros);
@@ -210,7 +210,7 @@
   }
 
   function renderizarOcorrencias(lista) {
-    const container = document.getElementById('ocorrencias_container');
+    const container = ocorrencias_container;
     container.innerHTML = '';
     const idUsuarioLogado = String(sessionStorage.ID_USUARIO || '');
 
@@ -373,11 +373,11 @@
   }
 
   function salvarOcorrencia() {
-    const titulo = document.getElementById('ipt_title').value.trim();
-    const classificacao = document.getElementById('select_type_popup').value;
-    const status = document.getElementById('select_status_popup').value;
-    const local = document.getElementById('ipt_place').value.trim();
-    const descricao = document.getElementById('ipt_desc').value.trim();
+    const titulo = ipt_title.value.trim();
+    const classificacao = select_type_popup.value;
+    const status = select_status_popup.value;
+    const local = ipt_place.value.trim();
+    const descricao = ipt_desc.value.trim();
 
     if (titulo === '' || classificacao === '' || status === '' || local === '' || descricao === '') {
       alert('Preencha todos os campos da ocorrência.');
@@ -603,3 +603,5 @@
     });
   }
 </script>
+
+

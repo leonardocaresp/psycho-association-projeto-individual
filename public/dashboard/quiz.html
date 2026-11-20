@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -454,26 +454,205 @@
   const listaDeQuestoes = montarQuestoesPorCategoria(examCategories);
 
 
-  // variáveis globais    
-  let numeroDaQuestaoAtual = 0;
-  let pontuacaoFinal = 0;
-  let quantidadeDeQuestoes = listaDeQuestoes.length;
-  let graficoRadar = null;
-  let opcoesConfiguradas = false;
-  let atalhoEnterConfigurado = false;
-  let tempoRestanteSegundos = 600;
-  let intervaloTimer = null;
-  let intervaloCooldownBotao = null;
-  let quizFinalizado = false;
-  const tempoCooldownMilissegundos = 10 * 60 * 1000;
-  let idUsuarioLogado = "";
-  let chaveResultadoQuiz = "";
-  let chaveCooldownQuiz = "";
+  // variáveis globais - Tela 1: Dashboard Geral
   let graficoMediasQuiz = null;
   let resumoIndividualUsuario = null;
   let ultimaTentativaUsuario = null;
   let rankingUsuarios = [];
   let resumoGeralExame = null;
+
+  // variáveis globais - Tela 2: Quiz em andamento
+  let numeroDaQuestaoAtual = 0;
+  let quantidadeDeQuestoes = listaDeQuestoes.length;
+  let opcoesConfiguradas = false;
+  let atalhoEnterConfigurado = false;
+  let tempoRestanteSegundos = 600;
+  let intervaloTimer = null;
+  let quizFinalizado = false;
+
+  // variáveis globais - Tela 3: Resultado final
+  let pontuacaoFinal = 0;
+  let graficoRadar = null;
+  const acertosPorCategoria = {
+    poderesPsiquicos: 0,
+    espiritos: 0,
+    organizacoes: 0,
+    personagens: 0
+  };
+  let intervaloCooldownBotao = null;
+  const tempoCooldownMilissegundos = 10 * 60 * 1000;
+  let idUsuarioLogado = "";
+  let chaveResultadoQuiz = "";
+  let chaveCooldownQuiz = "";
+
+  function renderizarEstruturaTopoQuiz() {
+    const topContainer = document.querySelector('.top-container');
+
+    if (!topContainer) {
+      return;
+    }
+
+    topContainer.innerHTML = `
+      <div>
+        <h2 id="titulo_topo_quiz">EXAME DE APTIDÃO</h2>
+        <h3 id="subtitulo_topo_quiz">Mostre o seu conhecimento sobre o nosso universo.</h3>
+      </div>
+      <div class="dashboard-view-select">
+        <select id="select_quiz_view" name="quizView" aria-label="Selecionar visualização do exame">
+          <option value="geral">Geral</option>
+          <option id="opcao_ultima_tentativa_quiz" value="ultima_tentativa">Última tentativa</option>
+        </select>
+      </div>
+    `;
+  }
+
+  function renderizarEstruturaQuiz() {
+    const pontuacaoEJogo = pontuacao_e_jogo;
+
+    if (!pontuacaoEJogo) {
+      return;
+    }
+
+    pontuacaoEJogo.innerHTML = `
+      <section id="dashboard_quiz" class="exam-dashboard">
+        <div class="exam-kpi-row">
+          <div class="kpi">
+            <div class="top">SEU RANKING ATUAL</div>
+            <div class="bottom"><strong id="ranking_atual_quiz">—</strong><span id="descricao_ranking_quiz">Realize seu primeiro exame para entrar no ranking.</span></div>
+          </div>
+          <div class="kpi">
+            <div class="top">PORCENTAGEM DE ACERTO</div>
+            <div class="bottom"><strong id="melhor_percentual_quiz">—</strong><span>Percentual da melhor tentativa</span></div>
+          </div>
+          <div class="kpi">
+            <div class="top">TENTATIVAS REALIZADAS</div>
+            <div class="bottom"><strong id="tentativas_quiz">0</strong><span>Exames finalizados por você</span></div>
+          </div>
+          <div class="kpi">
+            <div class="top">MÉDIA DE ACERTOS</div>
+            <div class="bottom"><strong id="media_percentual_quiz">—</strong><span>Percentual de todas as tentativas</span></div>
+          </div>
+        </div>
+
+        <div class="exam-charts-row">
+          <div class="chart exam-category-chart">
+            <div class="top">MÉDIA POR CATEGORIA</div>
+            <div class="bottom">
+              <div class="exam-chart-legend">
+                <span><i class="exam-bar-key"></i>Sua média</span>
+                <span><i class="exam-anchor-key"></i>Média geral</span>
+              </div>
+              <div class="exam-chart-canvas"><canvas id="grafico_medias_quiz" aria-label="Média individual e geral de acertos por categoria" role="img"></canvas></div>
+            </div>
+          </div>
+          <div class="chart exam-ranking-chart">
+            <div class="top">RANKING DOS MEMBROS</div>
+            <div class="bottom">
+              <div class="exam-ranking-heading"><span>POSIÇÃO / MEMBRO</span><span>ACERTOS</span></div>
+              <div id="ranking_membros_quiz" class="exam-ranking-list"></div>
+            </div>
+          </div>
+        </div>
+        <button id="btn_iniciar_quiz" onclick="iniciarQuiz()" class="start btn-resultado">REALIZAR EXAME ADMISSIONAL</button>
+      </section>
+
+      <div id="jogo" class="jogo-container">
+        <div class="timer-quiz">
+          <span id="span_tempo_quiz">10:00</span>
+          <i class="material-icons">timer</i>
+        </div>
+
+        <div id="info_questao" class="info">
+          <span>Questão atual: <span id="span_numero_da_questao_atual"></span> de <span id="qtd_questoes"></span> questões.</span>
+          <progress id="barra" class="progress-bar" value="1" max="20"></progress>
+          <div id="pergunta_da_questao_atual" class="question">
+            <span id="span_titulo_caso_atual" class="case-title"></span>
+            <span id="span_descricao_caso_atual" class="case-description"></span>
+            <span id="span_questao_exibida"></span>
+          </div>
+        </div>
+
+        <div id="opcoes" class="options-container">
+          <span class="choice" onclick="selecionarOpcaoPorId('primeira_opcao')">
+            <div class="choice-letter">A</div>
+            <input type="radio" id="primeira_opcao" name="option" class="radio" value="0" />
+            <label for="primeira_opcao" class="option" id="label_opcao_um"></label>
+          </span>
+          <span class="choice" onclick="selecionarOpcaoPorId('segunda_opcao')">
+            <div class="choice-letter">B</div>
+            <input type="radio" id="segunda_opcao" name="option" class="radio" value="1" />
+            <label for="segunda_opcao" class="option" id="label_opcao_dois"></label>
+          </span>
+          <span class="choice" onclick="selecionarOpcaoPorId('terceira_opcao')">
+            <div class="choice-letter">C</div>
+            <input type="radio" id="terceira_opcao" name="option" class="radio" value="2" />
+            <label for="terceira_opcao" class="option" id="label_opcao_tres"></label>
+          </span>
+          <span class="choice" onclick="selecionarOpcaoPorId('quarta_opcao')">
+            <div class="choice-letter">D</div>
+            <input type="radio" id="quarta_opcao" name="option" class="radio" value="3" />
+            <label for="quarta_opcao" class="option" id="label_opcao_quatro"></label>
+          </span>
+        </div>
+
+        <div id="botoes" class="buttons-container">
+          <div>
+            <button onclick="avancar()" id="btn_prox" class="submit">Próxima questão</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="resultado_final" class="resultado-final">
+        <div class="resultado-titulo">
+          <h2>RESULTADO FINAL</h2>
+          <h3 id="msg_final">-</h3>
+        </div>
+
+        <div class="resultado-layout">
+          <div class="resultado-left-column">
+            <div class="resultado-kpi-row">
+              <div class="kpi">
+                <div class="top">ACERTOS TOTAIS</div>
+                <div class="bottom"><span id="span_pontuacao_final">0 / 20</span></div>
+              </div>
+              <div class="kpi">
+                <div class="top">PERCENTUAL FINAL</div>
+                <div class="bottom"><span id="span_percentual_final">0%</span></div>
+              </div>
+            </div>
+
+            <div class="chart">
+              <div class="top">MÉTRICAS POR CATEGORIA</div>
+              <div class="bottom resultado-categorias">
+                <span>Poderes Psíquicos: <strong id="acerto_poderes_psiquicos">0/5</strong></span>
+                <span>Espíritos: <strong id="acerto_espiritos">0/5</strong></span>
+                <span>Organizações: <strong id="acerto_organizacoes">0/5</strong></span>
+                <span>Personagens: <strong id="acerto_personagens">0/5</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="resultado-right-column">
+            <div class="chart">
+              <div class="top">DESEMPENHO POR CATEGORIA</div>
+              <div class="bottom">
+                <div class="radar-container">
+                  <canvas id="radar_categorias"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="tentarNovamente()" id="btn_tentar_novamente" class="start btn-resultado">Tentar novamente</button>
+      </div>
+    `;
+  }
+
+  function renderizarEstruturasDaTelaQuiz() {
+    renderizarEstruturaTopoQuiz();
+    renderizarEstruturaQuiz();
+  }
 
   function obterNumeroOuZero(valor) {
     const numero = Number(valor);
@@ -505,27 +684,6 @@
     }
 
     return `${Math.round(numero)}%`;
-  }
-
-  function obterMensagemResultadoPorPercentual(percentual) {
-    if (percentual <= 30) {
-      return {
-        mensagem: 'Parece que você precisa reforçar seus estudos.',
-        classe: 'subtitle-danger'
-      };
-    }
-
-    if (percentual > 30 && percentual < 90) {
-      return {
-        mensagem: 'Bom desempenho, mas ainda dá para evoluir.',
-        classe: 'subtitle-warning'
-      };
-    }
-
-    return {
-      mensagem: 'Excelente! Você está pronto para as operações.',
-      classe: 'subtitle-success'
-    };
   }
 
   function buscarJsonOuNulo(url) {
@@ -593,21 +751,21 @@
   }
 
   function renderizarDashboardQuiz() {
-    const listaRanking = document.getElementById('ranking_membros_quiz');
+    const listaRanking = ranking_membros_quiz;
     const idUsuarioAtual = String(sessionStorage.ID_USUARIO);
     const mediasIndividuais = [0, 0, 0, 0];
     const mediasGerais = [0, 0, 0, 0];
     let usuarioEncontradoRanking = false;
 
-    document.getElementById('ranking_atual_quiz').innerHTML = '—';
-    document.getElementById('descricao_ranking_quiz').innerHTML = 'Realize seu primeiro exame para entrar no ranking.';
-    document.getElementById('melhor_percentual_quiz').innerHTML = '—';
-    document.getElementById('tentativas_quiz').innerHTML = '0';
-    document.getElementById('media_percentual_quiz').innerHTML = '—';
+    ranking_atual_quiz.innerHTML = '—';
+    descricao_ranking_quiz.innerHTML = 'Realize seu primeiro exame para entrar no ranking.';
+    melhor_percentual_quiz.innerHTML = '—';
+    tentativas_quiz.innerHTML = '0';
+    media_percentual_quiz.innerHTML = '—';
 
     if (resumoIndividualUsuario) {
-      document.getElementById('tentativas_quiz').innerHTML = obterNumeroOuZero(resumoIndividualUsuario.tentativas);
-      document.getElementById('media_percentual_quiz').innerHTML = formatarPercentual(resumoIndividualUsuario.media_perc_acerto);
+      tentativas_quiz.innerHTML = obterNumeroOuZero(resumoIndividualUsuario.tentativas);
+      media_percentual_quiz.innerHTML = formatarPercentual(resumoIndividualUsuario.media_perc_acerto);
       mediasIndividuais[0] = obterCampoResumoComFallback(resumoIndividualUsuario, 'media_acerto_poderes_psiquicos', 'media_acerto_paranormal');
       mediasIndividuais[1] = obterCampoResumoComFallback(resumoIndividualUsuario, 'media_acerto_espiritos', 'media_acerto_investigacao');
       mediasIndividuais[2] = obterCampoResumoComFallback(resumoIndividualUsuario, 'media_acerto_organizacoes', 'media_acerto_contencao');
@@ -615,7 +773,7 @@
     }
 
     if (ultimaTentativaUsuario) {
-      document.getElementById('melhor_percentual_quiz').innerHTML = formatarPercentual(ultimaTentativaUsuario.perc_acerto);
+      melhor_percentual_quiz.innerHTML = formatarPercentual(ultimaTentativaUsuario.perc_acerto);
     }
 
     if (resumoGeralExame) {
@@ -630,6 +788,8 @@
     if (rankingUsuarios.length === 0) {
       listaRanking.innerHTML = '<div class="exam-ranking-item"><span class="exam-ranking-name">Nenhum dado de ranking disponível.</span></div>';
     } else {
+      let htmlRanking = '';
+
       for (let i = 0; i < rankingUsuarios.length; i++) {
         const usuarioRanking = rankingUsuarios[i];
         let classeUsuario = '';
@@ -638,21 +798,23 @@
         if (idUsuarioRanking === idUsuarioAtual) {
           classeUsuario = ' exam-ranking-current';
           usuarioEncontradoRanking = true;
-          document.getElementById('ranking_atual_quiz').innerHTML = `${usuarioRanking.ranking}º`;
-          document.getElementById('descricao_ranking_quiz').innerHTML = 'Sua posição entre os membros';
+          ranking_atual_quiz.innerHTML = `${usuarioRanking.ranking}º`;
+          descricao_ranking_quiz.innerHTML = 'Sua posição entre os membros';
         }
 
-        listaRanking.innerHTML += `<div class="exam-ranking-item${classeUsuario}">
+        htmlRanking += `<div class="exam-ranking-item${classeUsuario}">
           <span class="exam-ranking-position">${usuarioRanking.ranking}º</span>
           <span class="exam-ranking-name">${usuarioRanking.nome_usuario}</span>
           <div class="exam-ranking-score"><strong>${usuarioRanking.acertos} / 20</strong><small>${usuarioRanking.tentativas} tentativas</small></div>
         </div>`;
       }
+
+      listaRanking.innerHTML = htmlRanking;
     }
 
     if (!usuarioEncontradoRanking) {
       if (resumoIndividualUsuario) {
-        document.getElementById('descricao_ranking_quiz').innerHTML = 'Ranking ainda não disponível para o seu usuário.';
+        descricao_ranking_quiz.innerHTML = 'Ranking ainda não disponível para o seu usuário.';
       }
     }
 
@@ -676,7 +838,7 @@
     if (graficoMediasQuiz) {
       graficoMediasQuiz.destroy();
     }
-    graficoMediasQuiz = new Chart(document.getElementById('grafico_medias_quiz'), {
+    graficoMediasQuiz = new Chart(grafico_medias_quiz, {
       type: 'bar',
       data: {
         labels: ['Poderes Psíquicos', 'Espíritos', 'Organizações', 'Personagens'],
@@ -709,13 +871,6 @@
     });
   }
 
-  const acertosPorCategoria = {
-    poderesPsiquicos: 0,
-    espiritos: 0,
-    organizacoes: 0,
-    personagens: 0
-  };
-
   function definirTexto(idElemento, valor) {
     document.getElementById(idElemento).innerHTML = valor;
   }
@@ -727,53 +882,41 @@
     acertosPorCategoria.personagens = 0;
   }
 
-  function atualizarCamposResultado() {
-    definirTexto('span_pontuacao_final', `${pontuacaoFinal} / ${quantidadeDeQuestoes}`);
-    definirTexto('acerto_poderes_psiquicos', `${acertosPorCategoria.poderesPsiquicos}/5`);
-    definirTexto('acerto_espiritos', `${acertosPorCategoria.espiritos}/5`);
-    definirTexto('acerto_organizacoes', `${acertosPorCategoria.organizacoes}/5`);
-    definirTexto('acerto_personagens', `${acertosPorCategoria.personagens}/5`);
-  }
-
-  function limparMensagemResultado() {
-    definirTexto('msg_final', '-');
-    document.getElementById('msg_final').classList.remove('subtitle-danger', 'subtitle-warning', 'subtitle-success');
-  }
-
   function exibirTela(modo) {
     if (modo === 'geral') {
       document.querySelector('.top-container').style.display = 'flex';
-      document.getElementById('dashboard_quiz').style.display = 'flex';
-      document.getElementById('btn_iniciar_quiz').style.display = 'block';
-      document.getElementById('resultado_final').style.display = 'none';
-      document.getElementById('jogo').style.display = 'none';
+      dashboard_quiz.style.display = 'flex';
+      btn_iniciar_quiz.style.display = 'block';
+      resultado_final.style.display = 'none';
+      jogo.style.display = 'none';
       return;
     }
 
     if (modo === 'jogo') {
       document.querySelector('.top-container').style.display = 'none';
-      document.getElementById('dashboard_quiz').style.display = 'none';
-      document.getElementById('btn_iniciar_quiz').style.display = 'none';
-      document.getElementById('resultado_final').style.display = 'none';
-      document.getElementById('jogo').style.display = 'flex';
+      dashboard_quiz.style.display = 'none';
+      btn_iniciar_quiz.style.display = 'none';
+      resultado_final.style.display = 'none';
+      jogo.style.display = 'flex';
       return;
     }
 
     if (modo === 'resultado') {
       document.querySelector('.top-container').style.display = 'flex';
-      document.getElementById('dashboard_quiz').style.display = 'none';
-      document.getElementById('btn_iniciar_quiz').style.display = 'none';
-      document.getElementById('jogo').style.display = 'none';
-      document.getElementById('resultado_final').style.display = 'flex';
+      dashboard_quiz.style.display = 'none';
+      btn_iniciar_quiz.style.display = 'none';
+      jogo.style.display = 'none';
+      resultado_final.style.display = 'flex';
     }
   }
 
   function onloadEsconder() {
+    renderizarEstruturasDaTelaQuiz();
     configurarSelecaoOpcoes();
     configurarAtalhoEnter();
     configurarChavesStorageQuiz();
-    document.getElementById('resultado_final').style.display = "none";
-    document.getElementById('jogo').style.display = "none";
+    resultado_final.style.display = "none";
+    jogo.style.display = "none";
     atualizarTempoQuiz();
 
     renderizarDashboardQuiz();
@@ -782,8 +925,10 @@
     carregarDadosDashboardExame();
   }
 
+  // ---------- Tela 1: Dashboard Geral ----------
+
   function configurarSelectViewQuiz() {
-    const selectQuizView = document.getElementById('select_quiz_view');
+    const selectQuizView = select_quiz_view;
 
     if (!selectQuizView) {
       return;
@@ -802,7 +947,7 @@
   }
 
   function atualizarDisponibilidadeUltimaTentativa() {
-    const opcaoUltimaTentativa = document.getElementById('opcao_ultima_tentativa_quiz');
+    const opcaoUltimaTentativa = opcao_ultima_tentativa_quiz;
     const resultadoSalvo = recuperarResultadoFinalDoStorage();
     let possuiTentativasNoBanco = false;
 
@@ -824,93 +969,14 @@
     opcaoUltimaTentativa.disabled = true;
   }
 
-  function preencherResultadoFinalComDados(resultadoSalvo) {
-    if (resultadoSalvo.acertosPorCategoria) {
-      acertosPorCategoria.poderesPsiquicos = obterCampoResumoComFallback(resultadoSalvo.acertosPorCategoria, 'poderesPsiquicos', 'paranormal');
-      acertosPorCategoria.espiritos = obterCampoResumoComFallback(resultadoSalvo.acertosPorCategoria, 'espiritos', 'investigacao');
-      acertosPorCategoria.organizacoes = obterCampoResumoComFallback(resultadoSalvo.acertosPorCategoria, 'organizacoes', 'contencao');
-      acertosPorCategoria.personagens = obterCampoResumoComFallback(resultadoSalvo.acertosPorCategoria, 'personagens', 'estrategia');
-    }
-
-    if (resultadoSalvo.pontuacaoFinal || resultadoSalvo.pontuacaoFinal === 0) {
-      pontuacaoFinal = resultadoSalvo.pontuacaoFinal;
-    }
-
-    definirTexto('msg_final', resultadoSalvo.mensagemFinal);
-    document.getElementById('msg_final').className = resultadoSalvo.classeMensagemFinal;
-
-    definirTexto('span_percentual_final', `${resultadoSalvo.percentual}%`);
-    atualizarCamposResultado();
-  }
-
-  function montarResultadoComDadosBanco() {
-    if (!ultimaTentativaUsuario) {
-      return null;
-    }
-
-    const percentual = obterNumeroOuZero(ultimaTentativaUsuario.perc_acerto);
-    const resumoMensagem = obterMensagemResultadoPorPercentual(percentual);
-
-    return {
-      pontuacaoFinal: obterNumeroOuZero(ultimaTentativaUsuario.acertos_totais),
-      quantidadeDeQuestoes: quantidadeDeQuestoes,
-      percentual: Math.round(percentual),
-      mensagemFinal: resumoMensagem.mensagem,
-      classeMensagemFinal: resumoMensagem.classe,
-      acertosPorCategoria: {
-        poderesPsiquicos: obterCampoResumoComFallback(ultimaTentativaUsuario, 'acertos_poderes_psiquicos', 'acertos_paranormal'),
-        espiritos: obterCampoResumoComFallback(ultimaTentativaUsuario, 'acertos_espiritos', 'acertos_investigacao'),
-        organizacoes: obterCampoResumoComFallback(ultimaTentativaUsuario, 'acertos_organizacoes', 'acertos_contencao'),
-        personagens: obterCampoResumoComFallback(ultimaTentativaUsuario, 'acertos_personagens', 'acertos_estrategia')
-      }
-    };
-  }
-
-  function obterResultadoParaExibir() {
-    const resultadoSalvo = recuperarResultadoFinalDoStorage();
-
-    if (resultadoSalvo) {
-      return resultadoSalvo;
-    }
-
-    return montarResultadoComDadosBanco();
-  }
-
   function exibirVisaoGeralQuiz() {
     definirTexto('titulo_topo_quiz', 'EXAME DE APTIDÃO');
     definirTexto('subtitulo_topo_quiz', 'Mostre o seu conhecimento sobre o nosso universo.');
-    document.getElementById('subtitulo_topo_quiz').className = '';
+    subtitulo_topo_quiz.className = '';
     document.querySelector('#resultado_final .resultado-titulo').style.display = 'block';
 
     exibirTela('geral');
 
-    iniciarTimerCooldownBotao();
-  }
-
-  function exibirUltimaTentativaQuiz() {
-    const resultadoSalvo = obterResultadoParaExibir();
-    const selectQuizView = document.getElementById('select_quiz_view');
-
-    if (!resultadoSalvo) {
-      if (selectQuizView) {
-        selectQuizView.value = 'geral';
-      }
-      exibirVisaoGeralQuiz();
-      return;
-    }
-
-    preencherResultadoFinalComDados(resultadoSalvo);
-    definirTexto('titulo_topo_quiz', 'RESULTADO FINAL');
-    definirTexto('subtitulo_topo_quiz', document.getElementById('msg_final').innerHTML);
-    document.getElementById('subtitulo_topo_quiz').className = document.getElementById('msg_final').className;
-    document.querySelector('#resultado_final .resultado-titulo').style.display = 'none';
-
-    exibirTela('resultado');
-
-    quizFinalizado = true;
-    btn_prox.disabled = true;
-
-    renderizarGraficoRadar();
     iniciarTimerCooldownBotao();
   }
 
@@ -925,104 +991,8 @@
     chaveCooldownQuiz = `quizCooldownAte_${idUsuarioLogado}`;
   }
 
-  function salvarResultadoFinalNoStorage() {
-    const percentual = Math.round((pontuacaoFinal / quantidadeDeQuestoes) * 100);
+  // ---------- Tela 2: Quiz em andamento ----------
 
-    const dadosResultado = {
-      pontuacaoFinal: pontuacaoFinal,
-      quantidadeDeQuestoes: quantidadeDeQuestoes,
-      percentual: percentual,
-      mensagemFinal: document.getElementById('msg_final').innerHTML,
-      classeMensagemFinal: document.getElementById('msg_final').className,
-      acertosPorCategoria: {
-        poderesPsiquicos: acertosPorCategoria.poderesPsiquicos,
-        espiritos: acertosPorCategoria.espiritos,
-        organizacoes: acertosPorCategoria.organizacoes,
-        personagens: acertosPorCategoria.personagens
-      }
-    };
-
-    localStorage.setItem(chaveResultadoQuiz, JSON.stringify(dadosResultado));
-  }
-
-  function recuperarResultadoFinalDoStorage() {
-    const resultadoSalvoTexto = localStorage.getItem(chaveResultadoQuiz);
-
-    if (!resultadoSalvoTexto) {
-      return null;
-    }
-
-    try {
-      return JSON.parse(resultadoSalvoTexto);
-    } catch (erro) {
-      localStorage.removeItem(chaveResultadoQuiz);
-      return null;
-    }
-  }
-
-  function salvarCooldownNoStorage() {
-    const cooldownAte = Date.now() + tempoCooldownMilissegundos;
-    localStorage.setItem(chaveCooldownQuiz, String(cooldownAte));
-  }
-
-  function recuperarCooldownDoStorage() {
-    const cooldownTexto = localStorage.getItem(chaveCooldownQuiz);
-
-    if (!cooldownTexto) {
-      return 0;
-    }
-
-    const cooldownNumero = Number(cooldownTexto);
-
-    if (Number.isNaN(cooldownNumero)) {
-      localStorage.removeItem(chaveCooldownQuiz);
-      return 0;
-    }
-
-    return cooldownNumero;
-  }
-
-  function atualizarEstadoBotaoTentarNovamente() {
-    const botaoTentarNovamente = document.getElementById('btn_tentar_novamente');
-    const botaoIniciarQuiz = document.getElementById('btn_iniciar_quiz');
-    const cooldownAte = recuperarCooldownDoStorage();
-    const agora = Date.now();
-
-    if (agora < cooldownAte) {
-      const tempoRestanteSegundosCooldown = Math.ceil((cooldownAte - agora) / 1000);
-      botaoTentarNovamente.disabled = true;
-      botaoTentarNovamente.innerHTML = `TENTAR NOVAMENTE (${formatarTempo(tempoRestanteSegundosCooldown)})`;
-      botaoIniciarQuiz.disabled = true;
-      botaoIniciarQuiz.innerHTML = `REALIZAR EXAME (${formatarTempo(tempoRestanteSegundosCooldown)})`;
-      return;
-    }
-
-    botaoTentarNovamente.disabled = false;
-    botaoTentarNovamente.innerHTML = 'TENTAR NOVAMENTE';
-    botaoIniciarQuiz.disabled = false;
-    botaoIniciarQuiz.innerHTML = 'REALIZAR EXAME';
-    localStorage.removeItem(chaveCooldownQuiz);
-  }
-
-  function pararTimerCooldownBotao() {
-    if (intervaloCooldownBotao) {
-      clearInterval(intervaloCooldownBotao);
-      intervaloCooldownBotao = null;
-    }
-  }
-
-  function iniciarTimerCooldownBotao() {
-    pararTimerCooldownBotao();
-    atualizarEstadoBotaoTentarNovamente();
-
-    intervaloCooldownBotao = setInterval(function () {
-      atualizarEstadoBotaoTentarNovamente();
-
-      if (!document.getElementById('btn_tentar_novamente').disabled) {
-        pararTimerCooldownBotao();
-      }
-    }, 1000);
-  }
 
   function formatarTempo(totalSegundos) {
     const minutos = Math.floor(totalSegundos / 60);
@@ -1033,7 +1003,7 @@
   }
 
   function atualizarTempoQuiz() {
-    document.getElementById('span_tempo_quiz').innerHTML = formatarTempo(tempoRestanteSegundos);
+    span_tempo_quiz.innerHTML = formatarTempo(tempoRestanteSegundos);
   }
 
   function pararTimerQuiz() {
@@ -1072,8 +1042,8 @@
         return;
       }
 
-      const jogo = document.getElementById('jogo');
-      const resultadoFinal = document.getElementById('resultado_final');
+      const jogo = jogo;
+      const resultadoFinal = resultado_final;
       const quizAtivo = jogo.style.display === 'flex' && resultadoFinal.style.display !== 'flex';
 
       if (!quizAtivo) {
@@ -1108,7 +1078,7 @@
 
     quizFinalizado = false;
 
-    document.getElementById('qtd_questoes').innerHTML = quantidadeDeQuestoes;
+    qtd_questoes.innerHTML = quantidadeDeQuestoes;
     barra.max = quantidadeDeQuestoes;
     barra.value = 1;
     iniciarTimerQuiz();
@@ -1209,7 +1179,7 @@
       opcaoEscolhida = false;
     }
 
-    const opcoesContainer = document.getElementById('opcoes');
+    const opcoesContainer = opcoes;
 
     primeira_opcao.disabled = opcaoEscolhida;
     segunda_opcao.disabled = opcaoEscolhida;
@@ -1222,34 +1192,6 @@
       opcoesContainer.classList.remove('options-locked');
     }
 
-  }
-
-  function tentarNovamente() {
-    if (document.getElementById('btn_tentar_novamente').disabled) {
-      return;
-    }
-
-    pararTimerCooldownBotao();
-    localStorage.removeItem(chaveResultadoQuiz);
-    localStorage.removeItem(chaveCooldownQuiz);
-    atualizarDisponibilidadeUltimaTentativa();
-
-    numeroDaQuestaoAtual = 0;
-    pontuacaoFinal = 0;
-    quizFinalizado = false;
-    tempoRestanteSegundos = 600;
-
-    resetarAcertosPorCategoria();
-
-    document.getElementById('select_quiz_view').value = 'geral';
-    atualizarCamposResultado();
-    definirTexto('span_percentual_final', '0%');
-    limparMensagemResultado();
-
-    desmarcarRadioButtons();
-    limparCoresBackgroundOpcoes();
-
-    iniciarQuiz();
   }
 
   function checarResposta() {
@@ -1291,6 +1233,248 @@
     }
 
     atualizarOpcaoSelecionadaVisual();
+  }
+
+  // ---------- Tela 3: Resultado final ----------
+
+  function obterMensagemResultadoPorPercentual(percentual) {
+    if (percentual <= 30) {
+      return {
+        mensagem: 'Parece que você precisa reforçar seus estudos.',
+        classe: 'subtitle-danger'
+      };
+    }
+
+    if (percentual > 30 && percentual < 90) {
+      return {
+        mensagem: 'Bom desempenho, mas ainda dá para evoluir.',
+        classe: 'subtitle-warning'
+      };
+    }
+
+    return {
+      mensagem: 'Excelente! Você está pronto para as operações.',
+      classe: 'subtitle-success'
+    };
+  }
+
+  function atualizarCamposResultado() {
+    definirTexto('span_pontuacao_final', `${pontuacaoFinal} / ${quantidadeDeQuestoes}`);
+    definirTexto('acerto_poderes_psiquicos', `${acertosPorCategoria.poderesPsiquicos}/5`);
+    definirTexto('acerto_espiritos', `${acertosPorCategoria.espiritos}/5`);
+    definirTexto('acerto_organizacoes', `${acertosPorCategoria.organizacoes}/5`);
+    definirTexto('acerto_personagens', `${acertosPorCategoria.personagens}/5`);
+  }
+
+  function limparMensagemResultado() {
+    definirTexto('msg_final', '-');
+    msg_final.classList.remove('subtitle-danger', 'subtitle-warning', 'subtitle-success');
+  }
+
+  function preencherResultadoFinalComDados(resultadoSalvo) {
+    if (resultadoSalvo.acertosPorCategoria) {
+      acertosPorCategoria.poderesPsiquicos = obterCampoResumoComFallback(resultadoSalvo.acertosPorCategoria, 'poderesPsiquicos', 'paranormal');
+      acertosPorCategoria.espiritos = obterCampoResumoComFallback(resultadoSalvo.acertosPorCategoria, 'espiritos', 'investigacao');
+      acertosPorCategoria.organizacoes = obterCampoResumoComFallback(resultadoSalvo.acertosPorCategoria, 'organizacoes', 'contencao');
+      acertosPorCategoria.personagens = obterCampoResumoComFallback(resultadoSalvo.acertosPorCategoria, 'personagens', 'estrategia');
+    }
+
+    if (resultadoSalvo.pontuacaoFinal || resultadoSalvo.pontuacaoFinal === 0) {
+      pontuacaoFinal = resultadoSalvo.pontuacaoFinal;
+    }
+
+    definirTexto('msg_final', resultadoSalvo.mensagemFinal);
+    msg_final.className = resultadoSalvo.classeMensagemFinal;
+
+    definirTexto('span_percentual_final', `${resultadoSalvo.percentual}%`);
+    atualizarCamposResultado();
+  }
+
+  function montarResultadoComDadosBanco() {
+    if (!ultimaTentativaUsuario) {
+      return null;
+    }
+
+    const percentual = obterNumeroOuZero(ultimaTentativaUsuario.perc_acerto);
+    const resumoMensagem = obterMensagemResultadoPorPercentual(percentual);
+
+    return {
+      pontuacaoFinal: obterNumeroOuZero(ultimaTentativaUsuario.acertos_totais),
+      quantidadeDeQuestoes: quantidadeDeQuestoes,
+      percentual: Math.round(percentual),
+      mensagemFinal: resumoMensagem.mensagem,
+      classeMensagemFinal: resumoMensagem.classe,
+      acertosPorCategoria: {
+        poderesPsiquicos: obterCampoResumoComFallback(ultimaTentativaUsuario, 'acertos_poderes_psiquicos', 'acertos_paranormal'),
+        espiritos: obterCampoResumoComFallback(ultimaTentativaUsuario, 'acertos_espiritos', 'acertos_investigacao'),
+        organizacoes: obterCampoResumoComFallback(ultimaTentativaUsuario, 'acertos_organizacoes', 'acertos_contencao'),
+        personagens: obterCampoResumoComFallback(ultimaTentativaUsuario, 'acertos_personagens', 'acertos_estrategia')
+      }
+    };
+  }
+
+  function obterResultadoParaExibir() {
+    const resultadoSalvo = recuperarResultadoFinalDoStorage();
+
+    if (resultadoSalvo) {
+      return resultadoSalvo;
+    }
+
+    return montarResultadoComDadosBanco();
+  }
+
+  function exibirUltimaTentativaQuiz() {
+    const resultadoSalvo = obterResultadoParaExibir();
+    const selectQuizView = select_quiz_view;
+
+    if (!resultadoSalvo) {
+      if (selectQuizView) {
+        selectQuizView.value = 'geral';
+      }
+      exibirVisaoGeralQuiz();
+      return;
+    }
+
+    preencherResultadoFinalComDados(resultadoSalvo);
+    definirTexto('titulo_topo_quiz', 'RESULTADO FINAL');
+    definirTexto('subtitulo_topo_quiz', msg_final.innerHTML);
+    subtitulo_topo_quiz.className = msg_final.className;
+    document.querySelector('#resultado_final .resultado-titulo').style.display = 'none';
+
+    exibirTela('resultado');
+
+    quizFinalizado = true;
+    btn_prox.disabled = true;
+
+    renderizarGraficoRadar();
+    iniciarTimerCooldownBotao();
+  }
+
+  function salvarResultadoFinalNoStorage() {
+    const percentual = Math.round((pontuacaoFinal / quantidadeDeQuestoes) * 100);
+
+    const dadosResultado = {
+      pontuacaoFinal: pontuacaoFinal,
+      quantidadeDeQuestoes: quantidadeDeQuestoes,
+      percentual: percentual,
+      mensagemFinal: msg_final.innerHTML,
+      classeMensagemFinal: msg_final.className,
+      acertosPorCategoria: {
+        poderesPsiquicos: acertosPorCategoria.poderesPsiquicos,
+        espiritos: acertosPorCategoria.espiritos,
+        organizacoes: acertosPorCategoria.organizacoes,
+        personagens: acertosPorCategoria.personagens
+      }
+    };
+
+    localStorage.setItem(chaveResultadoQuiz, JSON.stringify(dadosResultado));
+  }
+
+  function recuperarResultadoFinalDoStorage() {
+    const resultadoSalvoTexto = localStorage.getItem(chaveResultadoQuiz);
+
+    if (!resultadoSalvoTexto) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(resultadoSalvoTexto);
+    } catch (erro) {
+      localStorage.removeItem(chaveResultadoQuiz);
+      return null;
+    }
+  }
+
+  function salvarCooldownNoStorage() {
+    const cooldownAte = Date.now() + tempoCooldownMilissegundos;
+    localStorage.setItem(chaveCooldownQuiz, String(cooldownAte));
+  }
+
+  function recuperarCooldownDoStorage() {
+    const cooldownTexto = localStorage.getItem(chaveCooldownQuiz);
+
+    if (!cooldownTexto) {
+      return 0;
+    }
+
+    const cooldownNumero = Number(cooldownTexto);
+
+    if (Number.isNaN(cooldownNumero)) {
+      localStorage.removeItem(chaveCooldownQuiz);
+      return 0;
+    }
+
+    return cooldownNumero;
+  }
+
+  function atualizarEstadoBotaoTentarNovamente() {
+    const botaoTentarNovamente = btn_tentar_novamente;
+    const botaoIniciarQuiz = btn_iniciar_quiz;
+    const cooldownAte = recuperarCooldownDoStorage();
+    const agora = Date.now();
+
+    if (agora < cooldownAte) {
+      const tempoRestanteSegundosCooldown = Math.ceil((cooldownAte - agora) / 1000);
+      botaoTentarNovamente.disabled = true;
+      botaoTentarNovamente.innerHTML = `TENTAR NOVAMENTE (${formatarTempo(tempoRestanteSegundosCooldown)})`;
+      botaoIniciarQuiz.disabled = true;
+      botaoIniciarQuiz.innerHTML = `REALIZAR EXAME (${formatarTempo(tempoRestanteSegundosCooldown)})`;
+      return;
+    }
+
+    botaoTentarNovamente.disabled = false;
+    botaoTentarNovamente.innerHTML = 'TENTAR NOVAMENTE';
+    botaoIniciarQuiz.disabled = false;
+    botaoIniciarQuiz.innerHTML = 'REALIZAR EXAME';
+    localStorage.removeItem(chaveCooldownQuiz);
+  }
+
+  function pararTimerCooldownBotao() {
+    if (intervaloCooldownBotao) {
+      clearInterval(intervaloCooldownBotao);
+      intervaloCooldownBotao = null;
+    }
+  }
+
+  function iniciarTimerCooldownBotao() {
+    pararTimerCooldownBotao();
+    atualizarEstadoBotaoTentarNovamente();
+
+    intervaloCooldownBotao = setInterval(function () {
+      atualizarEstadoBotaoTentarNovamente();
+
+      if (!btn_tentar_novamente.disabled) {
+        pararTimerCooldownBotao();
+      }
+    }, 1000);
+  }
+
+  function tentarNovamente() {
+    if (btn_tentar_novamente.disabled) {
+      return;
+    }
+
+    pararTimerCooldownBotao();
+    localStorage.removeItem(chaveResultadoQuiz);
+    localStorage.removeItem(chaveCooldownQuiz);
+    atualizarDisponibilidadeUltimaTentativa();
+
+    numeroDaQuestaoAtual = 0;
+    pontuacaoFinal = 0;
+    quizFinalizado = false;
+    tempoRestanteSegundos = 600;
+
+    resetarAcertosPorCategoria();
+
+    select_quiz_view.value = 'geral';
+    atualizarCamposResultado();
+    definirTexto('span_percentual_final', '0%');
+    limparMensagemResultado();
+
+    desmarcarRadioButtons();
+    limparCoresBackgroundOpcoes();
+
+    iniciarQuiz();
   }
 
   function enviar() {
@@ -1353,8 +1537,8 @@
     const percentual = Math.round((porcentagemFinalDeAcertos) * 100);
 
     definirTexto('msg_final', textoParaMensagemFinal);
-    document.getElementById('msg_final').classList.remove('subtitle-danger', 'subtitle-warning', 'subtitle-success');
-    document.getElementById('msg_final').classList.add(classComCoresParaMensagemFinal);
+    msg_final.classList.remove('subtitle-danger', 'subtitle-warning', 'subtitle-success');
+    msg_final.classList.add(classComCoresParaMensagemFinal);
     atualizarCamposResultado();
     definirTexto('span_percentual_final', `${percentual}%`);
 
@@ -1362,14 +1546,14 @@
     document.querySelector('#resultado_final .resultado-titulo').style.display = 'none';
     definirTexto('titulo_topo_quiz', 'RESULTADO FINAL');
     definirTexto('subtitulo_topo_quiz', textoParaMensagemFinal);
-    document.getElementById('subtitulo_topo_quiz').className = classComCoresParaMensagemFinal;
+    subtitulo_topo_quiz.className = classComCoresParaMensagemFinal;
 
     btn_prox.disabled = true;
 
     renderizarGraficoRadar();
     salvarResultadoFinalNoStorage();
     atualizarDisponibilidadeUltimaTentativa();
-    document.getElementById('select_quiz_view').value = 'ultima_tentativa';
+    select_quiz_view.value = 'ultima_tentativa';
     salvarCooldownNoStorage();
     iniciarTimerCooldownBotao();
     console.log('Jogo finalizado!!!')
@@ -1377,7 +1561,7 @@
   }
 
   function renderizarGraficoRadar() {
-    const contexto = document.getElementById('radar_categorias');
+    const contexto = radar_categorias;
 
     if (graficoRadar) {
       graficoRadar.destroy();
@@ -1444,4 +1628,6 @@
   }
 
 </script>
+
+
 
