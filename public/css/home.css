@@ -255,16 +255,51 @@ p {
     z-index: 0;
 }
 
+
 .divisoria-diagonal {
-    width: 100%;
-    height: 270px;
+    height: 200px;
     background-color: var(--azul-escuro);
-    clip-path: polygon(0 100px, 100% 0, 100% calc(100% - 100px), 0 100%);
+    color: white;
     margin-top: -100px;
     z-index: 10;
     bottom: -200px;
+    left: -200px;
+    right: -200px;
+    display: flex;
+    align-items: center;
     position: absolute;
+    transform: rotate(-3deg);
+    overflow: hidden;
 }
+
+.divisoria-row {
+    display: flex;
+    width: max-content;
+    flex-shrink: 0;
+    animation: scroll 15s linear infinite;
+}
+
+.divisoria-row .content {
+    display: flex;
+    gap: 40px;
+    padding-right: 40px;
+    flex-shrink: 0;
+}
+
+.divisoria-row h2 {
+    white-space: nowrap;
+}
+
+@keyframes scroll {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-50%);
+    }
+}
+
 
 .about-section {
     z-index: -10000;
