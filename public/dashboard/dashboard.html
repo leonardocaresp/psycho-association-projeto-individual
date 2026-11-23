@@ -183,6 +183,8 @@
     let graficoClassificacao = null;
     let graficoStatus = null;
     let graficoRegistros = null;
+    let cicloAtualPainel = 0;
+    let selectDashboardView = null;
 
     const validarSessaoBase = window.validarSessao;
     window.validarSessao = async function () {
@@ -202,6 +204,25 @@
         if (await validarSessao()) exibirPainelDoUsuario();
     };
 
+    function obterSelectDashboardView() {
+        if (!selectDashboardView) {
+            selectDashboardView = document.getElementById('select_dashboard_view');
+        }
+
+        return selectDashboardView;
+    }
+
+    function obterEndpointPainel() {
+        var endpoint = '/painel/geral';
+        var selectView = obterSelectDashboardView();
+
+        if (selectView && selectView.value === 'individual') {
+            endpoint = '/painel/individual/' + sessionStorage.ID_USUARIO;
+        }
+
+        return endpoint;
+    }
+
     function exibirPainelDoUsuario() {
         // var visoesPainel = JSON.parse(sessionStorage.VISOES_PAINEL);
         // visoesPainel.forEach(item => {
@@ -210,7 +231,7 @@
         //     obterDadosGrafico(item.id)
         // });
 
-        var selectView = select_dashboard_view;
+        var selectView = obterSelectDashboardView();
         selectView.addEventListener('change', function () {
             exibirPainel(1);
         });
@@ -241,7 +262,13 @@
         // let graficoExibir = document.getElementById(`grafico${idPainel}`)
         // let btnExibir = document.getElementById(`btnPainel${idPainel}`)
 
-        obterDadosGrafico(idPainel);
+        cicloAtualPainel = cicloAtualPainel + 1;
+
+        if (proximaAtualizacao != undefined) {
+            clearTimeout(proximaAtualizacao);
+        }
+
+        obterDadosGrafico(idPainel, cicloAtualPainel);
     }
 
     // O gráfico é construído com três funções:
@@ -255,33 +282,30 @@
 
     //     Se quiser alterar a busca, ajuste as regras de negócio em src/controllers
     //     Para ajustar o "select", ajuste o comando sql em src/models
-    function obterDadosGrafico(idPainel) {
+    function obterDadosGrafico(idPainel, cicloPainel) {
 
         alterarTituloPainel(idPainel)
 
-        if (proximaAtualizacao != undefined) {
-            clearTimeout(proximaAtualizacao);
-        }
-
-        var endpoint = '/painel/geral';
-        var selectView = select_dashboard_view;
-
-        if (selectView.value === 'individual') {
-            endpoint = '/painel/individual/' + sessionStorage.ID_USUARIO;
-        } else {
-            endpoint = '/painel/geral';
-        }
+        var endpoint = obterEndpointPainel();
 
         fetch(endpoint, { cache: 'no-store' }).then(function (response) {
             if (response.ok) {
                 response.json().then(function (resposta) {
+                    if (cicloPainel !== cicloAtualPainel) {
+                        return;
+                    }
+
                     console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
 
-                    plotarGrafico(resposta, idPainel);
+                    plotarGrafico(resposta, idPainel, cicloPainel);
 
                 });
             } else if (response.status == 204) {
-                plotarGrafico(null, idPainel);
+                if (cicloPainel !== cicloAtualPainel) {
+                    return;
+                }
+
+                plotarGrafico(null, idPainel, cicloPainel);
             } else {
                 console.error('Nenhum dado encontrado ou erro na API');
             }
@@ -294,7 +318,7 @@
     // Esta função *plotarGrafico* usa os dados capturados na função anterior para criar o gráfico
     // Configura o gráfico (cores, tipo, etc), materializa-o na página e, 
     // A função *plotarGrafico* também invoca a função *atualizarGrafico*
-    function plotarGrafico(resposta, idPainel) {
+    function plotarGrafico(resposta, idPainel, cicloPainel) {
 
         console.log('iniciando plotagem do gráfico...');
 
@@ -486,7 +510,9 @@
 
         graficoRegistros = myChart.registros;
 
-        setTimeout(() => atualizarGrafico(idPainel, dados, myChart), 2000);
+        proximaAtualizacao = setTimeout(function () {
+            atualizarGrafico(idPainel, dados, myChart, cicloPainel);
+        }, 2000);
     }
 
 
@@ -495,22 +521,22 @@
 
     //     Se quiser alterar a busca, ajuste as regras de negócio em src/controllers
     //     Para ajustar o "select", ajuste o comando sql em src/models
-    function atualizarGrafico(idPainel, dados, myChart) {
+    function atualizarGrafico(idPainel, dados, myChart, cicloPainel) {
 
-
-
-        var endpoint = '/painel/geral';
-        var selectView = select_dashboard_view;
-
-        if (selectView.value === 'individual') {
-            endpoint = '/painel/individual/' + sessionStorage.ID_USUARIO;
-        } else {
-            endpoint = '/painel/geral';
+        if (cicloPainel !== cicloAtualPainel) {
+            return;
         }
+
+
+
+        var endpoint = obterEndpointPainel();
 
         fetch(endpoint, { cache: 'no-store' }).then(function (response) {
             if (response.ok) {
                 response.json().then(function (novoRegistro) {
+                    if (cicloPainel !== cicloAtualPainel) {
+                        return;
+                    }
 
                     // obterdados(idPainel);
                     // alertar(novoRegistro, idPainel);
@@ -552,12 +578,16 @@
                     myChart.registros.update();
 
                     // Altere aqui o valor em ms se quiser que o gráfico atualize mais rápido ou mais devagar
-                    proximaAtualizacao = setTimeout(() => atualizarGrafico(idPainel, dados, myChart), 2000);
+                    proximaAtualizacao = setTimeout(function () {
+                        atualizarGrafico(idPainel, dados, myChart, cicloPainel);
+                    }, 2000);
                 });
             } else {
                 console.error('Nenhum dado encontrado ou erro na API');
                 // Altere aqui o valor em ms se quiser que o gráfico atualize mais rápido ou mais devagar
-                proximaAtualizacao = setTimeout(() => atualizarGrafico(idPainel, dados, myChart), 2000);
+                proximaAtualizacao = setTimeout(function () {
+                    atualizarGrafico(idPainel, dados, myChart, cicloPainel);
+                }, 2000);
             }
         })
             .catch(function (error) {
