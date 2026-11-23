@@ -2,6 +2,12 @@ CREATE DATABASE IF NOT EXISTS psycho_association;
 
 USE psycho_association;
 
+CREATE USER 'psycho_user'@'%' IDENTIFIED BY 'Urubu@100';
+
+GRANT ALL PRIVILEGES ON psycho_association.* TO  'psycho_user'@'%';
+
+FLUSH PRIVILEGES;
+
 CREATE TABLE usuario (
     id INT NOT NULL AUTO_INCREMENT,
     nome VARCHAR(55) DEFAULT NULL,
