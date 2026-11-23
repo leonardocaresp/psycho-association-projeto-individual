@@ -23,20 +23,24 @@ header {
     display: flex;
     justify-content: space-between;
     position: fixed;
-    top: 10px;
+    top: 0px;
     left: 100px;
     right: 100px;
     background-color: var(--azul-escuro);
     padding: 16px 80px;
-    clip-path: polygon(30px 0%, 100% 0%, calc(100% - 30px) 100%, 0% 100%);
+    clip-path: polygon(0px 0%, 100% 0%, calc(100% - 30px) 100%, 30px 100%);
     z-index: 1000;
+}
+
+header div {
+    display: flex;
+    column-gap: 250px;
 }
 
 header ul {
     color: white;
     display: flex;
     align-items: center;
-    width: 40%;
     height: 100%;
     gap: 16px;
 }
@@ -300,9 +304,13 @@ p {
     }
 }
 
+#universe {
+    scroll-margin-top: 40px;
+}
 
 .about-section {
     z-index: -10000;
+    margin-top: 50px;
 }
 
 .about-content {
@@ -317,7 +325,7 @@ p {
 .about-content .back-logo {
     position: absolute;
     z-index: -10;
-    right: 0px;
+    right: -40px;
 }
 
 .about-text {
@@ -368,6 +376,7 @@ p {
     width: 100%;
     display: flex;
     justify-content: center;
+    padding-bottom: 45px;
 }
 
 .universe-content {
