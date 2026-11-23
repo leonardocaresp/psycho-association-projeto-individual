@@ -64,97 +64,90 @@
       </div>
     </div>
     <div class="bottom-container">
-
-      <div class="paranormal-card">
-        <div class="character-name">
-          ARATAKA REIGEN
-        </div>
-        <div class="overlay">
-          <h3>"Paranormal"</h3>
-          <h2>ARATAKA REIGEN</h2>
-          <div class="desc">
-            <p>Fundador e atual responsável pela Psycho Association, Reigen é um especialista em fenômenos paranormais e um excelente negociador. Com habilidades excepcionais de comunicação, sabe lidar com clientes, situações complicadas e, principalmente, com a administração da organização. Sua experiência é inquestionável. Seus métodos, nem sempre.</p>
-          </div>
-        </div>
-        <img src='../assets/imgs/arataka-reigen-vertical-image.jfif' alt="">
-      </div>
-      <div class="paranormal-card">
-        <div class="character-name">
-          SHIGEO KAGEYAMA
-        </div>
-        <div class="overlay">
-          <h3>Paranormal</h3>
-          <h2>SHIGEO KAGEYAMA</h2>
-          <div class="desc">
-            <p>
-              Conhecido como Mob, Shigeo é um jovem de poucas palavras e um potencial psíquico extraordinário. Sua
-              capacidade de canalizar enormes quantidades de energia paranormal faz dele um dos principais agentes de
-              campo da organização. Apesar de seu poder impressionante, prefere evitar conflitos e levar uma vida
-              tranquila. Recomendamos não testar seus limites emocionais.</p>
-          </div>
-        </div>
-        <img src="../assets/imgs/Gemini_Generated_Image_cseoshcseoshcseo.jfif" alt="">
-      </div>
-      <div class="paranormal-card">
-        <div class="character-name">
-          TERUKI HANAZAWA
-        </div>
-        <div class="overlay">
-          <h3>Paranormal</h3>
-          <h2>TERUKI HANAZAWA</h2>
-          <div class="desc">
-            <p>Também conhecido como Teru, Hanazawa é um paranormal habilidoso que possui excelente controle sobre suas capacidades psíquicas. Sua experiência em confrontos sobrenaturais e sua versatilidade no uso da telecinese fazem dele um dos agentes mais preparados para situações de risco. Possui bastante confiança em suas habilidades. Às vezes, até demais.</p>
-          </div>
-        </div>
-        <img src="../assets/imgs/teruki-hanazawa-vertical-image.jfif" alt="">
-      </div>
-      <div class="paranormal-card">
-        <div class="character-name">
-          RITSU KAGEYAMA
-        </div>
-        <div class="overlay">
-          <h3>Paranormal</h3>
-          <h2>RITSU KAGEYAMA</h2>
-          <div class="desc">
-            <p>Irmão mais novo de Shigeo, Ritsu é um estudante extremamente inteligente e disciplinado, com habilidades psíquicas próprias. Sua capacidade analítica e facilidade para compreender fenômenos complexos fazem dele um importante membro da equipe de investigação. Embora inicialmente tenha demonstrado interesse em superar o irmão, hoje utiliza suas habilidades para objetivos mais construtivos.</p>
-          </div>
-        </div>
-        <img src="../assets/imgs/ritsu-kageyama-vertical-image.jfif" alt="">
-      </div>
-      <div class="paranormal-card">
-        <div class="character-name">
-          COVINHAS
-        </div>
-        <div class="overlay">
-          <h3>Espírito</h3>
-          <h2>COVINHAS</h2>
-          <div class="desc">
-            <p>Uma entidade espiritual de personalidade excêntrica e ambições questionáveis. Após inúmeras experiências no mundo dos vivos, Covinhas passou a colaborar com a organização, oferecendo conhecimentos sobre espíritos, possessões e manifestações sobrenaturais. Apesar de sua aparência peculiar, é um recurso valioso para investigações envolvendo outras entidades. Não aceite conselhos sobre dominação mundial.</p>
-          </div>
-        </div>
-        <img src="../assets/imgs/covinhas-imagem.webp" alt="">
-      </div>
     </div>
   </main>
 </body>
 
 </html>
 <script>
-  let cardsParanormais = [];
+  const personagensParanormais = [
+    {
+      nome: 'ARATAKA REIGEN',
+      tipo: 'Paranormal',
+      descricao: 'Fundador e atual responsável pela Psycho Association, Reigen é um especialista em fenômenos paranormais e um excelente negociador. Com habilidades excepcionais de comunicação, sabe lidar com clientes, situações complicadas e, principalmente, com a administração da organização. Sua experiência é inquestionável. Seus métodos, nem sempre.',
+      imagem: '../assets/imgs/arataka-reigen-vertical-image.jfif',
+      alt: 'Arataka Reigen'
+    },
+    {
+      nome: 'SHIGEO KAGEYAMA',
+      tipo: 'Paranormal',
+      descricao: 'Conhecido como Mob, Shigeo é um jovem de poucas palavras e um potencial psíquico extraordinário. Sua capacidade de canalizar enormes quantidades de energia paranormal faz dele um dos principais agentes de campo da organização. Apesar de seu poder impressionante, prefere evitar conflitos e levar uma vida tranquila. Recomendamos não testar seus limites emocionais.',
+      imagem: '../assets/imgs/Gemini_Generated_Image_cseoshcseoshcseo.jfif',
+      alt: 'Shigeo Kageyama'
+    },
+    {
+      nome: 'TERUKI HANAZAWA',
+      tipo: 'Paranormal',
+      descricao: 'Também conhecido como Teru, Hanazawa é um paranormal habilidoso que possui excelente controle sobre suas capacidades psíquicas. Sua experiência em confrontos sobrenaturais e sua versatilidade no uso da telecinese fazem dele um dos agentes mais preparados para situações de risco. Possui bastante confiança em suas habilidades. Às vezes, até demais.',
+      imagem: '../assets/imgs/teruki-hanazawa-vertical-image.jfif',
+      alt: 'Teruki Hanazawa'
+    },
+    {
+      nome: 'RITSU KAGEYAMA',
+      tipo: 'Paranormal',
+      descricao: 'Irmão mais novo de Shigeo, Ritsu é um estudante extremamente inteligente e disciplinado, com habilidades psíquicas próprias. Sua capacidade analítica e facilidade para compreender fenômenos complexos fazem dele um importante membro da equipe de investigação. Embora inicialmente tenha demonstrado interesse em superar o irmão, hoje utiliza suas habilidades para objetivos mais construtivos.',
+      imagem: '../assets/imgs/ritsu-kageyama-vertical-image.jfif',
+      alt: 'Ritsu Kageyama'
+    },
+    {
+      nome: 'COVINHAS',
+      tipo: 'Espírito',
+      descricao: 'Uma entidade espiritual de personalidade excêntrica e ambições questionáveis. Após inúmeras experiências no mundo dos vivos, Covinhas passou a colaborar com a organização, oferecendo conhecimentos sobre espíritos, possessões e manifestações sobrenaturais. Apesar de sua aparência peculiar, é um recurso valioso para investigações envolvendo outras entidades. Não aceite conselhos sobre dominação mundial.',
+      imagem: '../assets/imgs/covinhas-imagem.webp',
+      alt: 'Covinhas'
+    }
+  ];
+
   let paginaAtualParanormais = 1;
   let totalPaginasParanormais = 1;
   const cardsPorPagina = 5;
 
-  function inicializarParanormais() {
-    cardsParanormais = document.querySelectorAll('.paranormal-card');
+  function renderizarCardsParanormais(personagens) {
+    const containerCards = document.querySelector('.bottom-container');
 
-    if (cardsParanormais.length === 0) {
+    let htmlCards = '';
+
+    for (let i = 0; i < personagens.length; i++) {
+      const personagem = personagens[i];
+
+      htmlCards += `
+        <div class="paranormal-card">
+          <div class="character-name">
+            ${personagem.nome}
+          </div>
+          <div class="overlay">
+            <h3>${personagem.tipo}</h3>
+            <h2>${personagem.nome}</h2>
+            <div class="desc">
+              <p>${personagem.descricao}</p>
+            </div>
+          </div>
+          <img src="${personagem.imagem}" alt="${personagem.alt}">
+        </div>
+      `;
+    }
+
+    containerCards.innerHTML = htmlCards;
+  }
+
+  function inicializarParanormais() {
+    if (personagensParanormais.length === 0) {
       totalPaginasParanormais = 1;
       renderizarPaginaParanormais();
       return;
     }
 
-    totalPaginasParanormais = Math.ceil(cardsParanormais.length / cardsPorPagina);
+    totalPaginasParanormais = Math.ceil(personagensParanormais.length / cardsPorPagina);
     paginaAtualParanormais = 1;
 
     renderizarPaginaParanormais();
@@ -163,19 +156,11 @@
   function renderizarPaginaParanormais() {
     const indiceInicial = (paginaAtualParanormais - 1) * cardsPorPagina;
     const indiceFinal = indiceInicial + cardsPorPagina;
+    const personagensDaPagina = personagensParanormais.slice(indiceInicial, indiceFinal);
 
-    for (let i = 0; i < cardsParanormais.length; i++) {
-      const cardAtual = cardsParanormais[i];
-      const estaNaPaginaAtual = i >= indiceInicial && i < indiceFinal;
+    renderizarCardsParanormais(personagensDaPagina);
 
-      if (estaNaPaginaAtual) {
-        cardAtual.style.display = 'flex';
-      } else {
-        cardAtual.style.display = 'none';
-      }
-    }
-
-    const spanPaginacao = span_paginacao_paranormais;
+    const spanPaginacao = document.getElementById('span_paginacao_paranormais');
     spanPaginacao.innerText = `${paginaAtualParanormais}/${totalPaginasParanormais}`;
   }
 
