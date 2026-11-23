@@ -20,6 +20,18 @@ function trocarTela(link) {
   }, 1700);
 }
 
+function trocarTelaQuizPorSelect(selectElement) {
+  if (!selectElement) {
+    return;
+  }
+
+  if (selectElement.value === 'geral') {
+    window.location = 'quiz.html';
+  } else {
+    window.location = 'quiz-ultima-tentativa.html';
+  }
+}
+
 let navAberta = true;
 
 function fecharNav() {
@@ -96,7 +108,7 @@ function fecharNav() {
     <button class="disconnect" onclick="limparSessao()">
       DESCONECTAR
     </button>`
-    } else if (window.location.href == `${window.location.origin}/public/dashboard/quiz.html` || window.location.href == `${window.location.origin}/dashboard/quiz.html`) {
+    } else if (window.location.href == `${window.location.origin}/public/dashboard/quiz.html` || window.location.href == `${window.location.origin}/dashboard/quiz.html` || window.location.href == `${window.location.origin}/public/dashboard/quiz-jogo.html` || window.location.href == `${window.location.origin}/dashboard/quiz-jogo.html` || window.location.href == `${window.location.origin}/public/dashboard/quiz-ultima-tentativa.html` || window.location.href == `${window.location.origin}/dashboard/quiz-ultima-tentativa.html`) {
        nav.innerHTML = `<button class="close-nav" onclick="fecharNav()">
       <
     </button>

@@ -1,23 +1,22 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PsychoAssociation | Paranormais</title>
+  <title>PsychoAssociation | Exame de Aptidão</title>
   <link rel="stylesheet" href="../css/quiz.css">
 
   <script src="../js/funcoes.js"></script>
   <script src="../js/sessao.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../assets/icon/psycho-association-logo.svg">
-
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
 </head>
 
-<body onload="apagarCarregamento(); onloadEsconder();  validarSessao();">
+<body onload="apagarCarregamento(); validarSessao(); iniciarDashboardQuizGeral();">
   <header>
     <div class="icon">
       <img src="../assets/icon/psycho-association-logo.svg">
@@ -28,57 +27,53 @@
     </div>
   </header>
   <nav>
-    <button class="close-nav" onclick="fecharNav()">
-      < </button>
-        <div class="nav-button" onclick="window.location = 'dashboard.html'">
-          <span>PAINEL DE CONTROLE</span>
-          <span><i class="material-icons">dashboard</i></span>
-        </div>
-        <div class="nav-button" onclick="window.location = 'ocorrencias.html'">
-          <span>OCORRÊNCIAS</span>
-          <span><i class="material-icons">view_comfy</i></span>
-        </div>
-        <div class="nav-button" onclick="window.location = 'paranormais.html'">
-          <span>ARQUIVO DE INDIVÍDUOS</span>
-          <span><i class="material-icons"">group</i></span>
-       </div>
-       <div class=" nav-button selected">
-              <span>EXAME DE APTIDÃO</span>
-              <span><i class="material-icons">quiz</i></span>
-        </div>
+    <button class="close-nav" onclick="fecharNav()">&lt;</button>
+    <div class="nav-button" onclick="window.location = 'dashboard.html'">
+      <span>PAINEL DE CONTROLE</span>
+      <span><i class="material-icons">dashboard</i></span>
+    </div>
+    <div class="nav-button" onclick="window.location = 'ocorrencias.html'">
+      <span>OCORRÊNCIAS</span>
+      <span><i class="material-icons">view_comfy</i></span>
+    </div>
+    <div class="nav-button" onclick="window.location = 'paranormais.html'">
+      <span>ARQUIVO DE INDIVÍDUOS</span>
+      <span><i class="material-icons">group</i></span>
+    </div>
+    <div class="nav-button selected">
+      <span>EXAME DE APTIDÃO</span>
+      <span><i class="material-icons">quiz</i></span>
+    </div>
 
-        <button class="disconnect" onclick="limparSessao()">
-          DESCONECTAR
-        </button>
+    <button class="disconnect" onclick="limparSessao()">DESCONECTAR</button>
   </nav>
 
   <main>
     <div class="top-container">
       <div>
-        <h2 id="titulo_topo_quiz">EXAME DE APTIDÃO</h2>
-        <h3 id="subtitulo_topo_quiz">Mostre o seu conhecimento sobre o nosso universo.</h3>
+        <h2>EXAME DE APTIDÃO</h2>
+        <h3>Mostre o seu conhecimento sobre o nosso universo.</h3>
       </div>
       <div class="dashboard-view-select">
-        <select id="select_quiz_view" name="quizView" aria-label="Selecionar visualização do exame">
-          <option value="geral">Geral</option>
-          <option id="opcao_ultima_tentativa_quiz" value="ultima_tentativa">Última tentativa</option>
+        <select id="select_quiz_view" name="quizView" onchange="trocarTelaQuizPorSelect(this)"
+          aria-label="Selecionar visualização do exame">
+          <option value="geral" selected>Geral</option>
+          <option value="ultima_tentativa" id="opcao_ultima_tentativa_quiz">Última tentativa</option>
         </select>
       </div>
     </div>
-    <div class="bottom-container">
 
-      <div id="pontuacao_e_jogo" class="quiz-content">
-        <section id="dashboard_quiz" class="exam-dashboard">
+    <div class="bottom-container">
+      <div class="quiz-content">
+        <section class="exam-dashboard" id="dashboard_quiz">
           <div class="exam-kpi-row">
             <div class="kpi">
               <div class="top">SEU RANKING ATUAL</div>
-              <div class="bottom"><strong id="ranking_atual_quiz">—</strong><span id="descricao_ranking_quiz">Realize seu
-                  primeiro exame para entrar no ranking.</span></div>
+              <div class="bottom"><strong id="ranking_atual_quiz">—</strong><span id="descricao_ranking_quiz">Realize seu primeiro exame para entrar no ranking.</span></div>
             </div>
             <div class="kpi">
               <div class="top">PORCENTAGEM DE ACERTO</div>
-              <div class="bottom"><strong id="melhor_percentual_quiz">—</strong><span>Percentual da melhor
-                  tentativa</span></div>
+              <div class="bottom"><strong id="melhor_percentual_quiz">—</strong><span>Percentual da melhor tentativa</span></div>
             </div>
             <div class="kpi">
               <div class="top">TENTATIVAS REALIZADAS</div>
@@ -86,8 +81,7 @@
             </div>
             <div class="kpi">
               <div class="top">MÉDIA DE ACERTOS</div>
-              <div class="bottom"><strong id="media_percentual_quiz">—</strong><span>Percentual de todas as
-                  tentativas</span></div>
+              <div class="bottom"><strong id="media_percentual_quiz">—</strong><span>Percentual de todas as tentativas</span></div>
             </div>
           </div>
 
@@ -99,8 +93,7 @@
                   <span><i class="exam-bar-key"></i>Sua média</span>
                   <span><i class="exam-anchor-key"></i>Média geral</span>
                 </div>
-                <div class="exam-chart-canvas"><canvas id="grafico_medias_quiz"
-                    aria-label="Média individual e geral de acertos por categoria" role="img"></canvas></div>
+                <div class="exam-chart-canvas"><canvas id="grafico_medias_quiz" aria-label="Média individual e geral de acertos por categoria" role="img"></canvas></div>
               </div>
             </div>
             <div class="chart exam-ranking-chart">
@@ -111,556 +104,27 @@
               </div>
             </div>
           </div>
-          <button id="btn_iniciar_quiz" onclick="iniciarQuiz()" class="start btn-resultado">REALIZAR EXAME
-            ADMISSIONAL</button>
+
+          <button id="btn_iniciar_quiz" onclick="window.location = 'quiz-jogo.html'" class="start btn-resultado">REALIZAR EXAME ADMISSIONAL</button>
         </section>
-        <div id="jogo" class="jogo-container">
-          <div class="timer-quiz">
-            <span id="span_tempo_quiz">10:00</span>
-            <i class="material-icons">timer</i>
-          </div>
-
-          <div id="info_questao" class="info">
-            <span>Questão atual: <span id="span_numero_da_questao_atual"></span> de <span id="qtd_questoes"></span>
-              questões.</span>
-            <progress id="barra" class="progress-bar" value="1" max="20"></progress>
-            <div id="pergunta_da_questao_atual" class="question">
-              <span id="span_titulo_caso_atual" class="case-title"></span>
-              <span id="span_descricao_caso_atual" class="case-description"></span>
-              <span id="span_questao_exibida"></span>
-            </div>
-          </div>
-
-
-
-          <div id="opcoes" class="options-container">
-            <span class="choice" onclick="selecionarOpcaoPorId('primeira_opcao')">
-              <div class="choice-letter">A</div>
-              <input type="radio" id="primeira_opcao" name="option" class="radio" value="0" />
-              <label for="primeira_opcao" class="option" id="label_opcao_um"></label>
-            </span>
-            <span class="choice" onclick="selecionarOpcaoPorId('segunda_opcao')">
-              <div class="choice-letter">B</div>
-              <input type="radio" id="segunda_opcao" name="option" class="radio" value="1" />
-              <label for="segunda_opcao" class="option" id="label_opcao_dois"></label>
-            </span>
-            <span class="choice" onclick="selecionarOpcaoPorId('terceira_opcao')">
-              <div class="choice-letter">C</div>
-              <input type="radio" id="terceira_opcao" name="option" class="radio" value="2" />
-              <label for="terceira_opcao" class="option" id="label_opcao_tres"></label>
-            </span>
-            <span class="choice" onclick="selecionarOpcaoPorId('quarta_opcao')">
-              <div class="choice-letter">D</div>
-              <input type="radio" id="quarta_opcao" name="option" class="radio" value="3" />
-              <label for="quarta_opcao" class="option" id="label_opcao_quatro"></label>
-            </span>
-          </div>
-
-          <div id="botoes" class="buttons-container">
-            <div>
-              <button onclick="avancar()" id="btn_prox" class="submit">Próxima questão</button>
-            </div>
-          </div>
-        </div>
-        <div id="resultado_final" class="resultado-final">
-          <div class="resultado-titulo">
-            <h2>RESULTADO FINAL</h2>
-            <h3 id="msg_final">-</h3>
-          </div>
-
-          <div class="resultado-layout">
-            <div class="resultado-left-column">
-              <div class="resultado-kpi-row">
-                <div class="kpi">
-                  <div class="top">ACERTOS TOTAIS</div>
-                  <div class="bottom"><span id="span_pontuacao_final">0 / 20</span></div>
-                </div>
-                <div class="kpi">
-                  <div class="top">PERCENTUAL FINAL</div>
-                  <div class="bottom"><span id="span_percentual_final">0%</span></div>
-                </div>
-              </div>
-
-              <div class="chart">
-                <div class="top">MÉTRICAS POR CATEGORIA</div>
-                <div class="bottom resultado-categorias">
-                  <span>Poderes Psíquicos: <strong id="acerto_poderes_psiquicos">0/5</strong></span>
-                  <span>Espíritos: <strong id="acerto_espiritos">0/5</strong></span>
-                  <span>Organizações: <strong id="acerto_organizacoes">0/5</strong></span>
-                  <span>Personagens: <strong id="acerto_personagens">0/5</strong></span>
-                </div>
-              </div>
-            </div>
-
-            <div class="resultado-right-column">
-              <div class="chart">
-                <div class="top">DESEMPENHO POR CATEGORIA</div>
-                <div class="bottom">
-                  <div class="radar-container">
-                    <canvas id="radar_categorias"></canvas>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <button onclick="tentarNovamente()" id="btn_tentar_novamente" class="start btn-resultado">Tentar
-            novamente</button>
-        </div>
       </div>
     </div>
-
   </main>
 </body>
 
 </html>
 <script>
-  const examCategories = {
-    poderesPsiquicos: [
-      {
-        question: "O famoso contador de porcentagem de Shigeo Kageyama é uma das características mais marcantes do anime. Mas o que ele realmente representa?",
-        alternatives: [
-          "A quantidade de energia psíquica que Mob ainda possui.",
-          "O nível de intensidade emocional acumulada até determinado momento.",
-          "A porcentagem de controle que Mob possui sobre seus poderes.",
-          "A quantidade de espíritos que Mob já exorcizou."
-        ],
-        correctAnswer: 1
-      },
-      {
-        question: "Um esper consegue movimentar objetos sem sequer encostar neles. Qual é o nome dessa habilidade? Esperamos que você saiba, afinal, é praticamente o básico do treinamento.",
-        alternatives: [
-          "Telepatia.",
-          "Clarividência.",
-          "Telecinese.",
-          "Projeção astral."
-        ],
-        correctAnswer: 2
-      },
-      {
-        question: "Durante a história, Mob demonstra possuir uma quantidade absurda de energia psíquica. Qual é uma característica importante de seus poderes?",
-        alternatives: [
-          "Seus poderes dependem exclusivamente da presença de espíritos.",
-          "Suas habilidades estão fortemente relacionadas às suas emoções.",
-          "Ele só consegue utilizar seus poderes durante a noite.",
-          "Seus poderes são emprestados de outros espers."
-        ],
-        correctAnswer: 1
-      },
-      {
-        question: "Imagine que um esper precisa proteger uma pessoa de um ataque utilizando uma barreira invisível. Qual habilidade seria mais adequada para essa situação?",
-        alternatives: [
-          "Criar uma barreira psíquica.",
-          "Utilizar telepatia.",
-          "Realizar uma projeção astral.",
-          "Executar uma possessão espiritual."
-        ],
-        correctAnswer: 0
-      },
-      {
-        question: "No universo de Mob Psycho 100, possuir poderes psíquicos não significa necessariamente ser uma pessoa extraordinária em todos os aspectos. Qual é uma das principais mensagens transmitidas pela história?",
-        alternatives: [
-          "Pessoas com poderes são naturalmente superiores às demais.",
-          "A força psíquica é o único fator que determina o valor de alguém.",
-          "Ter habilidades especiais não torna alguém melhor do que as outras pessoas.",
-          "Todo esper precisa utilizar seus poderes para conseguir reconhecimento."
-        ],
-        correctAnswer: 2
-      }
-    ],
-
-    espiritos: [
-      {
-        question: "Covinhas, também conhecido como Dimple, inicialmente se aproxima de Mob com um objetivo bastante específico. Qual era sua intenção?",
-        alternatives: [
-          "Tornar-se um exorcista profissional.",
-          "Conseguir seguidores e se tornar um deus.",
-          "Encontrar outros espíritos para formar uma organização.",
-          "Ensinar Mob a controlar seus poderes."
-        ],
-        correctAnswer: 1
-      },
-      {
-        question: "Nem todo espírito encontrado por Mob é necessariamente maligno. Mas quando uma entidade começa a possuir pessoas e causar problemas, qual profissional costuma ser chamado para resolver a situação?",
-        alternatives: [
-          "Um investigador criminal.",
-          "Um exorcista.",
-          "Um médico especializado em espers.",
-          "Um membro da Garra."
-        ],
-        correctAnswer: 1
-      },
-      {
-        question: "Imagine que você encontrou um espírito extremamente poderoso que consegue manipular pessoas e objetos. Qual é a melhor conclusão inicial?",
-        alternatives: [
-          "Todo espírito poderoso possui intenções malignas.",
-          "A entidade precisa ser avaliada antes que sua natureza e seus objetivos sejam determinados.",
-          "O espírito deve ser imediatamente recrutado pela organização.",
-          "Espíritos não conseguem interagir com o mundo físico."
-        ],
-        correctAnswer: 1
-      },
-      {
-        question: "Durante a história, Mob encontra espíritos com diferentes personalidades e intenções. O que isso demonstra sobre as entidades espirituais?",
-        alternatives: [
-          "Todos os espíritos possuem exatamente o mesmo comportamento.",
-          "Espíritos são incapazes de desenvolver relações com humanos.",
-          "As entidades podem apresentar personalidades e objetivos diferentes.",
-          "Todo espírito deseja se tornar um deus."
-        ],
-        correctAnswer: 2
-      },
-      {
-        question: "Covinhas passa boa parte da história tentando se aproximar de Mob, mesmo depois de seus planos iniciais não saírem como esperado. Qual característica melhor descreve essa relação?",
-        alternatives: [
-          "Uma rivalidade que nunca permite qualquer tipo de cooperação.",
-          "Uma relação complexa que evolui entre interesses próprios e amizade.",
-          "Uma relação exclusivamente profissional entre mestre e aluno.",
-          "Uma aliança criada para destruir a Garra."
-        ],
-        correctAnswer: 1
-      }
-    ],
-
-    organizacoes: [
-      {
-        question: "A Garra é uma das organizações mais perigosas do universo de Mob Psycho 100. Qual é sua principal característica?",
-        alternatives: [
-          "É uma associação de exorcistas que protege cidades.",
-          "É uma organização formada por espers que busca impor seu domínio por meio dos poderes psíquicos.",
-          "É um laboratório dedicado exclusivamente ao estudo de espíritos.",
-          "É uma escola especializada em desenvolver habilidades psíquicas."
-        ],
-        correctAnswer: 1
-      },
-      {
-        question: "A Garra possui uma estrutura hierárquica e membros com diferentes níveis de poder. Como são conhecidos os integrantes de sua divisão de elite?",
-        alternatives: [
-          "Os Sete Clãs.",
-          "Os Sete Mestres.",
-          "Os Super 5.",
-          "Os Cinco Grandes."
-        ],
-        correctAnswer: 2
-      },
-      {
-        question: "Toichiro Suzuki é uma figura extremamente importante dentro da Garra. Qual é sua posição na organização?",
-        alternatives: [
-          "Fundador e líder da Garra.",
-          "Um exorcista contratado para combater espíritos.",
-          "Um pesquisador responsável pelo Laboratório de Desenvolvimento.",
-          "Um membro dos Super 5 que deseja derrubar a organização."
-        ],
-        correctAnswer: 0
-      },
-      {
-        question: "O Laboratório de Desenvolvimento de Poderes Psíquicos aparece na história como um lugar relacionado a jovens com habilidades especiais. Qual era sua principal finalidade?",
-        alternatives: [
-          "Treinar exorcistas para combater espíritos malignos.",
-          "Estudar e desenvolver habilidades psíquicas de crianças e adolescentes.",
-          "Produzir objetos amaldiçoados para a Garra.",
-          "Investigar fenômenos naturais sem relação com espers."
-        ],
-        correctAnswer: 1
-      },
-      {
-        question: "A existência de organizações como a Garra demonstra um problema recorrente no universo de Mob Psycho 100. Qual é ele?",
-        alternatives: [
-          "Todos os espers são incapazes de trabalhar em equipe.",
-          "Pessoas com poderes psíquicos podem utilizar suas habilidades para manipular e controlar outras pessoas.",
-          "Espíritos são sempre mais poderosos que seres humanos.",
-          "A sociedade desconhece completamente a existência de habilidades especiais."
-        ],
-        correctAnswer: 1
-      }
-    ],
-
-    personagens: [
-      {
-        question: "Reigen Arataka é conhecido por trabalhar com fenômenos paranormais, mas existe um detalhe bastante curioso sobre suas habilidades. Qual é?",
-        alternatives: [
-          "Ele possui um dos maiores níveis de energia psíquica do Japão.",
-          "Ele é um espírito que assumiu forma humana.",
-          "Ele não possui poderes psíquicos, mas trabalha como médium e exorcista.",
-          "Ele consegue absorver os poderes de outros espers."
-        ],
-        correctAnswer: 2
-      },
-      {
-        question: "Ritsu Kageyama é irmão mais novo de Mob. Qual era uma de suas maiores frustrações no início da história?",
-        alternatives: [
-          "Não conseguir acompanhar Mob nos estudos.",
-          "Não possuir habilidades psíquicas como seu irmão.",
-          "Não conseguir enxergar espíritos.",
-          "Não ser aceito pela organização Garra."
-        ],
-        correctAnswer: 1
-      },
-      {
-        question: "Teruki Hanazawa, também conhecido como Teru, começa sua trajetória com uma visão bastante particular sobre os espers. O que ele acreditava inicialmente?",
-        alternatives: [
-          "Que pessoas com poderes psíquicos eram superiores às pessoas comuns.",
-          "Que todos os espíritos deveriam ser protegidos.",
-          "Que Reigen era o esper mais poderoso do Japão.",
-          "Que a Garra deveria controlar todas as cidades."
-        ],
-        correctAnswer: 0
-      },
-      {
-        question: "Quem é o principal responsável por orientar Mob sobre como lidar com situações do cotidiano, mesmo não sendo um esper?",
-        alternatives: [
-          "Ritsu Kageyama.",
-          "Teruki Hanazawa.",
-          "Reigen Arataka.",
-          "Toichiro Suzuki."
-        ],
-        correctAnswer: 2
-      },
-      {
-        question: "Tome Kurata possui um interesse bastante particular pelo universo paranormal. Qual é sua principal obsessão?",
-        alternatives: [
-          "Encontrar uma organização de exorcistas.",
-          "Estudar e encontrar evidências de fenômenos extraterrestres.",
-          "Tornar-se líder da Garra.",
-          "Desenvolver poderes psíquicos artificiais."
-        ],
-        correctAnswer: 1
-      }
-    ]
-  };
-
-  function montarQuestoesPorCategoria(categorias) {
-    const lista = [];
-    const ordemCategorias = ['poderesPsiquicos', 'espiritos', 'organizacoes', 'personagens'];
-
-    for (let indiceCategoria = 0; indiceCategoria < ordemCategorias.length; indiceCategoria++) {
-      const categoriaAtual = ordemCategorias[indiceCategoria];
-      const listaCategoria = categorias[categoriaAtual];
-
-      for (let indiceQuestao = 0; indiceQuestao < listaCategoria.length; indiceQuestao++) {
-        const questaoAtual = listaCategoria[indiceQuestao];
-        lista.push({
-          category: categoriaAtual,
-          question: questaoAtual.question,
-          alternatives: questaoAtual.alternatives,
-          correctAnswer: questaoAtual.correctAnswer
-        });
-      }
-    }
-
-    return lista;
-  }
-
-  const listaDeQuestoes = montarQuestoesPorCategoria(examCategories);
-
-
-  // variáveis globais - Tela 1: Dashboard Geral
   let graficoMediasQuiz = null;
   let resumoIndividualUsuario = null;
   let ultimaTentativaUsuario = null;
   let rankingUsuarios = [];
   let resumoGeralExame = null;
 
-  // variáveis globais - Tela 2: Quiz em andamento
-  let numeroDaQuestaoAtual = 0;
-  let quantidadeDeQuestoes = listaDeQuestoes.length;
-  let opcoesConfiguradas = false;
-  let atalhoEnterConfigurado = false;
-  let tempoRestanteSegundos = 600;
-  let intervaloTimer = null;
-  let quizFinalizado = false;
-
-  // variáveis globais - Tela 3: Resultado final
-  let pontuacaoFinal = 0;
-  let graficoRadar = null;
-  const acertosPorCategoria = {
-    poderesPsiquicos: 0,
-    espiritos: 0,
-    organizacoes: 0,
-    personagens: 0
-  };
-  let intervaloCooldownBotao = null;
-  const tempoCooldownMilissegundos = 10 * 60 * 1000;
-  let idUsuarioLogado = "";
-  let chaveResultadoQuiz = "";
-  let chaveCooldownQuiz = "";
-
-  function renderizarEstruturaTopoQuiz() {
-    const topContainer = document.querySelector('.top-container');
-
-    if (!topContainer) {
-      return;
-    }
-
-    topContainer.innerHTML = `
-      <div>
-        <h2 id="titulo_topo_quiz">EXAME DE APTIDÃO</h2>
-        <h3 id="subtitulo_topo_quiz">Mostre o seu conhecimento sobre o nosso universo.</h3>
-      </div>
-      <div class="dashboard-view-select">
-        <select id="select_quiz_view" name="quizView" aria-label="Selecionar visualização do exame">
-          <option value="geral">Geral</option>
-          <option id="opcao_ultima_tentativa_quiz" value="ultima_tentativa">Última tentativa</option>
-        </select>
-      </div>
-    `;
-  }
-
-  function renderizarEstruturaQuiz() {
-    const pontuacaoEJogo = pontuacao_e_jogo;
-
-    if (!pontuacaoEJogo) {
-      return;
-    }
-
-    pontuacaoEJogo.innerHTML = `
-      <section id="dashboard_quiz" class="exam-dashboard">
-        <div class="exam-kpi-row">
-          <div class="kpi">
-            <div class="top">SEU RANKING ATUAL</div>
-            <div class="bottom"><strong id="ranking_atual_quiz">—</strong><span id="descricao_ranking_quiz">Realize seu primeiro exame para entrar no ranking.</span></div>
-          </div>
-          <div class="kpi">
-            <div class="top">PORCENTAGEM DE ACERTO</div>
-            <div class="bottom"><strong id="melhor_percentual_quiz">—</strong><span>Percentual da melhor tentativa</span></div>
-          </div>
-          <div class="kpi">
-            <div class="top">TENTATIVAS REALIZADAS</div>
-            <div class="bottom"><strong id="tentativas_quiz">0</strong><span>Exames finalizados por você</span></div>
-          </div>
-          <div class="kpi">
-            <div class="top">MÉDIA DE ACERTOS</div>
-            <div class="bottom"><strong id="media_percentual_quiz">—</strong><span>Percentual de todas as tentativas</span></div>
-          </div>
-        </div>
-
-        <div class="exam-charts-row">
-          <div class="chart exam-category-chart">
-            <div class="top">MÉDIA POR CATEGORIA</div>
-            <div class="bottom">
-              <div class="exam-chart-legend">
-                <span><i class="exam-bar-key"></i>Sua média</span>
-                <span><i class="exam-anchor-key"></i>Média geral</span>
-              </div>
-              <div class="exam-chart-canvas"><canvas id="grafico_medias_quiz" aria-label="Média individual e geral de acertos por categoria" role="img"></canvas></div>
-            </div>
-          </div>
-          <div class="chart exam-ranking-chart">
-            <div class="top">RANKING DOS MEMBROS</div>
-            <div class="bottom">
-              <div class="exam-ranking-heading"><span>POSIÇÃO / MEMBRO</span><span>ACERTOS</span></div>
-              <div id="ranking_membros_quiz" class="exam-ranking-list"></div>
-            </div>
-          </div>
-        </div>
-        <button id="btn_iniciar_quiz" onclick="iniciarQuiz()" class="start btn-resultado">REALIZAR EXAME ADMISSIONAL</button>
-      </section>
-
-      <div id="jogo" class="jogo-container">
-        <div class="timer-quiz">
-          <span id="span_tempo_quiz">10:00</span>
-          <i class="material-icons">timer</i>
-        </div>
-
-        <div id="info_questao" class="info">
-          <span>Questão atual: <span id="span_numero_da_questao_atual"></span> de <span id="qtd_questoes"></span> questões.</span>
-          <progress id="barra" class="progress-bar" value="1" max="20"></progress>
-          <div id="pergunta_da_questao_atual" class="question">
-            <span id="span_titulo_caso_atual" class="case-title"></span>
-            <span id="span_descricao_caso_atual" class="case-description"></span>
-            <span id="span_questao_exibida"></span>
-          </div>
-        </div>
-
-        <div id="opcoes" class="options-container">
-          <span class="choice" onclick="selecionarOpcaoPorId('primeira_opcao')">
-            <div class="choice-letter">A</div>
-            <input type="radio" id="primeira_opcao" name="option" class="radio" value="0" />
-            <label for="primeira_opcao" class="option" id="label_opcao_um"></label>
-          </span>
-          <span class="choice" onclick="selecionarOpcaoPorId('segunda_opcao')">
-            <div class="choice-letter">B</div>
-            <input type="radio" id="segunda_opcao" name="option" class="radio" value="1" />
-            <label for="segunda_opcao" class="option" id="label_opcao_dois"></label>
-          </span>
-          <span class="choice" onclick="selecionarOpcaoPorId('terceira_opcao')">
-            <div class="choice-letter">C</div>
-            <input type="radio" id="terceira_opcao" name="option" class="radio" value="2" />
-            <label for="terceira_opcao" class="option" id="label_opcao_tres"></label>
-          </span>
-          <span class="choice" onclick="selecionarOpcaoPorId('quarta_opcao')">
-            <div class="choice-letter">D</div>
-            <input type="radio" id="quarta_opcao" name="option" class="radio" value="3" />
-            <label for="quarta_opcao" class="option" id="label_opcao_quatro"></label>
-          </span>
-        </div>
-
-        <div id="botoes" class="buttons-container">
-          <div>
-            <button onclick="avancar()" id="btn_prox" class="submit">Próxima questão</button>
-          </div>
-        </div>
-      </div>
-
-      <div id="resultado_final" class="resultado-final">
-        <div class="resultado-titulo">
-          <h2>RESULTADO FINAL</h2>
-          <h3 id="msg_final">-</h3>
-        </div>
-
-        <div class="resultado-layout">
-          <div class="resultado-left-column">
-            <div class="resultado-kpi-row">
-              <div class="kpi">
-                <div class="top">ACERTOS TOTAIS</div>
-                <div class="bottom"><span id="span_pontuacao_final">0 / 20</span></div>
-              </div>
-              <div class="kpi">
-                <div class="top">PERCENTUAL FINAL</div>
-                <div class="bottom"><span id="span_percentual_final">0%</span></div>
-              </div>
-            </div>
-
-            <div class="chart">
-              <div class="top">MÉTRICAS POR CATEGORIA</div>
-              <div class="bottom resultado-categorias">
-                <span>Poderes Psíquicos: <strong id="acerto_poderes_psiquicos">0/5</strong></span>
-                <span>Espíritos: <strong id="acerto_espiritos">0/5</strong></span>
-                <span>Organizações: <strong id="acerto_organizacoes">0/5</strong></span>
-                <span>Personagens: <strong id="acerto_personagens">0/5</strong></span>
-              </div>
-            </div>
-          </div>
-
-          <div class="resultado-right-column">
-            <div class="chart">
-              <div class="top">DESEMPENHO POR CATEGORIA</div>
-              <div class="bottom">
-                <div class="radar-container">
-                  <canvas id="radar_categorias"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <button onclick="tentarNovamente()" id="btn_tentar_novamente" class="start btn-resultado">Tentar novamente</button>
-      </div>
-    `;
-  }
-
-  function renderizarEstruturasDaTelaQuiz() {
-    renderizarEstruturaTopoQuiz();
-    renderizarEstruturaQuiz();
-  }
-
   function obterNumeroOuZero(valor) {
     const numero = Number(valor);
-
     if (Number.isNaN(numero)) {
       return 0;
     }
-
     return numero;
   }
 
@@ -668,21 +132,17 @@
     if (!objeto) {
       return 0;
     }
-
     if (objeto[chaveNova] !== undefined && objeto[chaveNova] !== null) {
       return obterNumeroOuZero(objeto[chaveNova]);
     }
-
     return obterNumeroOuZero(objeto[chaveAntiga]);
   }
 
   function formatarPercentual(valor) {
     const numero = Number(valor);
-
     if (Number.isNaN(numero)) {
       return '—';
     }
-
     return `${Math.round(numero)}%`;
   }
 
@@ -696,21 +156,20 @@
       if (resposta.status === 204) {
         return null;
       }
-
       if (!resposta.ok) {
         throw new Error('Erro ao buscar dados do exame.');
       }
-
       return resposta.json();
     });
   }
 
-  function carregarDadosDashboardExame() {
+  function iniciarDashboardQuizGeral() {
     const idUsuario = sessionStorage.ID_USUARIO;
 
     if (!idUsuario) {
       renderizarDashboardQuiz();
       atualizarDisponibilidadeUltimaTentativa();
+      atualizarEstadoBotaoIniciarQuiz();
       return;
     }
 
@@ -743,15 +202,16 @@
 
       renderizarDashboardQuiz();
       atualizarDisponibilidadeUltimaTentativa();
+      atualizarEstadoBotaoIniciarQuiz();
     }).catch(function (erro) {
       console.log('#ERRO ao carregar dashboard de exames:', erro);
       renderizarDashboardQuiz();
       atualizarDisponibilidadeUltimaTentativa();
+      atualizarEstadoBotaoIniciarQuiz();
     });
   }
 
   function renderizarDashboardQuiz() {
-    const listaRanking = ranking_membros_quiz;
     const idUsuarioAtual = String(sessionStorage.ID_USUARIO);
     const mediasIndividuais = [0, 0, 0, 0];
     const mediasGerais = [0, 0, 0, 0];
@@ -783,19 +243,17 @@
       mediasGerais[3] = obterCampoResumoComFallback(resumoGeralExame, 'media_acerto_personagens', 'media_acerto_estrategia');
     }
 
-    listaRanking.innerHTML = '';
+    ranking_membros_quiz.innerHTML = '';
 
     if (rankingUsuarios.length === 0) {
-      listaRanking.innerHTML = '<div class="exam-ranking-item"><span class="exam-ranking-name">Nenhum dado de ranking disponível.</span></div>';
+      ranking_membros_quiz.innerHTML = '<div class="exam-ranking-item"><span class="exam-ranking-name">Nenhum dado de ranking disponível.</span></div>';
     } else {
       let htmlRanking = '';
-
       for (let i = 0; i < rankingUsuarios.length; i++) {
         const usuarioRanking = rankingUsuarios[i];
         let classeUsuario = '';
-        const idUsuarioRanking = String(usuarioRanking.id_usuario);
 
-        if (idUsuarioRanking === idUsuarioAtual) {
+        if (String(usuarioRanking.id_usuario) === idUsuarioAtual) {
           classeUsuario = ' exam-ranking-current';
           usuarioEncontradoRanking = true;
           ranking_atual_quiz.innerHTML = `${usuarioRanking.ranking}º`;
@@ -808,14 +266,11 @@
           <div class="exam-ranking-score"><strong>${usuarioRanking.acertos} / 20</strong><small>${usuarioRanking.tentativas} tentativas</small></div>
         </div>`;
       }
-
-      listaRanking.innerHTML = htmlRanking;
+      ranking_membros_quiz.innerHTML = htmlRanking;
     }
 
-    if (!usuarioEncontradoRanking) {
-      if (resumoIndividualUsuario) {
-        descricao_ranking_quiz.innerHTML = 'Ranking ainda não disponível para o seu usuário.';
-      }
+    if (!usuarioEncontradoRanking && resumoIndividualUsuario) {
+      descricao_ranking_quiz.innerHTML = 'Ranking ainda não disponível para o seu usuário.';
     }
 
     renderizarGraficoMediasQuiz(mediasIndividuais, mediasGerais);
@@ -835,9 +290,11 @@
         borderDash: [5, 3]
       };
     }
+
     if (graficoMediasQuiz) {
       graficoMediasQuiz.destroy();
     }
+
     graficoMediasQuiz = new Chart(grafico_medias_quiz, {
       type: 'bar',
       data: {
@@ -871,763 +328,42 @@
     });
   }
 
-  function definirTexto(idElemento, valor) {
-    document.getElementById(idElemento).innerHTML = valor;
-  }
-
-  function resetarAcertosPorCategoria() {
-    acertosPorCategoria.poderesPsiquicos = 0;
-    acertosPorCategoria.espiritos = 0;
-    acertosPorCategoria.organizacoes = 0;
-    acertosPorCategoria.personagens = 0;
-  }
-
-  function exibirTela(modo) {
-    if (modo === 'geral') {
-      document.querySelector('.top-container').style.display = 'flex';
-      dashboard_quiz.style.display = 'flex';
-      btn_iniciar_quiz.style.display = 'block';
-      resultado_final.style.display = 'none';
-      jogo.style.display = 'none';
-      return;
-    }
-
-    if (modo === 'jogo') {
-      document.querySelector('.top-container').style.display = 'none';
-      dashboard_quiz.style.display = 'none';
-      btn_iniciar_quiz.style.display = 'none';
-      resultado_final.style.display = 'none';
-      jogo.style.display = 'flex';
-      return;
-    }
-
-    if (modo === 'resultado') {
-      document.querySelector('.top-container').style.display = 'flex';
-      dashboard_quiz.style.display = 'none';
-      btn_iniciar_quiz.style.display = 'none';
-      jogo.style.display = 'none';
-      resultado_final.style.display = 'flex';
-    }
-  }
-
-  function onloadEsconder() {
-    renderizarEstruturasDaTelaQuiz();
-    configurarSelecaoOpcoes();
-    configurarAtalhoEnter();
-    configurarChavesStorageQuiz();
-    resultado_final.style.display = "none";
-    jogo.style.display = "none";
-    atualizarTempoQuiz();
-
-    renderizarDashboardQuiz();
-    configurarSelectViewQuiz();
-    exibirVisaoGeralQuiz();
-    carregarDadosDashboardExame();
-  }
-
-  // ---------- Tela 1: Dashboard Geral ----------
-
-  function configurarSelectViewQuiz() {
-    const selectQuizView = select_quiz_view;
-
-    if (!selectQuizView) {
-      return;
-    }
-
-    atualizarDisponibilidadeUltimaTentativa();
-    selectQuizView.value = 'geral';
-
-    selectQuizView.addEventListener('change', function () {
-      if (selectQuizView.value === 'ultima_tentativa') {
-        exibirUltimaTentativaQuiz();
-      } else {
-        exibirVisaoGeralQuiz();
-      }
-    });
-  }
-
   function atualizarDisponibilidadeUltimaTentativa() {
-    const opcaoUltimaTentativa = opcao_ultima_tentativa_quiz;
-    const resultadoSalvo = recuperarResultadoFinalDoStorage();
+    const idUsuarioLogado = sessionStorage.ID_USUARIO || 'anonimo';
+    const chaveResultadoQuiz = `quizResultado_${idUsuarioLogado}`;
+    const resultadoSalvo = localStorage.getItem(chaveResultadoQuiz);
     let possuiTentativasNoBanco = false;
 
-    if (!opcaoUltimaTentativa) {
-      return;
+    if (resumoIndividualUsuario && obterNumeroOuZero(resumoIndividualUsuario.tentativas) > 0) {
+      possuiTentativasNoBanco = true;
     }
 
-    if (resumoIndividualUsuario) {
-      if (obterNumeroOuZero(resumoIndividualUsuario.tentativas) > 0) {
-        possuiTentativasNoBanco = true;
-      }
-    }
-
-    if (resultadoSalvo || possuiTentativasNoBanco) {
-      opcaoUltimaTentativa.disabled = false;
-      return;
-    }
-
-    opcaoUltimaTentativa.disabled = true;
+    opcao_ultima_tentativa_quiz.disabled = !(resultadoSalvo || possuiTentativasNoBanco);
   }
-
-  function exibirVisaoGeralQuiz() {
-    definirTexto('titulo_topo_quiz', 'EXAME DE APTIDÃO');
-    definirTexto('subtitulo_topo_quiz', 'Mostre o seu conhecimento sobre o nosso universo.');
-    subtitulo_topo_quiz.className = '';
-    document.querySelector('#resultado_final .resultado-titulo').style.display = 'block';
-
-    exibirTela('geral');
-
-    iniciarTimerCooldownBotao();
-  }
-
-  function configurarChavesStorageQuiz() {
-    idUsuarioLogado = sessionStorage.ID_USUARIO;
-
-    if (!idUsuarioLogado) {
-      idUsuarioLogado = "anonimo";
-    }
-
-    chaveResultadoQuiz = `quizResultado_${idUsuarioLogado}`;
-    chaveCooldownQuiz = `quizCooldownAte_${idUsuarioLogado}`;
-  }
-
-  // ---------- Tela 2: Quiz em andamento ----------
-
 
   function formatarTempo(totalSegundos) {
     const minutos = Math.floor(totalSegundos / 60);
     const segundos = totalSegundos % 60;
-    const minutosFormatados = String(minutos).padStart(2, '0');
-    const segundosFormatados = String(segundos).padStart(2, '0');
-    return `${minutosFormatados}:${segundosFormatados}`;
+    return `${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
   }
 
-  function atualizarTempoQuiz() {
-    span_tempo_quiz.innerHTML = formatarTempo(tempoRestanteSegundos);
-  }
-
-  function pararTimerQuiz() {
-    if (intervaloTimer) {
-      clearInterval(intervaloTimer);
-      intervaloTimer = null;
-    }
-  }
-
-  function iniciarTimerQuiz() {
-    pararTimerQuiz();
-    tempoRestanteSegundos = 600;
-    atualizarTempoQuiz();
-
-    intervaloTimer = setInterval(function () {
-      tempoRestanteSegundos--;
-      atualizarTempoQuiz();
-
-      if (tempoRestanteSegundos <= 0) {
-        pararTimerQuiz();
-        if (!quizFinalizado) {
-          alert('Tempo esgotado! O exame será encerrado automaticamente.');
-          finalizarJogo();
-        }
-      }
-    }, 1000);
-  }
-
-  function configurarAtalhoEnter() {
-    if (atalhoEnterConfigurado) {
-      return;
-    }
-
-    document.addEventListener('keydown', function (event) {
-      if (event.key !== 'Enter') {
-        return;
-      }
-
-      const jogo = jogo;
-      const resultadoFinal = resultado_final;
-      const quizAtivo = jogo.style.display === 'flex' && resultadoFinal.style.display !== 'flex';
-
-      if (!quizAtivo) {
-        return;
-      }
-
-      event.preventDefault();
-
-      if (!btn_prox.disabled) {
-        avancar();
-      }
-    });
-
-    atalhoEnterConfigurado = true;
-  }
-
-  function iniciarQuiz() {
-    if (Date.now() < recuperarCooldownDoStorage()) {
-      atualizarEstadoBotaoTentarNovamente();
-      return;
-    }
-
-    numeroDaQuestaoAtual = 0;
-    pontuacaoFinal = 0;
-    resetarAcertosPorCategoria();
-
-    desmarcarRadioButtons();
-    limparCoresBackgroundOpcoes();
-
-    pararTimerCooldownBotao();
-    exibirTela('jogo');
-
-    quizFinalizado = false;
-
-    qtd_questoes.innerHTML = quantidadeDeQuestoes;
-    barra.max = quantidadeDeQuestoes;
-    barra.value = 1;
-    iniciarTimerQuiz();
-
-    preencherHTMLcomQuestaoAtual(0);
-
-    btn_prox.disabled = false;
-    btn_tentar_novamente.disabled = true;
-  }
-
-  function preencherHTMLcomQuestaoAtual(index) {
-    habilitarAlternativas(true);
-    const questaoAtual = listaDeQuestoes[index];
-    numeroDaQuestaoAtual = index;
-    definirTexto('span_numero_da_questao_atual', Number(index) + 1);
-    definirTexto('span_titulo_caso_atual', 'EXAME DE APTIDÃO');
-    definirTexto('span_descricao_caso_atual', 'Mostre o seu conhecimento sobre o nosso universo.');
-    definirTexto('span_questao_exibida', questaoAtual.question);
-    definirTexto('label_opcao_um', questaoAtual.alternatives[0]);
-    definirTexto('label_opcao_dois', questaoAtual.alternatives[1]);
-    definirTexto('label_opcao_tres', questaoAtual.alternatives[2]);
-    definirTexto('label_opcao_quatro', questaoAtual.alternatives[3]);
-    barra.value = index + 1;
-  }
-
-  function avancar() {
-    const options = document.getElementsByName("option"); // recupera alternativas no html
-
-    let hasChecked = false;
-    for (let i = 0; i < options.length; i++) {
-      if (options[i].checked) {
-        hasChecked = true;
-        break;
-      }
-    }
-
-    if (!hasChecked) {
-      alert("Não há alternativas escolhidas. Escolha uma opção.");
-    } else {
-      checarResposta();
-
-      if (numeroDaQuestaoAtual >= quantidadeDeQuestoes - 1) {
-        finalizarJogo();
-        return;
-      }
-
-      desmarcarRadioButtons();
-      limparCoresBackgroundOpcoes();
-
-      preencherHTMLcomQuestaoAtual(numeroDaQuestaoAtual + 1);
-    }
-
-  }
-
-  function configurarSelecaoOpcoes() {
-    if (opcoesConfiguradas) {
-      return;
-    }
-
-    const options = document.getElementsByName("option");
-    options.forEach((option) => {
-      option.addEventListener('change', atualizarOpcaoSelecionadaVisual);
-    });
-
-    opcoesConfiguradas = true;
-  }
-
-  function selecionarOpcaoPorId(idOpcao) {
-    const opcao = document.getElementById(idOpcao);
-
-    if (!opcao || opcao.disabled) {
-      return;
-    }
-
-    opcao.checked = true;
-    atualizarOpcaoSelecionadaVisual();
-  }
-
-  function atualizarOpcaoSelecionadaVisual() {
-    const cards = document.querySelectorAll('.choice');
-
-    cards.forEach((card) => {
-      card.classList.remove('quiz-option-selected');
-    });
-
-    const opcaoSelecionada = document.querySelector('input[name="option"]:checked');
-    if (opcaoSelecionada) {
-      const cardSelecionado = opcaoSelecionada.closest('.choice');
-      if (cardSelecionado) {
-        cardSelecionado.classList.add('quiz-option-selected');
-      }
-    }
-  }
-
-  function habilitarAlternativas(trueOrFalse) {
-    let opcaoEscolhida = true;
-    if (trueOrFalse) {
-      opcaoEscolhida = false;
-    }
-
-    const opcoesContainer = opcoes;
-
-    primeira_opcao.disabled = opcaoEscolhida;
-    segunda_opcao.disabled = opcaoEscolhida;
-    terceira_opcao.disabled = opcaoEscolhida;
-    quarta_opcao.disabled = opcaoEscolhida;
-
-    if (opcaoEscolhida) {
-      opcoesContainer.classList.add('options-locked');
-    } else {
-      opcoesContainer.classList.remove('options-locked');
-    }
-
-  }
-
-  function checarResposta() {
-    const questaoAtual = listaDeQuestoes[numeroDaQuestaoAtual];
-    const respostaQuestaoAtual = String(questaoAtual.correctAnswer);
-    const options = document.getElementsByName("option");
-
-    let alternativaEscolhida = null;
-
-    options.forEach((option) => {
-      if (option.checked) {
-        alternativaEscolhida = option;
-      }
-    });
-
-    if (!alternativaEscolhida) {
-      return;
-    }
-
-    if (alternativaEscolhida.value === respostaQuestaoAtual) {
-      pontuacaoFinal++;
-      acertosPorCategoria[questaoAtual.category]++;
-    }
-  }
-
-  function limparCoresBackgroundOpcoes() {
-    const cards = document.querySelectorAll('.choice');
-    cards.forEach((card) => {
-      card.classList.remove('quiz-option-selected');
-      card.classList.remove('quiz-option-correct');
-      card.classList.remove('quiz-option-wrong');
-    });
-  }
-
-  function desmarcarRadioButtons() {
-    const options = document.getElementsByName("option");
-    for (let i = 0; i < options.length; i++) {
-      options[i].checked = false;
-    }
-
-    atualizarOpcaoSelecionadaVisual();
-  }
-
-  // ---------- Tela 3: Resultado final ----------
-
-  function obterMensagemResultadoPorPercentual(percentual) {
-    if (percentual <= 30) {
-      return {
-        mensagem: 'Parece que você precisa reforçar seus estudos.',
-        classe: 'subtitle-danger'
-      };
-    }
-
-    if (percentual > 30 && percentual < 90) {
-      return {
-        mensagem: 'Bom desempenho, mas ainda dá para evoluir.',
-        classe: 'subtitle-warning'
-      };
-    }
-
-    return {
-      mensagem: 'Excelente! Você está pronto para as operações.',
-      classe: 'subtitle-success'
-    };
-  }
-
-  function atualizarCamposResultado() {
-    definirTexto('span_pontuacao_final', `${pontuacaoFinal} / ${quantidadeDeQuestoes}`);
-    definirTexto('acerto_poderes_psiquicos', `${acertosPorCategoria.poderesPsiquicos}/5`);
-    definirTexto('acerto_espiritos', `${acertosPorCategoria.espiritos}/5`);
-    definirTexto('acerto_organizacoes', `${acertosPorCategoria.organizacoes}/5`);
-    definirTexto('acerto_personagens', `${acertosPorCategoria.personagens}/5`);
-  }
-
-  function limparMensagemResultado() {
-    definirTexto('msg_final', '-');
-    msg_final.classList.remove('subtitle-danger', 'subtitle-warning', 'subtitle-success');
-  }
-
-  function preencherResultadoFinalComDados(resultadoSalvo) {
-    if (resultadoSalvo.acertosPorCategoria) {
-      acertosPorCategoria.poderesPsiquicos = obterCampoResumoComFallback(resultadoSalvo.acertosPorCategoria, 'poderesPsiquicos', 'paranormal');
-      acertosPorCategoria.espiritos = obterCampoResumoComFallback(resultadoSalvo.acertosPorCategoria, 'espiritos', 'investigacao');
-      acertosPorCategoria.organizacoes = obterCampoResumoComFallback(resultadoSalvo.acertosPorCategoria, 'organizacoes', 'contencao');
-      acertosPorCategoria.personagens = obterCampoResumoComFallback(resultadoSalvo.acertosPorCategoria, 'personagens', 'estrategia');
-    }
-
-    if (resultadoSalvo.pontuacaoFinal || resultadoSalvo.pontuacaoFinal === 0) {
-      pontuacaoFinal = resultadoSalvo.pontuacaoFinal;
-    }
-
-    definirTexto('msg_final', resultadoSalvo.mensagemFinal);
-    msg_final.className = resultadoSalvo.classeMensagemFinal;
-
-    definirTexto('span_percentual_final', `${resultadoSalvo.percentual}%`);
-    atualizarCamposResultado();
-  }
-
-  function montarResultadoComDadosBanco() {
-    if (!ultimaTentativaUsuario) {
-      return null;
-    }
-
-    const percentual = obterNumeroOuZero(ultimaTentativaUsuario.perc_acerto);
-    const resumoMensagem = obterMensagemResultadoPorPercentual(percentual);
-
-    return {
-      pontuacaoFinal: obterNumeroOuZero(ultimaTentativaUsuario.acertos_totais),
-      quantidadeDeQuestoes: quantidadeDeQuestoes,
-      percentual: Math.round(percentual),
-      mensagemFinal: resumoMensagem.mensagem,
-      classeMensagemFinal: resumoMensagem.classe,
-      acertosPorCategoria: {
-        poderesPsiquicos: obterCampoResumoComFallback(ultimaTentativaUsuario, 'acertos_poderes_psiquicos', 'acertos_paranormal'),
-        espiritos: obterCampoResumoComFallback(ultimaTentativaUsuario, 'acertos_espiritos', 'acertos_investigacao'),
-        organizacoes: obterCampoResumoComFallback(ultimaTentativaUsuario, 'acertos_organizacoes', 'acertos_contencao'),
-        personagens: obterCampoResumoComFallback(ultimaTentativaUsuario, 'acertos_personagens', 'acertos_estrategia')
-      }
-    };
-  }
-
-  function obterResultadoParaExibir() {
-    const resultadoSalvo = recuperarResultadoFinalDoStorage();
-
-    if (resultadoSalvo) {
-      return resultadoSalvo;
-    }
-
-    return montarResultadoComDadosBanco();
-  }
-
-  function exibirUltimaTentativaQuiz() {
-    const resultadoSalvo = obterResultadoParaExibir();
-    const selectQuizView = select_quiz_view;
-
-    if (!resultadoSalvo) {
-      if (selectQuizView) {
-        selectQuizView.value = 'geral';
-      }
-      exibirVisaoGeralQuiz();
-      return;
-    }
-
-    preencherResultadoFinalComDados(resultadoSalvo);
-    definirTexto('titulo_topo_quiz', 'RESULTADO FINAL');
-    definirTexto('subtitulo_topo_quiz', msg_final.innerHTML);
-    subtitulo_topo_quiz.className = msg_final.className;
-    document.querySelector('#resultado_final .resultado-titulo').style.display = 'none';
-
-    exibirTela('resultado');
-
-    quizFinalizado = true;
-    btn_prox.disabled = true;
-
-    renderizarGraficoRadar();
-    iniciarTimerCooldownBotao();
-  }
-
-  function salvarResultadoFinalNoStorage() {
-    const percentual = Math.round((pontuacaoFinal / quantidadeDeQuestoes) * 100);
-
-    const dadosResultado = {
-      pontuacaoFinal: pontuacaoFinal,
-      quantidadeDeQuestoes: quantidadeDeQuestoes,
-      percentual: percentual,
-      mensagemFinal: msg_final.innerHTML,
-      classeMensagemFinal: msg_final.className,
-      acertosPorCategoria: {
-        poderesPsiquicos: acertosPorCategoria.poderesPsiquicos,
-        espiritos: acertosPorCategoria.espiritos,
-        organizacoes: acertosPorCategoria.organizacoes,
-        personagens: acertosPorCategoria.personagens
-      }
-    };
-
-    localStorage.setItem(chaveResultadoQuiz, JSON.stringify(dadosResultado));
-  }
-
-  function recuperarResultadoFinalDoStorage() {
-    const resultadoSalvoTexto = localStorage.getItem(chaveResultadoQuiz);
-
-    if (!resultadoSalvoTexto) {
-      return null;
-    }
-
-    try {
-      return JSON.parse(resultadoSalvoTexto);
-    } catch (erro) {
-      localStorage.removeItem(chaveResultadoQuiz);
-      return null;
-    }
-  }
-
-  function salvarCooldownNoStorage() {
-    const cooldownAte = Date.now() + tempoCooldownMilissegundos;
-    localStorage.setItem(chaveCooldownQuiz, String(cooldownAte));
-  }
-
-  function recuperarCooldownDoStorage() {
+  function atualizarEstadoBotaoIniciarQuiz() {
+    const idUsuarioLogado = sessionStorage.ID_USUARIO || 'anonimo';
+    const chaveCooldownQuiz = `quizCooldownAte_${idUsuarioLogado}`;
     const cooldownTexto = localStorage.getItem(chaveCooldownQuiz);
+    const cooldownAte = Number(cooldownTexto || 0);
 
-    if (!cooldownTexto) {
-      return 0;
-    }
-
-    const cooldownNumero = Number(cooldownTexto);
-
-    if (Number.isNaN(cooldownNumero)) {
+    if (Number.isNaN(cooldownAte) || cooldownAte <= Date.now()) {
+      btn_iniciar_quiz.disabled = false;
+      btn_iniciar_quiz.innerHTML = 'REALIZAR EXAME ADMISSIONAL';
       localStorage.removeItem(chaveCooldownQuiz);
-      return 0;
-    }
-
-    return cooldownNumero;
-  }
-
-  function atualizarEstadoBotaoTentarNovamente() {
-    const botaoTentarNovamente = btn_tentar_novamente;
-    const botaoIniciarQuiz = btn_iniciar_quiz;
-    const cooldownAte = recuperarCooldownDoStorage();
-    const agora = Date.now();
-
-    if (agora < cooldownAte) {
-      const tempoRestanteSegundosCooldown = Math.ceil((cooldownAte - agora) / 1000);
-      botaoTentarNovamente.disabled = true;
-      botaoTentarNovamente.innerHTML = `TENTAR NOVAMENTE (${formatarTempo(tempoRestanteSegundosCooldown)})`;
-      botaoIniciarQuiz.disabled = true;
-      botaoIniciarQuiz.innerHTML = `REALIZAR EXAME (${formatarTempo(tempoRestanteSegundosCooldown)})`;
       return;
     }
 
-    botaoTentarNovamente.disabled = false;
-    botaoTentarNovamente.innerHTML = 'TENTAR NOVAMENTE';
-    botaoIniciarQuiz.disabled = false;
-    botaoIniciarQuiz.innerHTML = 'REALIZAR EXAME';
-    localStorage.removeItem(chaveCooldownQuiz);
+    const segundos = Math.ceil((cooldownAte - Date.now()) / 1000);
+    btn_iniciar_quiz.disabled = true;
+    btn_iniciar_quiz.innerHTML = `REALIZAR EXAME (${formatarTempo(segundos)})`;
+
+    setTimeout(atualizarEstadoBotaoIniciarQuiz, 1000);
   }
-
-  function pararTimerCooldownBotao() {
-    if (intervaloCooldownBotao) {
-      clearInterval(intervaloCooldownBotao);
-      intervaloCooldownBotao = null;
-    }
-  }
-
-  function iniciarTimerCooldownBotao() {
-    pararTimerCooldownBotao();
-    atualizarEstadoBotaoTentarNovamente();
-
-    intervaloCooldownBotao = setInterval(function () {
-      atualizarEstadoBotaoTentarNovamente();
-
-      if (!btn_tentar_novamente.disabled) {
-        pararTimerCooldownBotao();
-      }
-    }, 1000);
-  }
-
-  function tentarNovamente() {
-    if (btn_tentar_novamente.disabled) {
-      return;
-    }
-
-    pararTimerCooldownBotao();
-    localStorage.removeItem(chaveResultadoQuiz);
-    localStorage.removeItem(chaveCooldownQuiz);
-    atualizarDisponibilidadeUltimaTentativa();
-
-    numeroDaQuestaoAtual = 0;
-    pontuacaoFinal = 0;
-    quizFinalizado = false;
-    tempoRestanteSegundos = 600;
-
-    resetarAcertosPorCategoria();
-
-    select_quiz_view.value = 'geral';
-    atualizarCamposResultado();
-    definirTexto('span_percentual_final', '0%');
-    limparMensagemResultado();
-
-    desmarcarRadioButtons();
-    limparCoresBackgroundOpcoes();
-
-    iniciarQuiz();
-  }
-
-  function enviar() {
-    fetch("/exames/enviar", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        idUsuarioServer: sessionStorage.ID_USUARIO,
-        poderesPsiquicosServer: acertosPorCategoria.poderesPsiquicos,
-        espiritosServer: acertosPorCategoria.espiritos,
-        organizacoesServer: acertosPorCategoria.organizacoes,
-        personagensServer: acertosPorCategoria.personagens
-      }),
-    })
-      .then(function (resposta) {
-        console.log("resposta: ", resposta);
-
-        if (!resposta.ok) {
-          throw "Houve um erro ao tentar enviar os dados!";
-        }
-
-        return null;
-      })
-      .then(function () {
-        console.log('Dados enviados ao BD com sucesso!');
-      })
-      .catch(function (resposta) {
-        console.log(`#ERRO: ${resposta}`);
-      });
-  }
-
-  function finalizarJogo() {
-    if (quizFinalizado) {
-
-      return;
-    }
-
-    quizFinalizado = true;
-    pararTimerQuiz();
-
-    let textoParaMensagemFinal = null;
-    let classComCoresParaMensagemFinal = null;
-    const porcentagemFinalDeAcertos = pontuacaoFinal / quantidadeDeQuestoes;
-
-    if (porcentagemFinalDeAcertos <= 0.3) {
-      textoParaMensagemFinal = "Parece que você precisa reforçar seus estudos.";
-      classComCoresParaMensagemFinal = "subtitle-danger";
-    }
-    else if (porcentagemFinalDeAcertos > 0.3 && porcentagemFinalDeAcertos < 0.9) {
-      textoParaMensagemFinal = "Bom desempenho, mas ainda dá para evoluir.";
-      classComCoresParaMensagemFinal = "subtitle-warning";
-    }
-    else if (porcentagemFinalDeAcertos >= 0.9) {
-      textoParaMensagemFinal = "Excelente! Você está pronto para as operações.";
-      classComCoresParaMensagemFinal = "subtitle-success";
-    }
-
-    const percentual = Math.round((porcentagemFinalDeAcertos) * 100);
-
-    definirTexto('msg_final', textoParaMensagemFinal);
-    msg_final.classList.remove('subtitle-danger', 'subtitle-warning', 'subtitle-success');
-    msg_final.classList.add(classComCoresParaMensagemFinal);
-    atualizarCamposResultado();
-    definirTexto('span_percentual_final', `${percentual}%`);
-
-    exibirTela('resultado');
-    document.querySelector('#resultado_final .resultado-titulo').style.display = 'none';
-    definirTexto('titulo_topo_quiz', 'RESULTADO FINAL');
-    definirTexto('subtitulo_topo_quiz', textoParaMensagemFinal);
-    subtitulo_topo_quiz.className = classComCoresParaMensagemFinal;
-
-    btn_prox.disabled = true;
-
-    renderizarGraficoRadar();
-    salvarResultadoFinalNoStorage();
-    atualizarDisponibilidadeUltimaTentativa();
-    select_quiz_view.value = 'ultima_tentativa';
-    salvarCooldownNoStorage();
-    iniciarTimerCooldownBotao();
-    console.log('Jogo finalizado!!!')
-    enviar();
-  }
-
-  function renderizarGraficoRadar() {
-    const contexto = radar_categorias;
-
-    if (graficoRadar) {
-      graficoRadar.destroy();
-    }
-
-    graficoRadar = new Chart(contexto, {
-      type: 'radar',
-      data: {
-        labels: ['Poderes Psíquicos', 'Espíritos', 'Organizações', 'Personagens'],
-        datasets: [{
-          label: 'Acertos por categoria',
-          data: [
-            acertosPorCategoria.poderesPsiquicos,
-            acertosPorCategoria.espiritos,
-            acertosPorCategoria.organizacoes,
-            acertosPorCategoria.personagens
-          ],
-          fill: true,
-          backgroundColor: 'rgba(210, 80, 255, 0.2)',
-          borderColor: '#D250FF',
-          pointBackgroundColor: '#E22672',
-          pointBorderColor: '#ffffff',
-          pointHoverBackgroundColor: '#ffffff',
-          pointHoverBorderColor: '#E22672',
-          borderWidth: 3
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          r: {
-            min: 0,
-            max: 5,
-            ticks: {
-              stepSize: 1,
-              backdropColor: 'transparent',
-              color: '#0A0D24'
-            },
-            pointLabels: {
-              color: '#0A0D24',
-              font: {
-                size: 14,
-                weight: '600'
-              }
-            },
-            grid: {
-              color: 'rgba(10, 13, 36, 0.25)'
-            },
-            angleLines: {
-              color: 'rgba(10, 13, 36, 0.25)'
-            }
-          }
-        },
-        plugins: {
-          legend: {
-            labels: {
-              color: '#0A0D24'
-            }
-          }
-        }
-      }
-    });
-  }
-
 </script>
-
-
-

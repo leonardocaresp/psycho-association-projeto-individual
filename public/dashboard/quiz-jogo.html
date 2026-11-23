@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PsychoAssociation | Exame de Aptidão</title>
+  <link rel="stylesheet" href="../css/quiz.css">
+
+  <script src="../js/funcoes.js"></script>
+  <script src="../js/sessao.js"></script>
+
+  <link rel="icon" type="image/x-icon" href="../assets/icon/psycho-association-logo.svg">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+
+<body onload="apagarCarregamento(); validarSessao(); iniciarTelaQuizJogo();">
+  <header>
+    <div class="icon">
+      <img src="../assets/icon/psycho-association-logo.svg">
+    </div>
+    <div class="user-info">
+      <span class="user-name" id="b_usuario"></span>
+      <span class="user-email" id="e_usuario"></span>
+    </div>
+  </header>
+  <nav>
+    <button class="close-nav" onclick="fecharNav()">&lt;</button>
+    <div class="nav-button" onclick="window.location = 'dashboard.html'">
+      <span>PAINEL DE CONTROLE</span>
+      <span><i class="material-icons">dashboard</i></span>
+    </div>
+    <div class="nav-button" onclick="window.location = 'ocorrencias.html'">
+      <span>OCORRÊNCIAS</span>
+      <span><i class="material-icons">view_comfy</i></span>
+    </div>
+    <div class="nav-button" onclick="window.location = 'paranormais.html'">
+      <span>ARQUIVO DE INDIVÍDUOS</span>
+      <span><i class="material-icons">group</i></span>
+    </div>
+    <div class="nav-button selected" onclick="window.location = 'quiz.html'">
+      <span>EXAME DE APTIDÃO</span>
+      <span><i class="material-icons">quiz</i></span>
+    </div>
+
+    <button class="disconnect" onclick="limparSessao()">DESCONECTAR</button>
+  </nav>
+
+  <main>
+
+    <div class="bottom-container">
+      <div class="quiz-content">
+        <div id="jogo" class="jogo-container" style="display: flex;">
+          <div class="timer-quiz">
+            <span id="span_tempo_quiz">10:00</span>
+            <i class="material-icons">timer</i>
+          </div>
+
+          <div id="info_questao" class="info">
+            <span>Questão atual: <span id="span_numero_da_questao_atual"></span> de <span id="qtd_questoes"></span> questões.</span>
+            <progress id="barra" class="progress-bar" value="1" max="20"></progress>
+            <div id="pergunta_da_questao_atual" class="question">
+              <span id="span_titulo_caso_atual" class="case-title"></span>
+              <span id="span_descricao_caso_atual" class="case-description"></span>
+              <span id="span_questao_exibida"></span>
+            </div>
+          </div>
+
+          <div id="opcoes" class="options-container">
+            <span class="choice" onclick="selecionarOpcaoPorId('primeira_opcao')">
+              <div class="choice-letter">A</div>
+              <input type="radio" id="primeira_opcao" name="option" class="radio" value="0" />
+              <label for="primeira_opcao" class="option" id="label_opcao_um"></label>
+            </span>
+            <span class="choice" onclick="selecionarOpcaoPorId('segunda_opcao')">
+              <div class="choice-letter">B</div>
+              <input type="radio" id="segunda_opcao" name="option" class="radio" value="1" />
+              <label for="segunda_opcao" class="option" id="label_opcao_dois"></label>
+            </span>
+            <span class="choice" onclick="selecionarOpcaoPorId('terceira_opcao')">
+              <div class="choice-letter">C</div>
+              <input type="radio" id="terceira_opcao" name="option" class="radio" value="2" />
+              <label for="terceira_opcao" class="option" id="label_opcao_tres"></label>
+            </span>
+            <span class="choice" onclick="selecionarOpcaoPorId('quarta_opcao')">
+              <div class="choice-letter">D</div>
+              <input type="radio" id="quarta_opcao" name="option" class="radio" value="3" />
+              <label for="quarta_opcao" class="option" id="label_opcao_quatro"></label>
+            </span>
+          </div>
+
+          <div id="botoes" class="buttons-container">
+            <div>
+              <button onclick="avancar()" id="btn_prox" class="submit">Próxima questão</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+
+</html>
+<script>
+  const examCategories = {
+    poderesPsiquicos: [
+      {
+        question: "O famoso contador de porcentagem de Shigeo Kageyama é uma das características mais marcantes do anime. Mas o que ele realmente representa?",
+        alternatives: [
+          "A quantidade de energia psíquica que Mob ainda possui.",
+          "O nível de intensidade emocional acumulada até determinado momento.",
+          "A porcentagem de controle que Mob possui sobre seus poderes.",
+          "A quantidade de espíritos que Mob já exorcizou."
+        ],
+        correctAnswer: 1
+      },
+      {
+        question: "Um esper consegue movimentar objetos sem sequer encostar neles. Qual é o nome dessa habilidade? Esperamos que você saiba, afinal, é praticamente o básico do treinamento.",
+        alternatives: ["Telepatia.", "Clarividência.", "Telecinese.", "Projeção astral."],
+        correctAnswer: 2
+      },
+      {
+        question: "Durante a história, Mob demonstra possuir uma quantidade absurda de energia psíquica. Qual é uma característica importante de seus poderes?",
+        alternatives: [
+          "Seus poderes dependem exclusivamente da presença de espíritos.",
+          "Suas habilidades estão fortemente relacionadas às suas emoções.",
+          "Ele só consegue utilizar seus poderes durante a noite.",
+          "Seus poderes são emprestados de outros espers."
+        ],
+        correctAnswer: 1
+      },
+      {
+        question: "Imagine que um esper precisa proteger uma pessoa de um ataque utilizando uma barreira invisível. Qual habilidade seria mais adequada para essa situação?",
+        alternatives: ["Criar uma barreira psíquica.", "Utilizar telepatia.", "Realizar uma projeção astral.", "Executar uma possessão espiritual."],
+        correctAnswer: 0
+      },
+      {
+        question: "No universo de Mob Psycho 100, possuir poderes psíquicos não significa necessariamente ser uma pessoa extraordinária em todos os aspectos. Qual é uma das principais mensagens transmitidas pela história?",
+        alternatives: [
+          "Pessoas com poderes são naturalmente superiores às demais.",
+          "A força psíquica é o único fator que determina o valor de alguém.",
+          "Ter habilidades especiais não torna alguém melhor do que as outras pessoas.",
+          "Todo esper precisa utilizar seus poderes para conseguir reconhecimento."
+        ],
+        correctAnswer: 2
+      }
+    ],
+    espiritos: [
+      {
+        question: "Covinhas, também conhecido como Dimple, inicialmente se aproxima de Mob com um objetivo bastante específico. Qual era sua intenção?",
+        alternatives: ["Tornar-se um exorcista profissional.", "Conseguir seguidores e se tornar um deus.", "Encontrar outros espíritos para formar uma organização.", "Ensinar Mob a controlar seus poderes."],
+        correctAnswer: 1
+      },
+      {
+        question: "Nem todo espírito encontrado por Mob é necessariamente maligno. Mas quando uma entidade começa a possuir pessoas e causar problemas, qual profissional costuma ser chamado para resolver a situação?",
+        alternatives: ["Um investigador criminal.", "Um exorcista.", "Um médico especializado em espers.", "Um membro da Garra."],
+        correctAnswer: 1
+      },
+      {
+        question: "Imagine que você encontrou um espírito extremamente poderoso que consegue manipular pessoas e objetos. Qual é a melhor conclusão inicial?",
+        alternatives: ["Todo espírito poderoso possui intenções malignas.", "A entidade precisa ser avaliada antes que sua natureza e seus objetivos sejam determinados.", "O espírito deve ser imediatamente recrutado pela organização.", "Espíritos não conseguem interagir com o mundo físico."],
+        correctAnswer: 1
+      },
+      {
+        question: "Durante a história, Mob encontra espíritos com diferentes personalidades e intenções. O que isso demonstra sobre as entidades espirituais?",
+        alternatives: ["Todos os espíritos possuem exatamente o mesmo comportamento.", "Espíritos são incapazes de desenvolver relações com humanos.", "As entidades podem apresentar personalidades e objetivos diferentes.", "Todo espírito deseja se tornar um deus."],
+        correctAnswer: 2
+      },
+      {
+        question: "Covinhas passa boa parte da história tentando se aproximar de Mob, mesmo depois de seus planos iniciais não saírem como esperado. Qual característica melhor descreve essa relação?",
+        alternatives: ["Uma rivalidade que nunca permite qualquer tipo de cooperação.", "Uma relação complexa que evolui entre interesses próprios e amizade.", "Uma relação exclusivamente profissional entre mestre e aluno.", "Uma aliança criada para destruir a Garra."],
+        correctAnswer: 1
+      }
+    ],
+    organizacoes: [
+      {
+        question: "A Garra é uma das organizações mais perigosas do universo de Mob Psycho 100. Qual é sua principal característica?",
+        alternatives: ["É uma associação de exorcistas que protege cidades.", "É uma organização formada por espers que busca impor seu domínio por meio dos poderes psíquicos.", "É um laboratório dedicado exclusivamente ao estudo de espíritos.", "É uma escola especializada em desenvolver habilidades psíquicas."],
+        correctAnswer: 1
+      },
+      {
+        question: "A Garra possui uma estrutura hierárquica e membros com diferentes níveis de poder. Como são conhecidos os integrantes de sua divisão de elite?",
+        alternatives: ["Os Sete Clãs.", "Os Sete Mestres.", "Os Super 5.", "Os Cinco Grandes."],
+        correctAnswer: 2
+      },
+      {
+        question: "Toichiro Suzuki é uma figura extremamente importante dentro da Garra. Qual é sua posição na organização?",
+        alternatives: ["Fundador e líder da Garra.", "Um exorcista contratado para combater espíritos.", "Um pesquisador responsável pelo Laboratório de Desenvolvimento.", "Um membro dos Super 5 que deseja derrubar a organização."],
+        correctAnswer: 0
+      },
+      {
+        question: "O Laboratório de Desenvolvimento de Poderes Psíquicos aparece na história como um lugar relacionado a jovens com habilidades especiais. Qual era sua principal finalidade?",
+        alternatives: ["Treinar exorcistas para combater espíritos malignos.", "Estudar e desenvolver habilidades psíquicas de crianças e adolescentes.", "Produzir objetos amaldiçoados para a Garra.", "Investigar fenômenos naturais sem relação com espers."],
+        correctAnswer: 1
+      },
+      {
+        question: "A existência de organizações como a Garra demonstra um problema recorrente no universo de Mob Psycho 100. Qual é ele?",
+        alternatives: ["Todos os espers são incapazes de trabalhar em equipe.", "Pessoas com poderes psíquicos podem utilizar suas habilidades para manipular e controlar outras pessoas.", "Espíritos são sempre mais poderosos que seres humanos.", "A sociedade desconhece completamente a existência de habilidades especiais."],
+        correctAnswer: 1
+      }
+    ],
+    personagens: [
+      {
+        question: "Reigen Arataka é conhecido por trabalhar com fenômenos paranormais, mas existe um detalhe bastante curioso sobre suas habilidades. Qual é?",
+        alternatives: ["Ele possui um dos maiores níveis de energia psíquica do Japão.", "Ele é um espírito que assumiu forma humana.", "Ele não possui poderes psíquicos, mas trabalha como médium e exorcista.", "Ele consegue absorver os poderes de outros espers."],
+        correctAnswer: 2
+      },
+      {
+        question: "Ritsu Kageyama é irmão mais novo de Mob. Qual era uma de suas maiores frustrações no início da história?",
+        alternatives: ["Não conseguir acompanhar Mob nos estudos.", "Não possuir habilidades psíquicas como seu irmão.", "Não conseguir enxergar espíritos.", "Não ser aceito pela organização Garra."],
+        correctAnswer: 1
+      },
+      {
+        question: "Teruki Hanazawa, também conhecido como Teru, começa sua trajetória com uma visão bastante particular sobre os espers. O que ele acreditava inicialmente?",
+        alternatives: ["Que pessoas com poderes psíquicos eram superiores às pessoas comuns.", "Que todos os espíritos deveriam ser protegidos.", "Que Reigen era o esper mais poderoso do Japão.", "Que a Garra deveria controlar todas as cidades."],
+        correctAnswer: 0
+      },
+      {
+        question: "Quem é o principal responsável por orientar Mob sobre como lidar com situações do cotidiano, mesmo não sendo um esper?",
+        alternatives: ["Ritsu Kageyama.", "Teruki Hanazawa.", "Reigen Arataka.", "Toichiro Suzuki."],
+        correctAnswer: 2
+      },
+      {
+        question: "Tome Kurata possui um interesse bastante particular pelo universo paranormal. Qual é sua principal obsessão?",
+        alternatives: ["Encontrar uma organização de exorcistas.", "Estudar e encontrar evidências de fenômenos extraterrestres.", "Tornar-se líder da Garra.", "Desenvolver poderes psíquicos artificiais."],
+        correctAnswer: 1
+      }
+    ]
+  };
+
+  function montarQuestoesPorCategoria(categorias) {
+    const lista = [];
+    const ordemCategorias = ['poderesPsiquicos', 'espiritos', 'organizacoes', 'personagens'];
+    for (let i = 0; i < ordemCategorias.length; i++) {
+      const categoriaAtual = ordemCategorias[i];
+      const listaCategoria = categorias[categoriaAtual];
+      for (let j = 0; j < listaCategoria.length; j++) {
+        const questaoAtual = listaCategoria[j];
+        lista.push({
+          category: categoriaAtual,
+          question: questaoAtual.question,
+          alternatives: questaoAtual.alternatives,
+          correctAnswer: questaoAtual.correctAnswer
+        });
+      }
+    }
+    return lista;
+  }
+
+  const listaDeQuestoes = montarQuestoesPorCategoria(examCategories);
+  const acertosPorCategoria = { poderesPsiquicos: 0, espiritos: 0, organizacoes: 0, personagens: 0 };
+  let numeroDaQuestaoAtual = 0;
+  let pontuacaoFinal = 0;
+  let quizFinalizado = false;
+  let tempoRestanteSegundos = 600;
+  let intervaloTimer = null;
+  let atalhoEnterConfigurado = false;
+
+  function iniciarTelaQuizJogo() {
+    const idUsuarioLogado = sessionStorage.ID_USUARIO || 'anonimo';
+    const chaveCooldownQuiz = `quizCooldownAte_${idUsuarioLogado}`;
+    const cooldownAte = Number(localStorage.getItem(chaveCooldownQuiz) || 0);
+
+    if (!Number.isNaN(cooldownAte) && Date.now() < cooldownAte) {
+      alert('Você ainda está em cooldown. Aguarde antes de iniciar um novo exame.');
+      window.location = 'quiz.html';
+      return;
+    }
+
+    configurarSelecaoOpcoes();
+    configurarAtalhoEnter();
+    resetarAcertosPorCategoria();
+    desmarcarRadioButtons();
+    limparCoresBackgroundOpcoes();
+
+    numeroDaQuestaoAtual = 0;
+    pontuacaoFinal = 0;
+    quizFinalizado = false;
+    tempoRestanteSegundos = 600;
+
+    qtd_questoes.innerHTML = listaDeQuestoes.length;
+    barra.max = listaDeQuestoes.length;
+    barra.value = 1;
+
+    preencherHTMLcomQuestaoAtual(0);
+    iniciarTimerQuiz();
+  }
+
+  function definirTexto(idElemento, valor) {
+    document.getElementById(idElemento).innerHTML = valor;
+  }
+
+  function formatarTempo(totalSegundos) {
+    const minutos = Math.floor(totalSegundos / 60);
+    const segundos = totalSegundos % 60;
+    return `${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+  }
+
+  function atualizarTempoQuiz() {
+    span_tempo_quiz.innerHTML = formatarTempo(tempoRestanteSegundos);
+  }
+
+  function pararTimerQuiz() {
+    if (intervaloTimer) {
+      clearInterval(intervaloTimer);
+      intervaloTimer = null;
+    }
+  }
+
+  function iniciarTimerQuiz() {
+    pararTimerQuiz();
+    atualizarTempoQuiz();
+    intervaloTimer = setInterval(function () {
+      tempoRestanteSegundos--;
+      atualizarTempoQuiz();
+      if (tempoRestanteSegundos <= 0) {
+        pararTimerQuiz();
+        if (!quizFinalizado) {
+          alert('Tempo esgotado! O exame será encerrado automaticamente.');
+          finalizarJogo();
+        }
+      }
+    }, 1000);
+  }
+
+  function configurarAtalhoEnter() {
+    if (atalhoEnterConfigurado) {
+      return;
+    }
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key !== 'Enter') {
+        return;
+      }
+      event.preventDefault();
+      avancar();
+    });
+
+    atalhoEnterConfigurado = true;
+  }
+
+  function preencherHTMLcomQuestaoAtual(index) {
+    habilitarAlternativas(true);
+    const questaoAtual = listaDeQuestoes[index];
+    numeroDaQuestaoAtual = index;
+    definirTexto('span_numero_da_questao_atual', Number(index) + 1);
+    definirTexto('span_titulo_caso_atual', 'EXAME DE APTIDÃO');
+    definirTexto('span_descricao_caso_atual', 'Mostre o seu conhecimento sobre o nosso universo.');
+    definirTexto('span_questao_exibida', questaoAtual.question);
+    definirTexto('label_opcao_um', questaoAtual.alternatives[0]);
+    definirTexto('label_opcao_dois', questaoAtual.alternatives[1]);
+    definirTexto('label_opcao_tres', questaoAtual.alternatives[2]);
+    definirTexto('label_opcao_quatro', questaoAtual.alternatives[3]);
+    barra.value = index + 1;
+  }
+
+  function avancar() {
+    const options = document.getElementsByName('option');
+    let hasChecked = false;
+
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].checked) {
+        hasChecked = true;
+      }
+    }
+
+    if (!hasChecked) {
+      alert('Não há alternativas escolhidas. Escolha uma opção.');
+      return;
+    }
+
+    checarResposta();
+
+    if (numeroDaQuestaoAtual >= listaDeQuestoes.length - 1) {
+      finalizarJogo();
+      return;
+    }
+
+    desmarcarRadioButtons();
+    limparCoresBackgroundOpcoes();
+    preencherHTMLcomQuestaoAtual(numeroDaQuestaoAtual + 1);
+  }
+
+  function configurarSelecaoOpcoes() {
+    const options = document.getElementsByName('option');
+    options.forEach(function (option) {
+      option.addEventListener('change', atualizarOpcaoSelecionadaVisual);
+    });
+  }
+
+  function selecionarOpcaoPorId(idOpcao) {
+    const opcao = document.getElementById(idOpcao);
+    if (!opcao || opcao.disabled) {
+      return;
+    }
+    opcao.checked = true;
+    atualizarOpcaoSelecionadaVisual();
+  }
+
+  function atualizarOpcaoSelecionadaVisual() {
+    const cards = document.querySelectorAll('.choice');
+    cards.forEach(function (card) {
+      card.classList.remove('quiz-option-selected');
+    });
+
+    const opcaoSelecionada = document.querySelector('input[name="option"]:checked');
+    if (opcaoSelecionada) {
+      const cardSelecionado = opcaoSelecionada.closest('.choice');
+      if (cardSelecionado) {
+        cardSelecionado.classList.add('quiz-option-selected');
+      }
+    }
+  }
+
+  function habilitarAlternativas(permitir) {
+    const bloquear = !permitir;
+    primeira_opcao.disabled = bloquear;
+    segunda_opcao.disabled = bloquear;
+    terceira_opcao.disabled = bloquear;
+    quarta_opcao.disabled = bloquear;
+    if (bloquear) {
+      opcoes.classList.add('options-locked');
+    } else {
+      opcoes.classList.remove('options-locked');
+    }
+  }
+
+  function checarResposta() {
+    const questaoAtual = listaDeQuestoes[numeroDaQuestaoAtual];
+    const respostaQuestaoAtual = String(questaoAtual.correctAnswer);
+    const options = document.getElementsByName('option');
+    let alternativaEscolhida = null;
+
+    options.forEach(function (option) {
+      if (option.checked) {
+        alternativaEscolhida = option;
+      }
+    });
+
+    if (!alternativaEscolhida) {
+      return;
+    }
+
+    if (alternativaEscolhida.value === respostaQuestaoAtual) {
+      pontuacaoFinal++;
+      acertosPorCategoria[questaoAtual.category]++;
+    }
+  }
+
+  function limparCoresBackgroundOpcoes() {
+    const cards = document.querySelectorAll('.choice');
+    cards.forEach(function (card) {
+      card.classList.remove('quiz-option-selected');
+      card.classList.remove('quiz-option-correct');
+      card.classList.remove('quiz-option-wrong');
+    });
+  }
+
+  function desmarcarRadioButtons() {
+    const options = document.getElementsByName('option');
+    for (let i = 0; i < options.length; i++) {
+      options[i].checked = false;
+    }
+    atualizarOpcaoSelecionadaVisual();
+  }
+
+  function resetarAcertosPorCategoria() {
+    acertosPorCategoria.poderesPsiquicos = 0;
+    acertosPorCategoria.espiritos = 0;
+    acertosPorCategoria.organizacoes = 0;
+    acertosPorCategoria.personagens = 0;
+  }
+
+  function obterMensagemResultadoPorPercentual(percentual) {
+    if (percentual <= 30) {
+      return { mensagem: 'Parece que você precisa reforçar seus estudos.', classe: 'subtitle-danger' };
+    }
+
+    if (percentual > 30 && percentual < 90) {
+      return { mensagem: 'Bom desempenho, mas ainda dá para evoluir.', classe: 'subtitle-warning' };
+    }
+
+    return { mensagem: 'Excelente! Você está pronto para as operações.', classe: 'subtitle-success' };
+  }
+
+  function salvarResultadoFinalNoStorage(mensagemFinal, classeMensagemFinal) {
+    const idUsuarioLogado = sessionStorage.ID_USUARIO || 'anonimo';
+    const chaveResultadoQuiz = `quizResultado_${idUsuarioLogado}`;
+    const percentual = Math.round((pontuacaoFinal / listaDeQuestoes.length) * 100);
+
+    const dadosResultado = {
+      pontuacaoFinal: pontuacaoFinal,
+      quantidadeDeQuestoes: listaDeQuestoes.length,
+      percentual: percentual,
+      mensagemFinal: mensagemFinal,
+      classeMensagemFinal: classeMensagemFinal,
+      acertosPorCategoria: {
+        poderesPsiquicos: acertosPorCategoria.poderesPsiquicos,
+        espiritos: acertosPorCategoria.espiritos,
+        organizacoes: acertosPorCategoria.organizacoes,
+        personagens: acertosPorCategoria.personagens
+      }
+    };
+
+    localStorage.setItem(chaveResultadoQuiz, JSON.stringify(dadosResultado));
+  }
+
+  function salvarCooldownNoStorage() {
+    const idUsuarioLogado = sessionStorage.ID_USUARIO || 'anonimo';
+    const chaveCooldownQuiz = `quizCooldownAte_${idUsuarioLogado}`;
+    const tempoCooldownMilissegundos = 10 * 60 * 1000;
+    const cooldownAte = Date.now() + tempoCooldownMilissegundos;
+    localStorage.setItem(chaveCooldownQuiz, String(cooldownAte));
+  }
+
+  function enviar() {
+    fetch('/exames/enviar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        idUsuarioServer: sessionStorage.ID_USUARIO,
+        poderesPsiquicosServer: acertosPorCategoria.poderesPsiquicos,
+        espiritosServer: acertosPorCategoria.espiritos,
+        organizacoesServer: acertosPorCategoria.organizacoes,
+        personagensServer: acertosPorCategoria.personagens
+      })
+    }).catch(function (erro) {
+      console.log('#ERRO:', erro);
+    });
+  }
+
+  function finalizarJogo() {
+    if (quizFinalizado) {
+      return;
+    }
+
+    quizFinalizado = true;
+    pararTimerQuiz();
+
+    const percentual = Math.round((pontuacaoFinal / listaDeQuestoes.length) * 100);
+    const resumoMensagem = obterMensagemResultadoPorPercentual(percentual);
+
+    salvarResultadoFinalNoStorage(resumoMensagem.mensagem, resumoMensagem.classe);
+    salvarCooldownNoStorage();
+    enviar();
+
+    window.location = 'quiz-ultima-tentativa.html';
+  }
+</script>
