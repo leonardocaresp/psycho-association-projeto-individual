@@ -133,7 +133,7 @@ p {
     position: relative;
     z-index: 1;
     text-shadow: -7px -6px rgba(0, 0, 0, 0.233);
-    font-size: 64px;
+    font-size: 66px;
     line-height: 80px;
 }
 
@@ -143,14 +143,65 @@ p {
     top: 30px;
     left: -10px;
     width: 95%;
-    height: 80%;
+    height: 90%;
     background-color: var(--azul-escuro);
     z-index: -1;
 }
 
 .main-text p {
     color: white;
-    width: 75%;
+    width: 100%;
+}
+
+.main-buttons {
+    display: flex;
+    column-gap: 24px;
+    width: 80%;
+}
+
+.main-buttons button {
+    width: 50%;
+    box-sizing: border-box;
+    padding: 6px 12px;
+    color: white;
+    box-shadow: 5px 5px var(--azul-escuro);
+    transition: 0.8s cubic-bezier(0.08, 0.82, 0.17, 1);
+    cursor: pointer;
+    margin-top: 24px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.main-buttons button:hover {
+    transform: rotate(1deg);
+    filter: brightness(90%);
+    box-shadow: none;
+}
+
+.main-buttons .btn-1 {
+    border: 2px solid white;
+    background-color: var(--roxo-claro);
+}
+
+.main-buttons .btn-2 {
+    border: 2px solid white;
+    background-color: var(--rosa-choque);
+}
+
+.main-buttons .btn-2 span {
+    animation-name: levitando;
+    animation-duration: 0.6s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+@keyframes levitando {
+    0% {
+        transform: translateY(-2px);
+    } 100% {
+        transform: translateY(2px);
+    }
 }
 
 .main-image {
@@ -160,7 +211,7 @@ p {
 
 .main-image .img-1 {
     position: absolute;
-    top: -96px;
+    top: -140px;
     left: -140px;
     width: 800px;
     z-index: 1010;
@@ -181,11 +232,11 @@ p {
     clip-path: polygon(0 100px, 100% 0, 100% calc(100% - 100px), 0 100%);
     margin-top: -100px;
     z-index: 10;
-    position: relative;
+    bottom: -200px;
+    position: absolute;
 }
 
 .about-section {
-    margin-top: -90px;
     z-index: -10000;
 }
 
@@ -205,7 +256,7 @@ p {
 }
 
 .about-text {
-    width: 35%;
+    width: 45%;
 }
 
 .about-text h3 {
@@ -214,6 +265,11 @@ p {
 
 .about-text h2 {
     color: var(--rosa-choque);
+    font-size: 60px;
+}
+
+.about-text p {
+    width: 80%;
 }
 
 .about-image img {
@@ -375,7 +431,7 @@ p {
 .call-section {
     margin-top: 40px;
     position: relative;
-    height: 750px;
+    height: 650px;
 }
 
 .call-section .raio-1 {
@@ -391,18 +447,22 @@ p {
     z-index: -1000;
 }
 
-.call-image .img-1 {
+.call-image img{
     position: absolute;
     right: 0px;
-    top: 0px;
+    top: -60px;
     z-index: -1000;
 }
 
-.call-image .img-2 {
-    position: absolute;
-    right: 0px;
-    top: 5px;
+.call-image .img-3{
+    z-index: 1000;
+    margin-top: 48px;
 }
+
+.call-image .img-2{
+    margin-top: 10px;
+}
+
 
 .call-text {
     width: 70%;
@@ -424,7 +484,7 @@ p {
     box-shadow: 8px 8px var(--azul-escuro);
     cursor: pointer;
     border: solid 5px var(--azul-escuro);
-    width: 1000px;
+    width: 700px;
     transition: 0.8s cubic-bezier(0.08, 0.82, 0.17, 1);
 }
 
@@ -432,6 +492,10 @@ p {
     transform: rotate(0.5deg);
     filter: brightness(90%);
     box-shadow: none;
+}
+
+#call {
+    scroll-margin-top: 180px;
 }
 
 footer {

@@ -16,6 +16,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link rel="icon" type="image/x-icon" href="assets/icon/psycho-association-logo.svg">
 
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
 </head>
 
 <header>
@@ -41,6 +43,10 @@
         <h3>ORGANIZAÇÃO DE INVESTIGAÇÃO PARANORMAL</h3>
         <h2>O SOBRENATURAL NÃO VAI SE INVESTIGAR SOZINHO</h2>
         <p>Da aparição de espíritos à ameaça de organizações, o mundo paranormal está longe de ser tranquilo. Nós investigamos o inexplicável, protegemos pessoas e tentamos impedir que o caos tome conta de tudo.</p>
+        <div class="main-buttons">
+          <button class="btn-1" onclick="window.location = '#call'">SOLICITAR ENTRADA</button>
+          <button class="btn-2" onclick="window.location = '#about'">CONHECER A ORGANIZAÇÃO <span class="material-icons">arrow_downward</span></button>
+        </div>
       </div>
     </div>
   </section>
@@ -114,18 +120,21 @@
     </div>
   </section>
 
-  <section class="call-section">
+  <section class="call-section" id="call">
     <div class="limit call-content">
       <div class="call-text">
         <h3>PROCESSO DE RECRUTAMENTO ABERTO</h3>
         <h2>VOCÊ NÃO PRECISA DE PODERES PARA ENTRAR</h2>
-        <p>Acreditamos que habilidades psíquicas não são tudo. Conhecimento, raciocínio e capacidade de trabalhar em equipe também são fundamentais para enfrentar o desconhecido.</p>
+        <p>Não importa se você consegue mover objetos com a mente ou se ainda tem medo de dormir com a luz apagada. A Psycho Association está em busca de novos membros para ajudar a investigar e documentar fenômenos paranormais.</p>
+        <button onclick="window.location = 'cadastro.html'">SOLICITAR ENTRADA</button>
       </div>
-      <button onclick="window.location = 'cadastro.html'">SOLICITAR ENTRADA</button>
+      
       <div class="call-image">
         <img src="assets/imgs/shigeo-kageyama.png" class="img-1">
         <img src="assets/imgs/shigeo-kageyama-outline.png" class="img-2">
+        <img src="assets/imgs/Frame 15.png" class="img-3">
       </div>
+      
     </div>
     <img class="raio-1" src="assets/imgs/raio.png" alt="">
     <img class="raio-2" src="assets/imgs/raio-2.png" alt="">
