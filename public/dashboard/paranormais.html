@@ -72,41 +72,97 @@
 <script>
   const personagensParanormais = [
     {
-      nome: 'ARATAKA REIGEN',
-      tipo: 'Paranormal',
-      descricao: 'Fundador e atual responsável pela Psycho Association, Reigen é um especialista em fenômenos paranormais e um excelente negociador. Com habilidades excepcionais de comunicação, sabe lidar com clientes, situações complicadas e, principalmente, com a administração da organização. Sua experiência é inquestionável. Seus métodos, nem sempre.',
-      imagem: '../assets/imgs/arataka-reigen-vertical-image.jfif',
-      alt: 'Arataka Reigen'
+        nome: 'ARATAKA REIGEN',
+        tipo: 'Paranormal',
+        descricao: 'Fundador e atual responsável pela Psycho Association, Reigen é um especialista em fenômenos paranormais e um excelente negociador. Com habilidades excepcionais de comunicação, sabe lidar com clientes, situações complicadas e, principalmente, com a administração da organização. Sua experiência é inquestionável. Seus métodos, nem sempre.',
+        imagem: '../assets/imgs/tela-personagens/arataka-reigen.png',
+        alt: 'Arataka Reigen'
     },
     {
-      nome: 'SHIGEO KAGEYAMA',
-      tipo: 'Paranormal',
-      descricao: 'Conhecido como Mob, Shigeo é um jovem de poucas palavras e um potencial psíquico extraordinário. Sua capacidade de canalizar enormes quantidades de energia paranormal faz dele um dos principais agentes de campo da organização. Apesar de seu poder impressionante, prefere evitar conflitos e levar uma vida tranquila. Recomendamos não testar seus limites emocionais.',
-      imagem: '../assets/imgs/Gemini_Generated_Image_cseoshcseoshcseo.jfif',
-      alt: 'Shigeo Kageyama'
+        nome: 'SHIGEO KAGEYAMA',
+        tipo: 'Paranormal',
+        descricao: 'Conhecido como Mob, Shigeo é um jovem de poucas palavras e um potencial psíquico extraordinário. Sua capacidade de canalizar enormes quantidades de energia paranormal faz dele um dos principais agentes de campo da organização. Apesar de seu poder impressionante, prefere evitar conflitos e levar uma vida tranquila. Recomendamos não testar seus limites emocionais.',
+        imagem: '../assets/imgs/tela-personagens/shigeo-kageyama.png',
+        alt: 'Shigeo Kageyama'
     },
     {
-      nome: 'TERUKI HANAZAWA',
-      tipo: 'Paranormal',
-      descricao: 'Também conhecido como Teru, Hanazawa é um paranormal habilidoso que possui excelente controle sobre suas capacidades psíquicas. Sua experiência em confrontos sobrenaturais e sua versatilidade no uso da telecinese fazem dele um dos agentes mais preparados para situações de risco. Possui bastante confiança em suas habilidades. Às vezes, até demais.',
-      imagem: '../assets/imgs/teruki-hanazawa-vertical-image.jfif',
-      alt: 'Teruki Hanazawa'
+        nome: 'TERUKI HANAZAWA',
+        tipo: 'Paranormal',
+        descricao: 'Também conhecido como Teru, Hanazawa é um paranormal habilidoso que possui excelente controle sobre suas capacidades psíquicas. Sua experiência em confrontos sobrenaturais e sua versatilidade no uso da telecinese fazem dele um dos agentes mais preparados para situações de risco. Possui bastante confiança em suas habilidades. Às vezes, até demais.',
+        imagem: '../assets/imgs/tela-personagens/teruki-hanazawa.png',
+        alt: 'Teruki Hanazawa'
     },
     {
-      nome: 'RITSU KAGEYAMA',
-      tipo: 'Paranormal',
-      descricao: 'Irmão mais novo de Shigeo, Ritsu é um estudante extremamente inteligente e disciplinado, com habilidades psíquicas próprias. Sua capacidade analítica e facilidade para compreender fenômenos complexos fazem dele um importante membro da equipe de investigação. Embora inicialmente tenha demonstrado interesse em superar o irmão, hoje utiliza suas habilidades para objetivos mais construtivos.',
-      imagem: '../assets/imgs/ritsu-kageyama-vertical-image.jfif',
-      alt: 'Ritsu Kageyama'
+        nome: 'RITSU KAGEYAMA',
+        tipo: 'Paranormal',
+        descricao: 'Irmão mais novo de Shigeo, Ritsu é um estudante extremamente inteligente e disciplinado, com habilidades psíquicas próprias. Sua capacidade analítica e facilidade para compreender fenômenos complexos fazem dele um importante membro da equipe de investigação. Embora inicialmente tenha demonstrado interesse em superar o irmão, hoje utiliza suas habilidades para objetivos mais construtivos.',
+        imagem: '../assets/imgs/tela-personagens/ritsu-kageyama.png',
+        alt: 'Ritsu Kageyama'
     },
     {
-      nome: 'COVINHAS',
-      tipo: 'Espírito',
-      descricao: 'Uma entidade espiritual de personalidade excêntrica e ambições questionáveis. Após inúmeras experiências no mundo dos vivos, Covinhas passou a colaborar com a organização, oferecendo conhecimentos sobre espíritos, possessões e manifestações sobrenaturais. Apesar de sua aparência peculiar, é um recurso valioso para investigações envolvendo outras entidades. Não aceite conselhos sobre dominação mundial.',
-      imagem: '../assets/imgs/covinhas-imagem.webp',
-      alt: 'Covinhas'
+        nome: 'COVINHAS',
+        tipo: 'Espírito',
+        descricao: 'Uma entidade espiritual de personalidade excêntrica e ambições questionáveis. Após inúmeras experiências no mundo dos vivos, Covinhas passou a colaborar com a organização, oferecendo conhecimentos sobre espíritos, possessões e manifestações sobrenaturais. Apesar de sua aparência peculiar, é um recurso valioso para investigações envolvendo outras entidades. Não aceite conselhos sobre dominação mundial.',
+        imagem: '../assets/imgs/tela-personagens/ekubo.png',
+        alt: 'Covinhas'
+    },
+    {
+        nome: 'KATSUYA SERIZAWA',
+        tipo: 'Paranormal',
+        descricao: 'Ex-integrante da organização Garra, Serizawa possui uma quantidade extraordinária de energia psíquica. Após superar anos de isolamento, passou a trabalhar ao lado de Reigen, utilizando suas habilidades para auxiliar pessoas afetadas por fenômenos sobrenaturais. Apesar de sua força impressionante, ainda está desenvolvendo sua confiança e suas habilidades sociais.',
+        imagem: '../assets/imgs/tela-personagens/serizawa-katsuya.png',
+        alt: 'Katsuya Serizawa'
+    },
+    {
+        nome: 'TOME KURATA',
+        tipo: 'Humano',
+        descricao: 'Ex-presidente do Clube de Telepatia, Tome possui um interesse praticamente inesgotável por fenômenos inexplicáveis, extraterrestres e comunicação psíquica. Embora não apresente habilidades paranormais conhecidas, sua curiosidade e determinação são características valiosas para investigações. É capaz de transformar qualquer acontecimento estranho em uma possível evidência de vida alienígena.',
+        imagem: '../assets/imgs/tela-personagens/tome-kurata.png',
+        alt: 'Tome Kurata'
+    },
+    {
+        nome: 'SHO SUZUKI',
+        tipo: 'Paranormal',
+        descricao: 'Filho do antigo líder da organização Garra, Sho é um jovem paranormal com habilidades ofensivas impressionantes e grande capacidade de armazenar energia psíquica. Independente e estrategista, demonstrou coragem ao enfrentar os planos de seu próprio pai. Possui uma tendência a agir por conta própria, mesmo quando a situação exige planejamento coletivo.',
+        imagem: '../assets/imgs/tela-personagens/sho-suzuki.png',
+        alt: 'Sho Suzuki'
+    },
+    {
+        nome: 'MUSASHI GODA',
+        tipo: 'Humano',
+        descricao: 'Presidente do Clube de Aperfeiçoamento Corporal, Musashi é um exemplo de disciplina, determinação e companheirismo. Apesar de não possuir habilidades psíquicas, sua força física e disposição para proteger os outros são notáveis. Exerce uma influência positiva sobre Shigeo e acredita que qualquer pessoa pode evoluir por meio do esforço. Desistir não faz parte de seu vocabulário.',
+        imagem: '../assets/imgs/tela-personagens/musashi-godo.png',
+        alt: 'Musashi Goda'
+    },
+    {
+        nome: 'TENGA ONIGAWARA',
+        tipo: 'Humano',
+        descricao: 'Anteriormente conhecido por sua reputação de delinquente, Onigawara passou a integrar o Clube de Aperfeiçoamento Corporal em busca de desenvolvimento pessoal. Sua aparência intimidadora esconde uma personalidade leal e determinada. Embora não possua capacidades paranormais, demonstra coragem diante de situações adversas. Não confunda sua expressão habitual com hostilidade.',
+        imagem: '../assets/imgs/tela-personagens/onigawara-tenga.png',
+        alt: 'Tenga Onigawara'
+    },
+    {
+        nome: 'TSUBOMI TAKANE',
+        tipo: 'Humano',
+        descricao: 'Amiga de infância de Shigeo, Tsubomi é uma estudante conhecida por sua personalidade independente e por não se impressionar facilmente com habilidades paranormais. Não possui poderes psíquicos conhecidos, mas exerce uma influência significativa no desenvolvimento emocional de Mob. Sua presença demonstra que capacidades extraordinárias nem sempre são necessárias para causar um grande impacto.',
+        imagem: '../assets/imgs/tela-personagens/tsubomi.png',
+        alt: 'Tsubomi Takane'
+    },
+    {
+        nome: 'NOZOMU HATORI',
+        tipo: 'Paranormal',
+        descricao: 'Ex-integrante dos Cinco Supremos da organização Garra, Hatori possui a capacidade de controlar dispositivos eletrônicos por meio de suas habilidades psíquicas. Seu domínio sobre equipamentos tecnológicos representa um risco considerável para sistemas de comunicação e infraestrutura. Recomenda-se atenção especial ao funcionamento de aparelhos eletrônicos durante ocorrências envolvendo este indivíduo.',
+        imagem: '../assets/imgs/tela-personagens/nozomo-hatori.png',
+        alt: 'Nozomu Hatori'
+    },
+    {
+        nome: 'TOSHIKI MINEGISHI',
+        tipo: 'Paranormal',
+        descricao: 'Ex-integrante dos Cinco Supremos da organização Garra, Minegishi possui a habilidade de manipular plantas e acelerar seu crescimento por meio de energia psíquica. Seu poder permite transformar vegetações aparentemente inofensivas em estruturas de grande capacidade ofensiva e defensiva. Após a queda da Garra, passou a trabalhar em uma floricultura. Uma escolha profissional bastante apropriada.',
+        imagem: '../assets/imgs/tela-personagens/toshiki-minegishi.png',
+        alt: 'Toshiki Minegishi'
     }
-  ];
+];
 
   let paginaAtualParanormais = 1;
   let totalPaginasParanormais = 1;

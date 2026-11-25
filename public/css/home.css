@@ -46,7 +46,7 @@ header ul {
 }
 
 header ul li {
-    font-weight: 500;
+    font-weight: 400;
     position: relative;
     cursor: pointer;
 }
@@ -203,6 +203,7 @@ p {
     cursor: pointer;
     margin-top: 24px;
     align-items: center;
+    font-weight: 500;
     display: flex;
     justify-content: center;
 }

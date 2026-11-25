@@ -22,6 +22,11 @@ main .bottom-container {
   padding: 4px 18px;
   cursor: pointer;
   border: none;
+  transition: 0.2s;
+}
+
+.top-container button:hover {
+  transform: scale(1.07);
 }
 
 .left-button {
