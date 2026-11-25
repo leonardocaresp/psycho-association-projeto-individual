@@ -10,20 +10,20 @@ FLUSH PRIVILEGES;
 
 CREATE TABLE usuario (
     id INT NOT NULL AUTO_INCREMENT,
-    nome VARCHAR(55) DEFAULT NULL,
-    email VARCHAR(200) DEFAULT NULL,
-    senha VARCHAR(55) DEFAULT NULL,
+    nome VARCHAR(55) NOT NULL,
+    email VARCHAR(200) NOT NULL UNIQUE,
+    senha VARCHAR(55) NOT NULL,
     PRIMARY KEY (id)
 );
 
 CREATE TABLE ocorrencia (
     id INT NOT NULL AUTO_INCREMENT,
-    titulo VARCHAR(55) DEFAULT NULL,
-    classificacao VARCHAR(55) DEFAULT NULL,
-    status VARCHAR(55) DEFAULT NULL,
-    local VARCHAR(100) DEFAULT NULL,
-    descricao VARCHAR(500) DEFAULT NULL,
-    fk_usuario INT DEFAULT NULL,
+    titulo VARCHAR(55) NOT NULL,
+    classificacao VARCHAR(55) NOT NULL,
+    status VARCHAR(55) NOT NULL,
+    local VARCHAR(100) NOT NULL,
+    descricao VARCHAR(500) NOT NULL,
+    fk_usuario INT NOT NULL,
     dt_ocorrencia DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     KEY fk_usuario (fk_usuario),
@@ -33,10 +33,10 @@ CREATE TABLE ocorrencia (
 
 CREATE TABLE resultado_exame (
     id INT NOT NULL AUTO_INCREMENT,
-    poderes_psiquicos TINYINT DEFAULT NULL,
-    espiritos TINYINT DEFAULT NULL,
-    organizacoes TINYINT DEFAULT NULL,
-    personagens TINYINT DEFAULT NULL,
+    poderes_psiquicos TINYINT DEFAULT 0,
+    espiritos TINYINT DEFAULT 0,
+    organizacoes TINYINT DEFAULT 0,
+    personagens TINYINT DEFAULT 0,
     fk_usuario INT NOT NULL,
     dt_exame DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id, fk_usuario),
@@ -107,6 +107,38 @@ SELECT
     COUNT(CASE WHEN status = 'Sem explicação' THEN 1 END) AS sem_explicacao,
     COUNT(id) AS total
 FROM ocorrencia;
+
+CREATE VIEW vw_ocorrencias_mensais AS
+SELECT
+    YEAR(dt_ocorrencia) AS ano,
+    MONTH(dt_ocorrencia) AS mes,
+    COUNT(id) AS total_ocorrencias
+FROM ocorrencia
+GROUP BY
+    YEAR(dt_ocorrencia),
+    MONTH(dt_ocorrencia);
+    
+    SELECT * FROM vw_ocorrencias_mensais
+ORDER BY ano, mes;
+
+CREATE VIEW vw_ocorrencias_mensais_usuario AS
+SELECT
+    usuario.id AS id_usuario,
+    usuario.nome AS nome_usuario,
+    YEAR(ocorrencia.dt_ocorrencia) AS ano,
+    MONTH(ocorrencia.dt_ocorrencia) AS mes,
+    COUNT(ocorrencia.id) AS total_ocorrencias
+FROM ocorrencia
+JOIN usuario
+    ON ocorrencia.fk_usuario = usuario.id
+GROUP BY
+    usuario.id,
+    usuario.nome,
+    YEAR(ocorrencia.dt_ocorrencia),
+    MONTH(ocorrencia.dt_ocorrencia);
+    
+SELECT * FROM vw_ocorrencias_mensais_usuario
+ORDER BY id_usuario, ano, mes;
 
 SELECT * FROM vw_ocorrencias_geral;
 
