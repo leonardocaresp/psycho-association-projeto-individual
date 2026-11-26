@@ -392,6 +392,7 @@ main .quiz-content {
   min-width: 0;
   border: solid 2px var(--azul-escuro);
   clip-path: polygon(0% 0%, 90% 0%, 100% 5%, 100% 100%, 0% 100%);
+  max-height: 420px;
 }
 
 .exam-category-chart {
@@ -410,6 +411,10 @@ main .quiz-content {
   padding: 24px;
   background-color: white;
   color: var(--azul-escuro);
+}
+
+#ranking {
+  overflow-y: scroll;
 }
 
 .exam-dashboard p {

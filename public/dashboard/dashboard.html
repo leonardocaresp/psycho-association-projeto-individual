@@ -2,179 +2,178 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PsychoAssociation | Relatórios</title>
-  <link rel="stylesheet" href="../css/painel.css">
-  <link rel="icon" type="image/x-icon" href="../assets/icon/psycho-association-logo.svg">
-  <script src="../js/funcoes.js"></script>
-  <script src="../js/sessao.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PsychoAssociation | Relatórios</title>
+    <link rel="stylesheet" href="../css/painel.css">
+    <link rel="icon" type="image/x-icon" href="../assets/icon/psycho-association-logo.svg">
+    <script src="../js/funcoes.js"></script>
+    <script src="../js/sessao.js"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 
 <body onload="apagarCarregamento(); validarSessao(); obterDadosGrafico();">
-  <header>
-    <div class="icon">
-      <img src="../assets/icon/psycho-association-logo.svg">
-    </div>
-    <div class="user-info">
-      <span class="user-name" id="b_usuario"></span>
-      <span class="user-email" id="e_usuario"></span>
-    </div>
-  </header>
-  <nav>
-    <button class="close-nav" onclick="fecharNav()">
-      <
-    </button>
-    <div class="nav-button selected">
-      <span>PAINEL DE CONTROLE</span>
-      <span><i class="material-icons">dashboard</i></span>
-    </div>
-    <div class="nav-button" onclick="window.location = 'ocorrencias.html'">
-      <span>OCORRÊNCIAS</span>
-     <span><i class="material-icons">view_comfy</i></span>
-    </div>
-    <div class="nav-button" onclick="window.location = 'paranormais.html'">
-      <span>ARQUIVO DE INDIVÍDUOS</span>
-      <span><i class="material-icons"">group</i></span>
-    </div>
-    <div class="nav-button" onclick="window.location = 'quiz.html'">
-      <span>EXAME DE APTIDÃO</span>
-      <span><i class="material-icons">quiz</i></span>
-    </div>
-
-    <button class="disconnect" onclick="limparSessao()">
-      DESCONECTAR
-    </button>
-  </nav>
-
-  <main>
-    <div class="top-container">
-      <div>
-        <h2 id="h2_boas_vindas">BEM-VINDO DE VOLTA, </h2>
-        <h3>Confira seu desempenho e as atividades recentes da organização.</h3>
-      </div>
-      <div class="dashboard-view-select">
-        <select id="select_dashboard" name="dashboardView" onchange="obterDadosGrafico()">
-          <option value="individual">Individual</option>
-          <option value="geral">Geral</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="bottom-container">
-
-      <div class="kpi-row">
-
-        <div class="kpi">
-          <div class="top">
-            TOTAL DE OCORRÊNCIAS
-          </div>
-          <div class="bottom">
-            <div id="kpi_total_valor">0</div>
-            <span id="kpi_total_subtitulo">Registros cadastrados</span>
-          </div>
+    <header>
+        <div class="icon">
+            <img src="../assets/icon/psycho-association-logo.svg">
         </div>
-
-        <div class="kpi">
-          <div class="top">
-            EM INVESTIGAÇÃO
-          </div>
-          <div class="bottom">
-            <div id="kpi_investigacao_valor">0</div>
-            <span id="kpi_investigacao_subtitulo">0% do total</span>
-          </div>
+        <div class="user-info">
+            <span class="user-name" id="b_usuario"></span>
+            <span class="user-email" id="e_usuario"></span>
         </div>
+    </header>
+    <nav>
+        <button class="close-nav" onclick="fecharNav()">
+            < </button>
+                <div class="nav-button selected">
+                    <span>PAINEL DE CONTROLE</span>
+                    <span><i class="material-icons">dashboard</i></span>
+                </div>
+                <div class="nav-button" onclick="window.location = 'ocorrencias.html'">
+                    <span>OCORRÊNCIAS</span>
+                    <span><i class="material-icons">view_comfy</i></span>
+                </div>
+                <div class="nav-button" onclick="window.location = 'paranormais.html'">
+                    <span>ARQUIVO DE INDIVÍDUOS</span>
+                    <span><i class="material-icons"">group</i></span>
+    </div>
+    <div class=" nav-button" onclick="window.location = 'quiz.html'">
+                            <span>EXAME DE APTIDÃO</span>
+                            <span><i class="material-icons">quiz</i></span>
+                </div>
 
-        <div class="kpi">
-          <div class="top">
-            TAXA DE RESOLUÇÃO
-          </div>
-          <div class="bottom">
-            <div id="kpi_resolucao_valor">0%</div>
-            <span id="kpi_resolucao_subtitulo">0 de 0 ocorrências</span>
-          </div>
-        </div>
+                <button class="disconnect" onclick="limparSessao()">
+                    DESCONECTAR
+                </button>
+    </nav>
 
-        <div class="kpi">
-          <div class="top">
-            INCONCLUSIVAS
-          </div>
-          <div class="bottom">
-            <div id="kpi_inconclusivas_valor">0</div>
-            <span id="kpi_inconclusivas_subtitulo">0% do total</span>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="charts-row">
-
-        <div class="chart">
-          <div class="top">
-            OCORRÊNCIAS POR CLASSIFICAÇÃO
-          </div>
-          <div class="bottom">
-            <div class="chart-canvas">
-              <canvas id="my_chart"></canvas>
+    <main>
+        <div class="top-container">
+            <div>
+                <h2 id="h2_boas_vindas">BEM-VINDO DE VOLTA, </h2>
+                <h3>Confira seu desempenho e as atividades recentes da organização.</h3>
             </div>
-          </div>
+            <div class="dashboard-view-select">
+                <select id="select_dashboard" name="dashboardView" onchange="obterDadosGrafico()">
+                    <option value="individual">Individual</option>
+                    <option value="geral">Geral</option>
+                </select>
+            </div>
         </div>
 
-        <div class="chart">
-          <div class="top">
-            DISTRIBUIÇÃO DOS STATUS
-          </div>
-          <div class="bottom">
-            <div class="chart-canvas">
-              <canvas id="grafico_status"></canvas>
-            </div>
-            <div class="status-metrics">
-              <div class="metric">
-                <div class="orange square"></div>
-                <span>EM INVESTIGAÇÃO</span>
-                <span class="valor" id="metric_investigacao">0 (0%)</span>
-              </div>
-              <hr>
-              <div class="metric">
-                <div class="green square"></div>
-                <span>RESOLVIDOS</span>
-                <span class="valor" id="metric_resolvidos">0 (0%)</span>
-              </div>
-              <hr>
-              <div class="metric">
-                <div class="red square"></div>
-                <span>SEM EXPLICAÇÃO</span>
-                <span class="valor" id="metric_sem_explicacao">0 (0%)</span>
-              </div>
+        <div class="bottom-container">
+
+            <div class="kpi-row">
+
+                <div class="kpi">
+                    <div class="top">
+                        TOTAL DE OCORRÊNCIAS
+                    </div>
+                    <div class="bottom">
+                        <div id="kpi_total_valor">0</div>
+                        <span id="kpi_total_subtitulo">Registros cadastrados</span>
+                    </div>
+                </div>
+
+                <div class="kpi">
+                    <div class="top">
+                        EM INVESTIGAÇÃO
+                    </div>
+                    <div class="bottom">
+                        <div id="kpi_investigacao_valor">0</div>
+                        <span id="kpi_investigacao_subtitulo">0% do total</span>
+                    </div>
+                </div>
+
+                <div class="kpi">
+                    <div class="top">
+                        TAXA DE RESOLUÇÃO
+                    </div>
+                    <div class="bottom">
+                        <div id="kpi_resolucao_valor">0%</div>
+                        <span id="kpi_resolucao_subtitulo">0 de 0 ocorrências</span>
+                    </div>
+                </div>
+
+                <div class="kpi">
+                    <div class="top">
+                        INCONCLUSIVAS
+                    </div>
+                    <div class="bottom">
+                        <div id="kpi_inconclusivas_valor">0</div>
+                        <span id="kpi_inconclusivas_subtitulo">0% do total</span>
+                    </div>
+                </div>
+
             </div>
 
-          </div>
-        </div>
+            <div class="charts-row">
+
+                <div class="chart">
+                    <div class="top">
+                        OCORRÊNCIAS POR CLASSIFICAÇÃO
+                    </div>
+                    <div class="bottom">
+                        <div class="chart-canvas">
+                            <canvas id="my_chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart">
+                    <div class="top">
+                        DISTRIBUIÇÃO DOS STATUS
+                    </div>
+                    <div class="bottom">
+                        <div class="chart-canvas">
+                            <canvas id="grafico_status"></canvas>
+                        </div>
+                        <div class="status-metrics">
+                            <div class="metric">
+                                <div class="orange square"></div>
+                                <span>EM INVESTIGAÇÃO</span>
+                                <span class="valor" id="metric_investigacao">0 (0%)</span>
+                            </div>
+                            <hr>
+                            <div class="metric">
+                                <div class="green square"></div>
+                                <span>RESOLVIDOS</span>
+                                <span class="valor" id="metric_resolvidos">0 (0%)</span>
+                            </div>
+                            <hr>
+                            <div class="metric">
+                                <div class="red square"></div>
+                                <span>SEM EXPLICAÇÃO</span>
+                                <span class="valor" id="metric_sem_explicacao">0 (0%)</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
 
 
-        <div class="chart" style="flex: 1.5;">
-          <div class="top">
-            EVOLUÇÃO DOS REGISTROS
-          </div>
-          <div class="bottom">
-            <div class="chart-canvas">
-              <canvas id="grafico_registros"></canvas>
+                <div class="chart" style="flex: 1.5;">
+                    <div class="top">
+                        EVOLUÇÃO DOS REGISTROS
+                    </div>
+                    <div class="bottom">
+                        <div class="chart-canvas">
+                            <canvas id="grafico_registros"></canvas>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-          </div>
         </div>
 
-      </div>
-    </div>
 
 
-
-  </main>
+    </main>
 </body>
 
 </html>
@@ -187,7 +186,7 @@
 
     var nome = sessionStorage.NOME_USUARIO;
     if (nome) {
-            h2_boas_vindas.innerHTML = 'BEM-VINDO DE VOLTA, ' + nome.toUpperCase() + '.';
+        h2_boas_vindas.innerHTML = 'BEM-VINDO DE VOLTA, ' + nome.toUpperCase() + '.';
     }
 
     function trocarEndpoint() {
@@ -197,7 +196,7 @@
         if (endpoint != '/painel/individual/' && painel == 'individual') {
             endpoint = '/painel/individual/' + sessionStorage.ID_USUARIO;
             console.log('Painel INDIVIDUAL')
-        } else  if (endpoint != '/painel/geral/' && painel == 'geral') {
+        } else if (endpoint != '/painel/geral/' && painel == 'geral') {
             endpoint = '/painel/geral/';
             console.log('Painel GERAL')
         }
@@ -221,13 +220,37 @@
 
         fetch(endpoint, { cache: 'no-store' }).then(function (response) {
             if (response.ok) {
-                response.json().then(function (resposta) {
+                if (response != null) {
+                    response.json().then(function (resposta) {
 
-                    console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+                        console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
 
                         plotarGrafico(resposta);
-            
-                });
+
+                    });
+                } else {
+                    resposta = {
+                        ocorrencias: {
+                            total: 0,
+                            em_investigacao: 0,
+                            resolvido: 0,
+                            sem_explicacao: 0,
+                            poderes_psiquicos: 0,
+                            espiritos_possessoes: 0,
+                            organizacoes_psiquicas: 0,
+                            fenomenos_anomalos: 0
+                        },
+
+                        percentuais: {
+                            em_investigacao: 0,
+                            resolvidos: 0,
+                            sem_explicacao: 0
+                        }
+                    }
+
+                    plotarGrafico(resposta);
+                }
+
             } else {
                 console.error('Nenhum dado encontrado ou erro na API');
             }
@@ -251,13 +274,13 @@
         let dados = {
             labels: labels,
             datasets: [
-            {
-                label: 'Ocorrências por categoria',
-                data: [],
-                fill: false,
-                borderColor: 'rgb(199, 52, 52)',
-                tension: 0.1
-            }]
+                {
+                    label: 'Ocorrências por categoria',
+                    data: [],
+                    fill: false,
+                    borderColor: 'rgb(199, 52, 52)',
+                    tension: 0.1
+                }]
         };
 
         console.log('----------------------------------------------')
@@ -360,7 +383,7 @@
         }
 
         // Adicionando gráfico criado em div na tela
-        chartClassificacao = 
+        chartClassificacao =
             new Chart(
                 my_chart,
                 config
@@ -458,6 +481,3 @@
     }
 
 </script>
-
-
-

@@ -109,6 +109,8 @@ SELECT
     COUNT(CASE WHEN status = 'Sem explicação' THEN 1 END) AS sem_explicacao,
     COUNT(id) AS total
 FROM ocorrencia;
+
+SELECT * FROM vw_ocorrencias_geral;
     
 CREATE VIEW vw_ocorrencias_mensais_usuario AS
 SELECT
@@ -151,9 +153,7 @@ GROUP BY ano;
 
 SELECT * FROM vw_ocorrencias_mensais;
 
-ORDER BY id_usuario, ano, mes;
 
-SELECT * FROM vw_ocorrencias_geral;
 
 CREATE VIEW vw_perc_status_geral AS
 SELECT
@@ -194,6 +194,21 @@ FROM vw_ocorrencias_individual;
 
 SELECT * FROM vw_perc_status_individual;
 
+INSERT INTO usuario (id, nome, email, senha) VALUES
+(1, 'Akira Santos', 'akira@email.com', 'teste123'),
+(2, 'Marina Costa', 'marina@email.com', 'teste123'),
+(3, 'Lucas Tanaka', 'lucas@email.com', 'teste123'),
+(4, 'Beatriz Mori', 'beatriz@email.com', 'teste123'),
+(5, 'Rafael Sato', 'rafael@email.com', 'teste123'),
+(6, 'Julia Nakamura', 'julia@email.com', 'teste123'),
+(7, 'Gabriel Lima', 'gabriel@email.com', 'teste123'),
+(8, 'Camila Aoki', 'camila@email.com', 'teste123'),
+(9, 'Henrique Rocha', 'henrique@email.com', 'teste123'),
+(10, 'Sofia Matsuda', 'sofia@email.com', 'teste123');
+
+INSERT INTO ocorrencia
+    (titulo, classificacao, status, local, descricao, fk_usuario, dt_ocorrencia)
+VALUES
 ('Recrutamento suspeito', 'organizacoes-psiquicas', 'Em investigação', 'Praça central', 'Um grupo abordava jovens oferecendo treinamento paranormal.', 4, '2026-06-15 16:40:00'),
 ('Sombra na biblioteca', 'espiritos-possessoes', 'Resolvido', 'Biblioteca municipal', 'Uma presença seguia leitores entre as estantes. O local foi purificado.', 5, '2026-06-18 18:10:00'),
 ('Pulso telecinético', 'poderes-psiquicos', 'Resolvido', 'Ginásio escolar', 'Um estudante deslocou involuntariamente equipamentos durante um treino.', 6, '2026-06-23 14:05:00'),
