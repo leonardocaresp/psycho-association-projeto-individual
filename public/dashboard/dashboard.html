@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 
-<body>
+<body onload="apagarCarregamento(); validarSessao(); obterDadosGrafico();">
   <header>
     <div class="icon">
       <img src="../assets/icon/psycho-association-logo.svg">
@@ -60,7 +60,7 @@
         <h3>Confira seu desempenho e as atividades recentes da organização.</h3>
       </div>
       <div class="dashboard-view-select">
-        <select id="select_dashboard_view" name="dashboardView">
+        <select id="select_dashboard" name="dashboardView" onchange="obterDadosGrafico()">
           <option value="individual">Individual</option>
           <option value="geral">Geral</option>
         </select>
@@ -179,96 +179,30 @@
 
 </html>
 <script>
-    let proximaAtualizacao;
-    let graficoClassificacao = null;
-    let graficoStatus = null;
-    let graficoRegistros = null;
-    let cicloAtualPainel = 0;
-    let selectDashboardView = null;
 
-    const validarSessaoBase = window.validarSessao;
-    window.validarSessao = async function () {
-        if (typeof validarSessaoBase === 'function') {
-            validarSessaoBase();
-        }
+    // Criando váriável global para os gráficos
+    let chartClassificacao;
+    let chartStatus;
+    let chartRegistros;
 
-        if (sessionStorage.EMAIL_USUARIO && sessionStorage.NOME_USUARIO) {
-            return true;
-        }
-
-        return false;
-    };
-
-    window.onload = async function () {
-        apagarCarregamento();
-        if (await validarSessao()) exibirPainelDoUsuario();
-    };
-
-    function obterSelectDashboardView() {
-        if (!selectDashboardView) {
-            selectDashboardView = document.getElementById('select_dashboard_view');
-        }
-
-        return selectDashboardView;
+    var nome = sessionStorage.NOME_USUARIO;
+    if (nome) {
+            h2_boas_vindas.innerHTML = 'BEM-VINDO DE VOLTA, ' + nome.toUpperCase() + '.';
     }
 
-    function obterEndpointPainel() {
-        var endpoint = '/painel/geral';
-        var selectView = obterSelectDashboardView();
+    function trocarEndpoint() {
+        let painel = select_dashboard.value
+        let endpoint;
 
-        if (selectView && selectView.value === 'individual') {
+        if (endpoint != '/painel/individual/' && painel == 'individual') {
             endpoint = '/painel/individual/' + sessionStorage.ID_USUARIO;
+            console.log('Painel INDIVIDUAL')
+        } else  if (endpoint != '/painel/geral/' && painel == 'geral') {
+            endpoint = '/painel/geral/';
+            console.log('Painel GERAL')
         }
 
         return endpoint;
-    }
-
-    function exibirPainelDoUsuario() {
-        // var visoesPainel = JSON.parse(sessionStorage.VISOES_PAINEL);
-        // visoesPainel.forEach(item => {
-        //     btnPainel.innerHTML += `...`
-        //     graficos.innerHTML += `...`
-        //     obterDadosGrafico(item.id)
-        // });
-
-        var selectView = obterSelectDashboardView();
-        selectView.addEventListener('change', function () {
-            exibirPainel(1);
-        });
-
-        exibirPainel(1);
-    }
-
-    function alterarTituloPainel(idPainel) {
-        // var tituloPainel = document.getElementById(`tituloPainel${idPainel}`)
-        // var descricao = JSON.parse(sessionStorage.VISOES_PAINEL).find(item => item.id == idPainel).descricao;
-        // tituloPainel.innerHTML = "Últimos dados do <span style='color: #e6005a'>" + descricao + "</span>"
-
-        var nome = sessionStorage.NOME_USUARIO;
-        if (nome) {
-            h2_boas_vindas.innerHTML = 'BEM-VINDO DE VOLTA, ' + nome.toUpperCase() + '.';
-        }
-    }
-
-    function exibirPainel(idPainel) {
-        // let todasAsVisoesPainel = JSON.parse(sessionStorage.VISOES_PAINEL);
-        // for (i = 0; i < todasAsVisoesPainel.length; i++) {
-        //     // exibindo - ou não - o gráfico
-        //     if (todasAsVisoesPainel[i].id != idPainel) {
-        //         let elementoAtual = document.getElementById(`grafico${todasAsVisoesPainel[i].id}`)
-        //         ...
-        //     }
-        // }
-        // let graficoExibir = document.getElementById(`grafico${idPainel}`)
-        // let btnExibir = document.getElementById(`btnPainel${idPainel}`)
-
-        cicloAtualPainel = cicloAtualPainel + 1;
-
-        if (proximaAtualizacao != undefined) {
-            clearTimeout(proximaAtualizacao);
-        }
-
-        obterDadosGrafico(idPainel, cicloAtualPainel);
     }
 
     // O gráfico é construído com três funções:
@@ -282,30 +216,18 @@
 
     //     Se quiser alterar a busca, ajuste as regras de negócio em src/controllers
     //     Para ajustar o "select", ajuste o comando sql em src/models
-    function obterDadosGrafico(idPainel, cicloPainel) {
-
-        alterarTituloPainel(idPainel)
-
-        var endpoint = obterEndpointPainel();
+    function obterDadosGrafico() {
+        var endpoint = trocarEndpoint();
 
         fetch(endpoint, { cache: 'no-store' }).then(function (response) {
             if (response.ok) {
                 response.json().then(function (resposta) {
-                    if (cicloPainel !== cicloAtualPainel) {
-                        return;
-                    }
 
                     console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
 
-                    plotarGrafico(resposta, idPainel, cicloPainel);
-
+                        plotarGrafico(resposta);
+            
                 });
-            } else if (response.status == 204) {
-                if (cicloPainel !== cicloAtualPainel) {
-                    return;
-                }
-
-                plotarGrafico(null, idPainel, cicloPainel);
             } else {
                 console.error('Nenhum dado encontrado ou erro na API');
             }
@@ -318,7 +240,7 @@
     // Esta função *plotarGrafico* usa os dados capturados na função anterior para criar o gráfico
     // Configura o gráfico (cores, tipo, etc), materializa-o na página e, 
     // A função *plotarGrafico* também invoca a função *atualizarGrafico*
-    function plotarGrafico(resposta, idPainel, cicloPainel) {
+    function plotarGrafico(resposta) {
 
         console.log('iniciando plotagem do gráfico...');
 
@@ -370,10 +292,10 @@
         labels.push('Organizações Psíquicas');
         labels.push('Fenômenos Anômalos');
 
-        dados.datasets[0].data.push(obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'poderes_psiquicos', 'poderes_psiquicos')));
-        dados.datasets[0].data.push(obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'espiritos_possessoes', 'entidades_espirituais')));
-        dados.datasets[0].data.push(obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'organizacoes_psiquicas', 'seitas_paranormais')));
-        dados.datasets[0].data.push(obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'fenomenos_anomalos', 'locais_assombrados')));
+        dados.datasets[0].data.push(ocorrencias.poderes_psiquicos);
+        dados.datasets[0].data.push(ocorrencias.espiritos_possessoes);
+        dados.datasets[0].data.push(ocorrencias.organizacoes_psiquicas);
+        dados.datasets[0].data.push(ocorrencias.fenomenos_anomalos);
 
         console.log('----------------------------------------------')
         console.log('O gráfico será plotado com os respectivos valores:')
@@ -383,11 +305,8 @@
         console.log(dados.datasets)
         console.log('----------------------------------------------')
 
-        atualizarKpis(ocorrencias, percentuais);
-
-        if (graficoClassificacao) {
-            graficoClassificacao.destroy();
-        }
+        // atualizarKpis(ocorrencias, percentuais);
+        atualizarKpis(ocorrencias, percentuais)
 
         // Criando estrutura para plotar gráfico - config
         const config = {
@@ -435,31 +354,34 @@
             }
         };
 
-        // Adicionando gráfico criado em div na tela
-        let myChart = {
-            classificacao: new Chart(
-                my_chart,
-                config
-            )
-        };
-
-        graficoClassificacao = myChart.classificacao;
-
-        if (graficoStatus) {
-            graficoStatus.destroy();
+        // Se o gráfico já existe, ele destroy
+        if (chartClassificacao) {
+            chartClassificacao.destroy()
         }
 
-        myChart.status = new Chart(grafico_status, {
+        // Adicionando gráfico criado em div na tela
+        chartClassificacao = 
+            new Chart(
+                my_chart,
+                config
+            );
+
+        if (chartStatus) {
+            chartStatus.destroy()
+        }
+
+
+        chartStatus = new Chart(grafico_status, {
             type: 'doughnut',
             data: {
                 labels: ['EM INVESTIGAÇÃO', 'RESOLVIDOS', 'SEM EXPLICAÇÃO'],
                 datasets: [{
                     data: [
-                        obterNumero(ocorrencias.em_investigacao),
-                        obterNumero(ocorrencias.resolvido),
-                        obterNumero(ocorrencias.sem_explicacao)
+                        ocorrencias.em_investigacao,
+                        ocorrencias.resolvido,
+                        ocorrencias.sem_explicacao
                     ],
-                    backgroundColor: ['#FDB123', '#3FE275', '#E23235'],
+                    backgroundColor: ['#FD7D23', '#3FE275', '#E23235'],
                     borderWidth: 0
                 }]
             },
@@ -472,24 +394,23 @@
             }
         });
 
-        graficoStatus = myChart.status;
-
-        if (graficoRegistros) {
-            graficoRegistros.destroy();
+        if (chartRegistros) {
+            chartRegistros.destroy()
         }
 
-        myChart.registros = new Chart(grafico_registros, {
+
+        chartRegistros = new Chart(grafico_registros, {
             type: 'line',
             data: {
                 labels: ['Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov'],
                 datasets: [{
                     data: [
-                        obterNumero(ocorrencias.total),
-                        obterNumero(ocorrencias.total),
-                        obterNumero(ocorrencias.total),
-                        obterNumero(ocorrencias.total),
-                        obterNumero(ocorrencias.total),
-                        obterNumero(ocorrencias.total)
+                        ocorrencias.total,
+                        ocorrencias.total,
+                        ocorrencias.total,
+                        ocorrencias.total,
+                        ocorrencias.total,
+                        ocorrencias.total
                     ],
                     borderColor: '#E22672'
                 }]
@@ -507,144 +428,35 @@
                 }
             }
         });
-
-        graficoRegistros = myChart.registros;
-
-        proximaAtualizacao = setTimeout(function () {
-            atualizarGrafico(idPainel, dados, myChart, cicloPainel);
-        }, 2000);
-    }
-
-
-    // Esta função *atualizarGrafico* atualiza o gráfico que foi renderizado na página,
-    // buscando a última medida inserida em tabela contendo as capturas, 
-
-    //     Se quiser alterar a busca, ajuste as regras de negócio em src/controllers
-    //     Para ajustar o "select", ajuste o comando sql em src/models
-    function atualizarGrafico(idPainel, dados, myChart, cicloPainel) {
-
-        if (cicloPainel !== cicloAtualPainel) {
-            return;
-        }
-
-
-
-        var endpoint = obterEndpointPainel();
-
-        fetch(endpoint, { cache: 'no-store' }).then(function (response) {
-            if (response.ok) {
-                response.json().then(function (novoRegistro) {
-                    if (cicloPainel !== cicloAtualPainel) {
-                        return;
-                    }
-
-                    // obterdados(idPainel);
-                    // alertar(novoRegistro, idPainel);
-                    console.log(`Dados recebidos: ${JSON.stringify(novoRegistro)}`);
-                    console.log(`Dados atuais do gráfico:`);
-                    console.log(dados);
-
-                    // let avisoPainel = document.getElementById(`avisoPainel${idPainel}`)
-                    // avisoPainel.innerHTML = ""
-
-                    var ocorrencias = novoRegistro.ocorrencias;
-                    var percentuais = novoRegistro.percentuais;
-
-                    atualizarKpis(ocorrencias, percentuais);
-
-                    myChart.classificacao.data.datasets[0].data = [
-                        obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'poderes_psiquicos', 'poderes_psiquicos')),
-                        obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'espiritos_possessoes', 'entidades_espirituais')),
-                        obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'organizacoes_psiquicas', 'seitas_paranormais')),
-                        obterNumero(obterValorCategoriaOcorrencia(ocorrencias, 'fenomenos_anomalos', 'locais_assombrados'))
-                    ];
-                    myChart.classificacao.update();
-
-                    myChart.status.data.datasets[0].data = [
-                        obterNumero(ocorrencias.em_investigacao),
-                        obterNumero(ocorrencias.resolvido),
-                        obterNumero(ocorrencias.sem_explicacao)
-                    ];
-                    myChart.status.update();
-
-                    myChart.registros.data.datasets[0].data = [
-                        obterNumero(ocorrencias.total),
-                        obterNumero(ocorrencias.total),
-                        obterNumero(ocorrencias.total),
-                        obterNumero(ocorrencias.total),
-                        obterNumero(ocorrencias.total),
-                        obterNumero(ocorrencias.total)
-                    ];
-                    myChart.registros.update();
-
-                    // Altere aqui o valor em ms se quiser que o gráfico atualize mais rápido ou mais devagar
-                    proximaAtualizacao = setTimeout(function () {
-                        atualizarGrafico(idPainel, dados, myChart, cicloPainel);
-                    }, 2000);
-                });
-            } else {
-                console.error('Nenhum dado encontrado ou erro na API');
-                // Altere aqui o valor em ms se quiser que o gráfico atualize mais rápido ou mais devagar
-                proximaAtualizacao = setTimeout(function () {
-                    atualizarGrafico(idPainel, dados, myChart, cicloPainel);
-                }, 2000);
-            }
-        })
-            .catch(function (error) {
-                console.error(`Erro na obtenção dos dados p/ gráfico: ${error.message}`);
-            });
-
     }
 
     function atualizarKpis(ocorrencias, percentuais) {
-        var total = obterNumero(ocorrencias.total);
-        var emInvestigacao = obterNumero(ocorrencias.em_investigacao);
-        var resolvido = obterNumero(ocorrencias.resolvido);
-        var semExplicacao = obterNumero(ocorrencias.sem_explicacao);
+        var total = ocorrencias.total;
+        var emInvestigacao = ocorrencias.em_investigacao;
+        var resolvido = ocorrencias.resolvido;
+        var semExplicacao = ocorrencias.sem_explicacao;
 
-        var percInvestigacao = obterNumero(percentuais.em_investigacao);
-        var percResolvidos = obterNumero(percentuais.resolvidos);
-        var percSemExplicacao = obterNumero(percentuais.sem_explicacao);
+        var percInvestigacao = percentuais.em_investigacao;
+        var percResolvidos = percentuais.resolvidos;
+        var percSemExplicacao = percentuais.sem_explicacao;
 
         kpi_total_valor.innerHTML = total;
         kpi_total_subtitulo.innerHTML = 'Registros cadastrados';
 
         kpi_investigacao_valor.innerHTML = emInvestigacao;
-        kpi_investigacao_subtitulo.innerHTML = formatarPercentual(percInvestigacao) + ' do total';
+        kpi_investigacao_subtitulo.innerHTML = percInvestigacao + '%' + ' do total';
 
-        kpi_resolucao_valor.innerHTML = formatarPercentual(percResolvidos);
+        kpi_resolucao_valor.innerHTML = percResolvidos + '%';
         kpi_resolucao_subtitulo.innerHTML = resolvido + ' de ' + total + ' ocorrências';
 
         kpi_inconclusivas_valor.innerHTML = semExplicacao;
-        kpi_inconclusivas_subtitulo.innerHTML = formatarPercentual(percSemExplicacao) + ' do total';
+        kpi_inconclusivas_subtitulo.innerHTML = percSemExplicacao + '%' + ' do total';
 
-        metric_investigacao.innerHTML = emInvestigacao + ' (' + formatarPercentual(percInvestigacao) + ')';
-        metric_resolvidos.innerHTML = resolvido + ' (' + formatarPercentual(percResolvidos) + ')';
-        metric_sem_explicacao.innerHTML = semExplicacao + ' (' + formatarPercentual(percSemExplicacao) + ')';
+        metric_investigacao.innerHTML = emInvestigacao + ' (' + percInvestigacao + '%' + ')';
+        metric_resolvidos.innerHTML = resolvido + ' (' + percResolvidos + '%' + ')';
+        metric_sem_explicacao.innerHTML = semExplicacao + ' (' + percSemExplicacao + '%' + ')';
     }
 
-    function obterNumero(valor) {
-        var numero = Number(valor);
-
-        if (isNaN(numero)) {
-            return 0;
-        }
-
-        return numero;
-    }
-
-    function formatarPercentual(valor) {
-        var numero = obterNumero(valor);
-        return numero.toFixed(1).replace('.', ',') + '%';
-    }
-
-    function obterValorCategoriaOcorrencia(ocorrencias, chaveNova, chaveAntiga) {
-        if (ocorrencias[chaveNova] !== undefined && ocorrencias[chaveNova] !== null) {
-            return ocorrencias[chaveNova];
-        }
-
-        return ocorrencias[chaveAntiga];
-    }
 </script>
 
 

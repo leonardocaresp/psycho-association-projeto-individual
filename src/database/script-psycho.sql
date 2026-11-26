@@ -20,7 +20,9 @@ CREATE TABLE ocorrencia (
     id INT NOT NULL AUTO_INCREMENT,
     titulo VARCHAR(55) NOT NULL,
     classificacao VARCHAR(55) NOT NULL,
+    CONSTRAINT chClassificacao CHECK (classificacao IN('organizacoes-psiquicas', 'espiritos-possessoes', 'fenomenos-anomalos', 'poderes-psiquicos')),
     status VARCHAR(55) NOT NULL,
+    CONSTRAINT chStatus CHECK (status IN('Sem explicação', 'Resolvido', 'Em investigação')),
     local VARCHAR(100) NOT NULL,
     descricao VARCHAR(500) NOT NULL,
     fk_usuario INT NOT NULL,
@@ -107,37 +109,48 @@ SELECT
     COUNT(CASE WHEN status = 'Sem explicação' THEN 1 END) AS sem_explicacao,
     COUNT(id) AS total
 FROM ocorrencia;
+    
+CREATE VIEW vw_ocorrencias_mensais_usuario AS
+SELECT
+    fk_usuario AS id_usuario,
+    YEAR(dt_ocorrencia) AS ano,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 1 THEN 1 END) AS janeiro,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 2 THEN 1 END) AS fevereiro,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 3 THEN 1 END) AS marco,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 4 THEN 1 END) AS abril,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 5 THEN 1 END) AS maio,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 6 THEN 1 END) AS junho,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 7 THEN 1 END) AS julho,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 8 THEN 1 END) AS agosto,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 9 THEN 1 END) AS setembro,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 10 THEN 1 END) AS outubro,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 11 THEN 1 END) AS novembro,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 12 THEN 1 END) AS dezembro
+FROM ocorrencia
+GROUP BY id_usuario, ano;
+
+SELECT * FROM vw_ocorrencias_mensais_usuario;
 
 CREATE VIEW vw_ocorrencias_mensais AS
 SELECT
     YEAR(dt_ocorrencia) AS ano,
-    MONTH(dt_ocorrencia) AS mes,
-    COUNT(id) AS total_ocorrencias
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 1 THEN 1 END) AS janeiro,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 2 THEN 1 END) AS fevereiro,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 3 THEN 1 END) AS marco,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 4 THEN 1 END) AS abril,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 5 THEN 1 END) AS maio,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 6 THEN 1 END) AS junho,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 7 THEN 1 END) AS julho,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 8 THEN 1 END) AS agosto,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 9 THEN 1 END) AS setembro,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 10 THEN 1 END) AS outubro,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 11 THEN 1 END) AS novembro,
+    COUNT(CASE WHEN MONTH(dt_ocorrencia) = 12 THEN 1 END) AS dezembro
 FROM ocorrencia
-GROUP BY
-    YEAR(dt_ocorrencia),
-    MONTH(dt_ocorrencia);
-    
-    SELECT * FROM vw_ocorrencias_mensais
-ORDER BY ano, mes;
+GROUP BY ano;
 
-CREATE VIEW vw_ocorrencias_mensais_usuario AS
-SELECT
-    usuario.id AS id_usuario,
-    usuario.nome AS nome_usuario,
-    YEAR(ocorrencia.dt_ocorrencia) AS ano,
-    MONTH(ocorrencia.dt_ocorrencia) AS mes,
-    COUNT(ocorrencia.id) AS total_ocorrencias
-FROM ocorrencia
-JOIN usuario
-    ON ocorrencia.fk_usuario = usuario.id
-GROUP BY
-    usuario.id,
-    usuario.nome,
-    YEAR(ocorrencia.dt_ocorrencia),
-    MONTH(ocorrencia.dt_ocorrencia);
-    
-SELECT * FROM vw_ocorrencias_mensais_usuario
+SELECT * FROM vw_ocorrencias_mensais;
+
 ORDER BY id_usuario, ano, mes;
 
 SELECT * FROM vw_ocorrencias_geral;

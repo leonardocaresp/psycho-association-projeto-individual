@@ -190,8 +190,8 @@
 }
 
 .em-andamento {
-  border-color: var(--amarelo-forte);
-  color: var(--amarelo-forte);
+  border-color: #FD7D23;
+  color: #FD7D23;
 }
 
 .resolvido {
