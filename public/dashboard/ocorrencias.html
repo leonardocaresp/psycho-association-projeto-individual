@@ -119,15 +119,11 @@
 
   let ocorrencias = [];
   let idOcorrenciaEditando = null;
-  let inputBusca = null;
-  let selectClassificacaoFiltro = null;
-  let selectStatusFiltro = null;
+  let inputBusca = ipt_search_ocorrencia;
+  let selectClassificacaoFiltro = select_filter_classificacao;
+  let selectStatusFiltro = select_filter_status;
 
   function inicializarOcorrencias() {
-    inputBusca = ipt_search_ocorrencia;
-    selectClassificacaoFiltro = select_filter_classificacao;
-    selectStatusFiltro = select_filter_status;
-
     inputBusca.addEventListener('input', aplicarFiltros);
     selectClassificacaoFiltro.addEventListener('change', aplicarFiltros);
     selectStatusFiltro.addEventListener('change', aplicarFiltros);
